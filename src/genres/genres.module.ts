@@ -7,6 +7,7 @@ import { Genre } from './models/genre.model';
 @Module({
   imports: [SequelizeModule.forFeature([Genre])],
   providers: [GenresService],
-  controllers: [GenresController]
+  controllers: [GenresController],
+  exports: [GenresService],
 })
 export class GenresModule {}
