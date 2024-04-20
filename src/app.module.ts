@@ -4,6 +4,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './users/models/user.model';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { GenresModule } from './genres/genres.module';
+import { Genre } from './genres/models/genre.model';
 
 
 @Module({
@@ -18,12 +20,13 @@ import { AuthModule } from './auth/auth.module';
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    models:[User],
+    models:[User, Genre],
     synchronize: true,
     autoLoadModels: true,
   }),
   UsersModule,
-  AuthModule],
+  AuthModule,
+  GenresModule],
   controllers: [],
   providers: [],
 })
