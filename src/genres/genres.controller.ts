@@ -1,8 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { GenresService } from './genres.service';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { UpdateGenreDto } from './dto/update-genre.dto';
 
 @Controller('genres')
 export class GenresController {
@@ -20,7 +19,6 @@ export class GenresController {
         return this.genresService.findOne(+id);
     }
 
-    @UsePipes(new ValidationPipe())
     @UseGuards(JwtAuthGuard)
     @Patch(":id")
     async updateGenre(@Param("id") id: string, @Body() updatedGenre: UpdateGenreDto) {
