@@ -17,7 +17,7 @@ export class User extends Model{
     @Column({allowNull: false})
     password: string;
 
-    @Default(Role.USER)
+    @Default(Role.ADMIN)
     @Column({type: DataType.ENUM("admin", "user")})
     role: Role;
 }
