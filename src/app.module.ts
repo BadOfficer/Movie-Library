@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from './users/models/user.model';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
 import { GenresModule } from './genres/genres.module';
 import { Genre } from './genres/models/genre.model';
+import { AuthModule } from './auth/auth.module';
+import { User } from './auth/models/user.model';
 
 
 @Module({
@@ -20,13 +19,12 @@ import { Genre } from './genres/models/genre.model';
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    models:[User, Genre],
+    models:[Genre, User],
     synchronize: true,
     autoLoadModels: true,
   }),
-  UsersModule,
-  AuthModule,
-  GenresModule],
+  GenresModule,
+  AuthModule],
   controllers: [],
   providers: [],
 })

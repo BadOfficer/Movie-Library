@@ -5,6 +5,7 @@ import { Role } from "./role.enum";
 export class User extends Model{
     @Column({unique: true, primaryKey: true, autoIncrement: true})
     id: number;
+
     @Column({allowNull: false})
     first_name: string;
 
@@ -18,6 +19,6 @@ export class User extends Model{
     password: string;
 
     @Default(Role.ADMIN)
-    @Column({type: DataType.ENUM("admin", "user")})
+    @Column({type: DataType.ENUM(Role.ADMIN, Role.USER)})
     role: Role;
 }

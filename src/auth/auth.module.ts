@@ -1,24 +1,23 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UsersModule } from 'src/users/users.module';
-import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './strategies/local.strategy';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { User } from './models/user.model';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtGuard } from './guards/jwt.guard';
+import { JwtStrategy } from './guards/jwt.strategy';
+import { RolesGuard } from './guards/roles.guard';
 
 @Module({
-  imports: [UsersModule, PassportModule, JwtModule.registerAsync({
-    imports: [ConfigModule],
-    useFactory: (configService: ConfigService) => ({
-      secret: configService.get("SECRET"),
-      signOptions: {expiresIn: "24h"},
-    }),
-    inject: [ConfigService]
-  })],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
-  controllers: [AuthController],
-  exports: [AuthService]
+  imports: [JwtModule.registerAsync({
+      useFactory: () => ({
+        secret: process.env.SECRET,
+        signOptions: {expiresIn: '24h'},
+      })
+    }), 
+    SequelizeModule.forFeature([User])
+  ],
+  providers: [AuthService, JwtGuard, JwtStrategy, RolesGuard],
+  controllers: [AuthController]
 })
 export class AuthModule {}
