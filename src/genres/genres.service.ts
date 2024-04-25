@@ -4,12 +4,13 @@ import { Genre } from './models/genre.model';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { UserIf } from 'src/auth/models/user.interface';
+import { GenreIf } from './models/genre.interface';
 
 @Injectable()
 export class GenresService {
     constructor(@InjectModel(Genre) private readonly genresRepository: typeof Genre) {}
 
-    async create(createGenreDto: CreateGenreDto, user: UserIf) {
+    async create(createGenreDto: CreateGenreDto): Promise<GenreIf>{
         const isExist = await this.findByTitle(createGenreDto.title);
         const newGenre = new Genre();
 
@@ -20,12 +21,10 @@ export class GenresService {
         newGenre.title = createGenreDto.title;
         newGenre.description = createGenreDto.description;
 
-        await newGenre.save()
-
-        return user;
+        return await newGenre.save();
     }
 
-    async findByTitle(title: string) {
+    async findByTitle(title: string): Promise<GenreIf> {
         return this.genresRepository.findOne({where: {title}})
     }
 
@@ -39,11 +38,11 @@ export class GenresService {
         return genre;
     }
 
-    async findAll() {
+    async findAll(): Promise<GenreIf[]> {
         return this.genresRepository.findAll();
     }
 
-    async update(id: number, newGenreData: UpdateGenreDto) {
+    async update(id: number, newGenreData: UpdateGenreDto): Promise<GenreIf> {
         const genre = await this.genresRepository.findOne({where: {id}})
 
         if(!genre) {
@@ -55,7 +54,7 @@ export class GenresService {
         return await genre.save();
     }
 
-    async remove(id: number) {
+    async remove(id: number): Promise<string> {
         const genre = await this.genresRepository.findOne({where: {id}})
 
         if(!genre) {
@@ -66,6 +65,6 @@ export class GenresService {
             where: {id}
         })
 
-        return "Genre deleted";
+        return `Genre ${genre.title} deleted`;
     }
 }
