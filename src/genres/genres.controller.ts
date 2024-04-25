@@ -30,6 +30,8 @@ export class GenresController {
         return this.genresService.update(+id, updatedGenre);
     }
 
+    @Roles(Role.ADMIN)
+    @UseGuards(JwtGuard, RolesGuard)
     @Delete(":id")
     async deleteGenre(@Param("id") id: string) {
         return this.genresService.remove(+id);
