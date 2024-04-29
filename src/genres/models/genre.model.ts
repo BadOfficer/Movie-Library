@@ -1,5 +1,7 @@
 import { IsNotEmpty } from "class-validator";
-import { Column, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, Model, Table } from "sequelize-typescript";
+import { Movie } from "src/movies/models/movie.model";
+import { MoviesGenres } from "src/movies/models/movies-genres.model";
 
 @Table
 export class Genre extends Model{
@@ -13,4 +15,7 @@ export class Genre extends Model{
     @IsNotEmpty({message: "description can't be empty!"})
     @Column({allowNull: false})
     description: string;
+
+    @BelongsToMany(() => Movie, () => MoviesGenres)
+    movies: Movie[];
 }

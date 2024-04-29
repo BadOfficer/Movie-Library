@@ -5,6 +5,9 @@ import { GenresModule } from './genres/genres.module';
 import { Genre } from './genres/models/genre.model';
 import { AuthModule } from './auth/auth.module';
 import { User } from './auth/models/user.model';
+import { MoviesModule } from './movies/movies.module';
+import { Movie } from './movies/models/movie.model';
+import { MoviesGenres } from './movies/models/movies-genres.model';
 
 
 @Module({
@@ -19,12 +22,13 @@ import { User } from './auth/models/user.model';
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    models:[Genre, User],
+    models:[Genre, User, Movie, MoviesGenres],
     synchronize: true,
     autoLoadModels: true,
   }),
   GenresModule,
-  AuthModule],
+  AuthModule,
+  MoviesModule],
   controllers: [],
   providers: [],
 })
