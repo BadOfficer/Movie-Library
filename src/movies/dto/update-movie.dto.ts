@@ -1,4 +1,4 @@
-export class CreateMovieDto {
+export class UpdateMovieDto {
     title: string;
     description: string;
     images: string;
