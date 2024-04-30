@@ -5,6 +5,7 @@ import { MovieIf } from './models/movie.interface';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { GenresService } from 'src/genres/genres.service';
 import { UpdateMovieDto } from './dto/update-movie.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class MoviesService {
@@ -14,8 +15,24 @@ export class MoviesService {
         return this.moviesRepository.findOne({...filter})
     }
 
-    async findAll() {
-        return this.moviesRepository.findAll({include: {all: true}});
+    async getAll(count = 10, offset = 0): Promise<{rows: Movie[]}> {
+        const movies = await this.moviesRepository.findAndCountAll({offset, limit: count});
+        return movies;
+    }
+
+    async search(query: string): Promise<Movie[]> {
+        if (!query) {
+            return await Movie.findAll();
+          }
+          
+          const movies = await Movie.findAll({
+            where: {
+              name: {
+                [Op.like]: `%${query}%`
+              }
+            }
+          });
+        return movies;
     }
 
     async createMovie(createMovieDto: CreateMovieDto): Promise<MovieIf> {

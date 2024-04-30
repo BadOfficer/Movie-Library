@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { MovieIf } from './models/movie.interface';
@@ -19,11 +19,9 @@ export class MoviesController {
         return this.moviesService.createMovie(movie);
     }
     
-    @Roles(Role.ADMIN)
-    @UseGuards(JwtGuard, RolesGuard)
-    @Get("get-all")
-    findAll() {
-        return this.moviesService.findAll();
+    @Get()
+    getAll(@Query("count") count: number, @Query("offset") offset: number) {
+        return this.moviesService.getAll(count, offset);
     }
 
     @Roles(Role.ADMIN)
@@ -38,5 +36,10 @@ export class MoviesController {
     @Delete(":id")
     delete(@Param("id") id: string) {
         return this.moviesService.deleteMovie(+id);
+    }
+
+    @Get("/search")
+    search(@Query("query") query: string) {
+        return this.moviesService.search(query);
     }
 }
