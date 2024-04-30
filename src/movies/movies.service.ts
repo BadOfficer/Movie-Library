@@ -98,7 +98,7 @@ export class MoviesService {
         newMovie.$set("genres", [])
 
         createMovieDto.genres.map(async(idGenre) => {
-            const genre = await this.genresService.findOne(+idGenre);
+            const genre = await this.genresService.getOne(+idGenre);
 
             if(!genre) {
                 throw new BadRequestException("This genre is not exist!");
@@ -122,7 +122,7 @@ export class MoviesService {
         existMovie.$set("genres", [])
 
         updateMovieDto.genres.map(async(idGenre) => {
-            const genre = await this.genresService.findOne(+idGenre);
+            const genre = await this.genresService.getOne(+idGenre);
 
             if(!genre) {
                 throw new BadRequestException("This genre is not exist!");

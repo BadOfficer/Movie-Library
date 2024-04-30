@@ -5,6 +5,7 @@ import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { UserIf } from 'src/auth/models/user.interface';
 import { GenreIf } from './models/genre.interface';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class GenresService {
@@ -38,8 +39,8 @@ export class GenresService {
         return genre;
     }
 
-    async findAll(): Promise<GenreIf[]> {
-        return this.genresRepository.findAll();
+    async getAll(count = 10, offset = 0): Promise<{rows: GenreIf[]}> {
+        return this.genresRepository.findAndCountAll({offset, limit: count});
     }
 
     async update(id: number, newGenreData: UpdateGenreDto): Promise<GenreIf> {
@@ -66,5 +67,20 @@ export class GenresService {
         })
 
         return `Genre ${genre.title} deleted`;
+    }
+
+    async search(query: string): Promise<Genre[]> {
+        if (!query) {
+            return await Genre.findAll();
+          }
+          
+          const movies = await Genre.findAll({
+            where: {
+              title: {
+                [Op.like]: `%${query}%`
+              }
+            }
+          });
+        return movies;
     }
 }

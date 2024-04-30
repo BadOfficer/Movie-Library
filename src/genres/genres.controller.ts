@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Request, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { GenresService } from './genres.service';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
@@ -23,15 +23,15 @@ export class GenresController {
     @Roles(Role.ADMIN)
     @UseGuards(JwtGuard, RolesGuard)
     @Get(":id")
-    findOne(@Param("id") id: string): Promise<GenreIf> {
-        return this.genresService.findOne(+id);
+    getOne(@Param("id") id: string): Promise<GenreIf> {
+        return this.genresService.getOne(+id);
     }
 
     @Roles(Role.ADMIN)
     @UseGuards(JwtGuard, RolesGuard)
     @Get("get-all")
-    findAll(): Promise<GenreIf[]> {
-        return this.genresService.findAll();
+    getAll(@Query("count") count: string, @Query("offset") offset: string): Promise<{rows: GenreIf[]}> {
+        return this.genresService.getAll(+count, +offset);
     }
 
     @Roles(Role.ADMIN)
@@ -47,5 +47,13 @@ export class GenresController {
     @Delete(":id")
     async deleteGenre(@Param("id") id: string): Promise<string> {
         return this.genresService.remove(+id);
+    }
+
+
+    @Roles(Role.ADMIN)
+    @UseGuards(JwtGuard, RolesGuard)
+    @Get("/search")
+    async searchGenre(@Query("query") query: string): Promise<GenreIf[]> {
+        return this.genresService.search(query);
     }
 }
