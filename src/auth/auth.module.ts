@@ -18,6 +18,7 @@ import { RolesGuard } from './guards/roles.guard';
     SequelizeModule.forFeature([User])
   ],
   providers: [AuthService, JwtGuard, JwtStrategy, RolesGuard],
-  controllers: [AuthController]
+  controllers: [AuthController],
+  exports: [AuthService]
 })
 export class AuthModule {}

@@ -29,7 +29,7 @@ export class GenresService {
         return this.genresRepository.findOne({where: {title}})
     }
 
-    async findOne(id: number) {
+    async getOne(id: number) {
         const genre = await this.genresRepository.findOne({where: {id}})
 
         if(!genre) {

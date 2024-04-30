@@ -1,10 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from "bcrypt";
 import { UserIf } from './models/user.interface';
 import { User } from './models/user.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -69,5 +70,22 @@ export class AuthService {
        return {
             access_token: await this.jwtService.signAsync({ user: validatedUser })
        }
+    }
+
+    async updateUser(updateUserDto: UpdateUserDto, id: number) {
+        const existUser = await this.userRepository.findOne({where: {id}});
+        const existEmail = await this.userRepository.findOne({where: {email: updateUserDto.email}})
+
+        if(!existUser) {
+            throw new NotFoundException("User not found!")
+        }
+
+        if(existEmail) {
+            throw new BadRequestException("You can't use this email!");
+        }
+
+        Object.assign(existUser, updateUserDto);
+
+        return await existUser.save();
     }
 }
