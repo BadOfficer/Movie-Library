@@ -20,8 +20,8 @@ export class MoviesController {
     }
     
     @Get()
-    getAll(@Query("count") count: number, @Query("offset") offset: number) {
-        return this.moviesService.getAll(count, offset);
+    getAll(@Query("count") count: number, @Query("offset") offset: number, @Query("release") release: string, @Query("seasons") seasons: string, @Query("genreIds") genreIds: string) {
+        return this.moviesService.getAll(count, offset, release, seasons, genreIds);
     }
 
     @Roles(Role.ADMIN)
@@ -41,5 +41,10 @@ export class MoviesController {
     @Get("/search")
     search(@Query("query") query: string) {
         return this.moviesService.search(query);
+    }
+
+    @Get(":id")
+    getOne(@Param("id") id: string) {
+        return this.moviesService.findOneById(+id);
     }
 }

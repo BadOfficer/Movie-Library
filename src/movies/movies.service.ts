@@ -6,6 +6,7 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 import { GenresService } from 'src/genres/genres.service';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Op } from 'sequelize';
+import { Genre } from 'src/genres/models/genre.model';
 
 @Injectable()
 export class MoviesService {
@@ -15,8 +16,47 @@ export class MoviesService {
         return this.moviesRepository.findOne({...filter})
     }
 
-    async getAll(count = 10, offset = 0): Promise<{rows: Movie[]}> {
-        const movies = await this.moviesRepository.findAndCountAll({offset, limit: count});
+    async findOneById(id: number) {
+        return this.moviesRepository.findOne({where: {
+            id
+        }, include: {
+            model: Genre,
+            through: { attributes: [] },
+            attributes: ["title"]
+        }})
+    }
+
+    async getAll(count = 10, offset = 0, release = '', seasons = "", genreIds=""): Promise<{rows: Movie[]}> {
+        if(!release && !seasons && !genreIds) {
+            return await this.moviesRepository.findAndCountAll({offset, limit: count, include: {all: true}});
+        }
+
+        let whereClause: any = {};
+        let include: any[] = [];
+
+        if (genreIds) {
+            const genreIdValues = genreIds.split(',').map(id => parseInt(id));
+            include.push({
+                model: Genre,
+                where: {
+                    id: genreIdValues
+                }
+            });
+        }
+
+        if (release) {
+            const releaseValues = release.split(',');
+            whereClause.release = releaseValues;
+        }
+        if (seasons) {
+            const seasonValues = seasons.split(',');
+            whereClause.seasons = seasonValues;
+        }
+        
+
+        const movies = await this.moviesRepository.findAndCountAll({where: whereClause, offset, limit: count,  include: include});
+
+        
         return movies;
     }
 
@@ -27,7 +67,7 @@ export class MoviesService {
           
           const movies = await Movie.findAll({
             where: {
-              name: {
+              title: {
                 [Op.like]: `%${query}%`
               }
             }
