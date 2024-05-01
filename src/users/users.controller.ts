@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
@@ -13,6 +13,7 @@ export class UsersController {
         return this.usersService.getProfile(+req.user.id);
     }
 
+    @UsePipes(new ValidationPipe())
     @UseGuards(JwtGuard)
     @Post("profile/personal-data")
     update(@Body() updateUserDto: UpdateUserDto, @Req() req) {

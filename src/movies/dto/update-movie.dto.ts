@@ -1,11 +1,29 @@
+import { IsNumber, IsString } from "class-validator";
+
 export class UpdateMovieDto {
-    title: string;
-    description: string;
-    images: string;
-    release: string;
-    seasons: number;
-    series: number;
-    duration: string;
-    rating: string;
-    genres: number[];
+    @IsString()
+    title?: string;
+
+    @IsString()
+    description?: string;
+
+    @IsString()
+    images?: string;
+
+    @IsString()
+    release?: string;
+
+    @IsNumber()
+    seasons?: number;
+
+    @IsNumber()
+    series?: number;
+
+    @IsString()
+    duration?: string;
+
+    @IsString()
+    rating?: string;
+
+    genres?: number[];
 }

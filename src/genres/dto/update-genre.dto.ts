@@ -1,9 +1,11 @@
-import { IsNotEmpty } from "class-validator"
+import { IsNotEmpty, IsString } from "class-validator"
 
 export class UpdateGenreDto{
+    @IsString()
     @IsNotEmpty()
-    title: string
+    title?: string
 
+    @IsString()
     @IsNotEmpty()
-    description: string 
+    description?: string 
 }

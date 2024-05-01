@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { MovieIf } from './models/movie.interface';
@@ -12,6 +12,7 @@ import { UpdateMovieDto } from './dto/update-movie.dto';
 export class MoviesController {
     constructor(private readonly moviesService: MoviesService) {}
 
+    @UsePipes(new ValidationPipe())
     @Roles(Role.ADMIN)
     @UseGuards(JwtGuard, RolesGuard)
     @Post("create")
@@ -24,6 +25,7 @@ export class MoviesController {
         return this.moviesService.getAll(count, offset, release, seasons, genreIds);
     }
 
+    @UsePipes(new ValidationPipe())
     @Roles(Role.ADMIN)
     @UseGuards(JwtGuard, RolesGuard)
     @Patch(":id")

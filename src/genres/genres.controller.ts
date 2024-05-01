@@ -38,14 +38,14 @@ export class GenresController {
     @UseGuards(JwtGuard, RolesGuard)
     @UsePipes(new ValidationPipe())
     @Patch(":id")
-    async updateGenre(@Param("id") id: string, @Body() updatedGenre: UpdateGenreDto): Promise<GenreIf> {
+    updateGenre(@Param("id") id: string, @Body() updatedGenre: UpdateGenreDto): Promise<GenreIf> {
         return this.genresService.update(+id, updatedGenre);
     }
 
     @Roles(Role.ADMIN)
     @UseGuards(JwtGuard, RolesGuard)
     @Delete(":id")
-    async deleteGenre(@Param("id") id: string): Promise<string> {
+    deleteGenre(@Param("id") id: string): Promise<string> {
         return this.genresService.remove(+id);
     }
 
@@ -53,7 +53,7 @@ export class GenresController {
     @Roles(Role.ADMIN)
     @UseGuards(JwtGuard, RolesGuard)
     @Get("/search")
-    async searchGenre(@Query("query") query: string): Promise<GenreIf[]> {
+    searchGenre(@Query("query") query: string): Promise<GenreIf[]> {
         return this.genresService.search(query);
     }
 }
