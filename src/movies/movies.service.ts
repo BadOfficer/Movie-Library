@@ -7,10 +7,12 @@ import { GenresService } from 'src/genres/genres.service';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Op } from 'sequelize';
 import { Genre } from 'src/genres/models/genre.model';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class MoviesService {
-    constructor(@InjectModel(Movie) private readonly moviesRepository: typeof Movie, private readonly genresService: GenresService) {}
+    constructor(@InjectModel(Movie) private readonly moviesRepository: typeof Movie, 
+                                    private readonly genresService: GenresService) {}
 
     async findOne(filter: {where: {id?: number, title?: string, description?: string, rating?: string, seasons?: string, series?: string}}): Promise<MovieIf> {
         return this.moviesRepository.findOne({...filter})

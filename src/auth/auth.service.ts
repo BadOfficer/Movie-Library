@@ -15,7 +15,7 @@ export class AuthService {
         return bcrypt.hash(password, 12); 
     }
 
-    async findOne(filter: {where: {id?: string, first_name?: string, last_name?: string, email?: string}}): Promise<UserIf> {
+    async findOne(filter: {where: {id?: number, first_name?: string, last_name?: string, email?: string}}): Promise<UserIf> {
         return this.userRepository.findOne({...filter})
     }
 
@@ -72,7 +72,7 @@ export class AuthService {
        }
     }
 
-    async updateUser(updateUserDto: UpdateUserDto, id: number) {
+    async updateUser(updateUserDto: UpdateUserDto, id: number): Promise<UserIf> {
         const existUser = await this.userRepository.findOne({where: {id}});
         const existEmail = await this.userRepository.findOne({where: {email: updateUserDto.email}})
 
@@ -84,8 +84,22 @@ export class AuthService {
             throw new BadRequestException("You can't use this email!");
         }
 
+        const hashedPassword = await this.hashPassword(updateUserDto.password);
+        updateUserDto.password = hashedPassword;
+
         Object.assign(existUser, updateUserDto);
 
         return await existUser.save();
+    }
+
+    async deleteUser(userId: number): Promise<string> {
+        const existUser = await this.userRepository.findOne({where: {id: userId}});
+
+        if(!existUser) {
+            throw new NotFoundException("User not found!");
+        }
+        await existUser.destroy();
+
+        return "Account is deleted";
     }
 }
