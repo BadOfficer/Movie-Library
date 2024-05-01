@@ -7,7 +7,6 @@ import { GenresService } from 'src/genres/genres.service';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Op } from 'sequelize';
 import { Genre } from 'src/genres/models/genre.model';
-import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class MoviesService {
@@ -77,17 +76,18 @@ export class MoviesService {
         return movies;
     }
 
-    async createMovie(createMovieDto: CreateMovieDto): Promise<MovieIf> {
+    async createMovie(createMovieDto: CreateMovieDto, images: any): Promise<MovieIf> {
         const isExistMovie = await this.findOne({where: {title: createMovieDto.title}});
 
         if(isExistMovie) {
             throw new BadRequestException("This movie is exist!");
         }
+        console.log(images);
 
         const newMovie = new Movie({
             title: createMovieDto.title,
             description: createMovieDto.description,
-            images: createMovieDto.images,
+            images: ["1.jpg"],
             release: createMovieDto.release,
             seasons: createMovieDto.seasons,
             series: createMovieDto.series,
@@ -112,7 +112,6 @@ export class MoviesService {
     }
 
     async updateMovie(updateMovieDto: UpdateMovieDto, movieId: number): Promise<MovieIf> {
-        
         const existMovie = await this.moviesRepository.findOne({where: {id: movieId}});
 
         if(!existMovie) {

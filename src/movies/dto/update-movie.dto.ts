@@ -8,7 +8,7 @@ export class UpdateMovieDto {
     description?: string;
 
     @IsString()
-    images?: string;
+    images?: string[];
 
     @IsString()
     release?: string;

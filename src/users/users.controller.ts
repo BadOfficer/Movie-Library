@@ -23,6 +23,6 @@ export class UsersController {
     @UseGuards(JwtGuard)
     @Delete("profile/personal-data")
     delete(@Req() req) {
-        return this.usersService.deleteUser(+req.user.id)
+        return this.usersService.deleteUser(+req.user.id);
     }
 }

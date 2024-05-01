@@ -7,7 +7,7 @@ export class CreateMovieDto {
     @IsString()
     description: string;
 
-    images: string;
+    images: string[];
 
     @IsString()
     release: string;
@@ -23,6 +23,6 @@ export class CreateMovieDto {
 
     @IsString()
     rating: string;
-    
+
     genres: number[];
 }

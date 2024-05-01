@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UploadedFiles, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { MovieIf } from './models/movie.interface';
@@ -16,8 +16,8 @@ export class MoviesController {
     @Roles(Role.ADMIN)
     @UseGuards(JwtGuard, RolesGuard)
     @Post("create")
-    create(@Body() movie: CreateMovieDto): Promise<MovieIf> {
-        return this.moviesService.createMovie(movie);
+    create(@Body() movie: CreateMovieDto, @UploadedFiles() images): Promise<MovieIf> {
+        return this.moviesService.createMovie(movie, images);
     }
     
     @Get()

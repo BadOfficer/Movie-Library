@@ -14,7 +14,7 @@ export class Movie extends Model {
     description: string;
 
     @Column
-    images: string;
+    images: string[];
 
     @Column
     release: string;
