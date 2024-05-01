@@ -7,9 +7,10 @@ import { Genre } from 'src/genres/models/genre.model';
 import { MoviesGenres } from './models/movies-genres.model';
 import { GenresModule } from 'src/genres/genres.module';
 import { User } from 'src/users/models/user.model';
+import { FilesModule } from 'src/files/files.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Movie, Genre, MoviesGenres, User]), GenresModule],
+  imports: [SequelizeModule.forFeature([Movie, Genre, MoviesGenres, User]), GenresModule, FilesModule],
   providers: [MoviesService],
   controllers: [MoviesController]
 })

@@ -13,7 +13,7 @@ export class Movie extends Model {
     @Column
     description: string;
 
-    @Column
+    @Column({ type: 'JSON' })
     images: string[];
 
     @Column

@@ -9,6 +9,7 @@ import { MoviesModule } from './movies/movies.module';
 import { Movie } from './movies/models/movie.model';
 import { MoviesGenres } from './movies/models/movies-genres.model';
 import { UsersModule } from './users/users.module';
+import { FilesModule } from './files/files.module';
 
 
 @Module({
@@ -30,7 +31,8 @@ import { UsersModule } from './users/users.module';
   GenresModule,
   AuthModule,
   MoviesModule,
-  UsersModule],
+  UsersModule,
+  FilesModule],
   controllers: [],
   providers: [],
 })

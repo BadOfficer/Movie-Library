@@ -12,11 +12,11 @@ export class CreateMovieDto {
     @IsString()
     release: string;
 
-    @IsNumber()
-    seasons: number;
+    @IsString()
+    seasons: string;
 
-    @IsNumber()
-    series: number;
+    @IsString()
+    series: string;
 
     @IsString()
     duration: string;
@@ -24,5 +24,5 @@ export class CreateMovieDto {
     @IsString()
     rating: string;
 
-    genres: number[];
+    genres: string;
 }

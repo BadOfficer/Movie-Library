@@ -7,11 +7,13 @@ import { GenresService } from 'src/genres/genres.service';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Op } from 'sequelize';
 import { Genre } from 'src/genres/models/genre.model';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class MoviesService {
     constructor(@InjectModel(Movie) private readonly moviesRepository: typeof Movie, 
-                                    private readonly genresService: GenresService) {}
+                                    private readonly genresService: GenresService,
+                                    private filesService: FilesService) {}
 
     async findOne(filter: {where: {id?: number, title?: string, description?: string, rating?: string, seasons?: string, series?: string}}): Promise<MovieIf> {
         return this.moviesRepository.findOne({...filter})
@@ -82,15 +84,16 @@ export class MoviesService {
         if(isExistMovie) {
             throw new BadRequestException("This movie is exist!");
         }
-        console.log(images);
+       const imagesNames = await this.filesService.createFiles(images);
+       
 
         const newMovie = new Movie({
             title: createMovieDto.title,
             description: createMovieDto.description,
-            images: ["1.jpg"],
+            images: JSON.stringify(imagesNames),
             release: createMovieDto.release,
-            seasons: createMovieDto.seasons,
-            series: createMovieDto.series,
+            seasons: +createMovieDto.seasons,
+            series: +createMovieDto.series,
             duration: createMovieDto.duration,
             rating: createMovieDto.rating,
         });
@@ -99,14 +102,14 @@ export class MoviesService {
         
         newMovie.$set("genres", [])
 
-        createMovieDto.genres.map(async(idGenre) => {
+        createMovieDto.genres.split(",").map(async(idGenre) => {
             const genre = await this.genresService.getOne(+idGenre);
 
             if(!genre) {
                 throw new BadRequestException("This genre is not exist!");
             }
 
-            await newMovie.$add("genres", [genre.id]);
+            await newMovie.$add("genres", [genre.id])
         })
         return newMovie;
     }

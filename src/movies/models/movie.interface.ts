@@ -4,7 +4,7 @@ export interface MovieIf {
     id?: number;
     title?: string;
     description?: string;
-    images?: string;
+    images?: string[];
     release?: string;
     seasons?: number;
     series?: number;
