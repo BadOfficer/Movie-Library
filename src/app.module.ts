@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GenresModule } from './genres/genres.module';
 import { Genre } from './genres/models/genre.model';
 import { AuthModule } from './auth/auth.module';
-import { User } from './auth/models/user.model';
+import { User } from './users/models/user.model';
 import { MoviesModule } from './movies/movies.module';
 import { Movie } from './movies/models/movie.model';
 import { MoviesGenres } from './movies/models/movies-genres.model';

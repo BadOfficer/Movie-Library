@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from './models/user.model';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtGuard } from './guards/jwt.guard';
 import { JwtStrategy } from './guards/jwt.strategy';
 import { RolesGuard } from './guards/roles.guard';
-import { Movie } from 'src/movies/models/movie.model';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [JwtModule.registerAsync({
@@ -16,7 +14,7 @@ import { Movie } from 'src/movies/models/movie.model';
         signOptions: {expiresIn: '24h'},
       })
     }), 
-    SequelizeModule.forFeature([User, Movie])
+    UsersModule
   ],
   providers: [AuthService, JwtGuard, JwtStrategy, RolesGuard],
   controllers: [AuthController],

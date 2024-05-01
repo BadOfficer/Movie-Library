@@ -4,7 +4,7 @@ import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/models/role.enum';
+import { Role } from 'src/users/models/role.enum';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { GenreIf } from './models/genre.interface';
 

@@ -1,21 +1,88 @@
-import { Injectable } from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { User } from './models/user.model';
+import * as bcrypt from "bcrypt";
+import { UserIf } from './models/user.interface';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserIf } from 'src/auth/models/user.interface';
 
 @Injectable()
 export class UsersService {
-    constructor(private authService: AuthService) {}
+    constructor(@InjectModel(User) private usersRepository: typeof User) {}
 
-    async update(updateUser:UpdateUserDto, id: number):Promise<UserIf> {
-        return this.authService.updateUser(updateUser, id);
+    async hashPassword(password: string): Promise<string> {
+        return bcrypt.hash(password, 12); 
     }
 
-    async getProfile(userId: number):Promise<UserIf> {
-        return this.authService.findOne({where: {id: userId}});
+    async findOne(filter: {where: {id?: number, first_name?: string, last_name?: string, email?: string}}): Promise<UserIf> {
+        return this.usersRepository.findOne({...filter})
     }
 
-    async deleteAccount(userId: number): Promise<string> {
-        return this.authService.deleteUser(userId);
+    async createUser(createUserDto: CreateUserDto): Promise<UserIf | {warningMessage: string}> {
+        const user = new User();
+        const existingUser = await this.usersRepository.findOne({where: {email: createUserDto.email}});
+
+        if(existingUser) {
+            return {warningMessage: "User with this email is exist!"}; 
+        }
+        const hashedPassword = await this.hashPassword(createUserDto.password);
+
+            user.first_name = createUserDto.first_name;
+        user.last_name = createUserDto.last_name;
+        user.email = createUserDto.email;
+        user.password = hashedPassword;
+
+        await user.save()
+
+        const {first_name, last_name, email, password, role} = user
+
+        return {first_name, last_name, email, role};
+    }
+
+    async updateUser(updateUserDto: UpdateUserDto, id: number): Promise<UserIf> {
+        const existUser = await this.usersRepository.findOne({ where: { id } });
+    
+        if (!existUser) {
+            throw new NotFoundException("User not found!");
+        }
+    
+        if (updateUserDto.email && updateUserDto.email !== existUser.email) {
+            const existEmail = await this.usersRepository.findOne({ where: { email: updateUserDto.email } });
+    
+            if (existEmail) {
+                throw new BadRequestException("This email is already in use!");
+            }
+        }
+
+        if (updateUserDto.password) {
+            const hashedPassword = await this.hashPassword(updateUserDto.password);
+            updateUserDto.password = hashedPassword;
+        }
+    
+        Object.assign(existUser, updateUserDto);
+    
+        return await existUser.save();
+    }
+    
+
+    async deleteUser(userId: number): Promise<string> {
+        const existUser = await this.usersRepository.findOne({where: {id: userId}});
+
+        if(!existUser) {
+            throw new NotFoundException("User not found!");
+        }
+        await existUser.destroy();
+
+        return "Account is deleted";
+    }
+
+    async getProfile(userId: number) {
+        const existUser = await this.usersRepository.findOne({where: {id: userId}});
+
+        if(!existUser) {
+            throw new NotFoundException("User not found!");
+        }
+
+        return existUser;
     }
 }

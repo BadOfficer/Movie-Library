@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Genre } from './models/genre.model';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
-import { UserIf } from 'src/auth/models/user.interface';
 import { GenreIf } from './models/genre.interface';
 import { Op } from 'sequelize';
 

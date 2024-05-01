@@ -16,12 +16,12 @@ export class UsersController {
     @UseGuards(JwtGuard)
     @Post("profile/personal-data")
     update(@Body() updateUserDto: UpdateUserDto, @Req() req) {
-        return this.usersService.update(updateUserDto, +req.user.id);
+        return this.usersService.updateUser(updateUserDto, +req.user.id);
     }
 
     @UseGuards(JwtGuard)
     @Delete("profile/personal-data")
     delete(@Req() req) {
-        return this.usersService.deleteAccount(+req.user.id)
+        return this.usersService.deleteUser(+req.user.id)
     }
 }

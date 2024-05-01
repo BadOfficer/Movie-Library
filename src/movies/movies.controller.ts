@@ -5,7 +5,7 @@ import { MovieIf } from './models/movie.interface';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/models/role.enum';
+import { Role } from 'src/users/models/role.enum';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 
 @Controller('movies')
