@@ -29,6 +29,7 @@ export class UsersController {
 
     @UseGuards(JwtGuard)
     @Post("profile/liked-list/add")
+    @UsePipes(new ValidationPipe())
     addToLikedList(@Body() addToLikedDto: AddToLikedDto, @Req() req) {
         return this.usersService.addToLikedList(addToLikedDto, req.user.id);
     }
@@ -41,18 +42,21 @@ export class UsersController {
 
     @UseGuards(JwtGuard)
     @Get("profile/liked-list")
+    @UsePipes(new ValidationPipe())
     getAllLikes(@Req() req) {
         return this.usersService.getAllLiked(+req.user.id);
     }
 
     @UseGuards(JwtGuard)
     @Post("profile/bookmarks/add")
+    @UsePipes(new ValidationPipe())
     addToBookmarks(@Body() addToBookmarksDto: AddToLikedDto, @Req() req) {
         return this.usersService.addToBookmarks(addToBookmarksDto, req.user.id);
     }
 
     @UseGuards(JwtGuard)
     @Delete("profile/bookmarks/remove")
+    @UsePipes(new ValidationPipe())
     removeFromBookmarks(@Body() removeFromBookmarks: AddToLikedDto, @Req() req) {
         return this.usersService.removeFromBookmarks(removeFromBookmarks, req.user.id);
     }

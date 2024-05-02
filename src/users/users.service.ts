@@ -80,7 +80,7 @@ export class UsersService {
         return "Account is deleted";
     }
 
-    async getProfile(userId: number) {
+    async getProfile(userId: number): Promise<UserIf> {
         const existUser = await this.usersRepository.findOne({where: {id: userId}, include: {all: true}});
 
         if(!existUser) {
