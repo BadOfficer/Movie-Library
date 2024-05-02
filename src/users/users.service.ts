@@ -5,10 +5,13 @@ import * as bcrypt from "bcrypt";
 import { UserIf } from './models/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AddToLikedDto } from './dto/add-to-liked.dto';
+import { MoviesService } from 'src/movies/movies.service';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel(User) private usersRepository: typeof User) {}
+    constructor(@InjectModel(User) private usersRepository: typeof User,
+                private moviesService: MoviesService) {}
 
     async hashPassword(password: string): Promise<string> {
         return bcrypt.hash(password, 12); 
@@ -27,10 +30,11 @@ export class UsersService {
         }
         const hashedPassword = await this.hashPassword(createUserDto.password);
 
-            user.first_name = createUserDto.first_name;
+        user.first_name = createUserDto.first_name;
         user.last_name = createUserDto.last_name;
         user.email = createUserDto.email;
         user.password = hashedPassword;
+        user.$set("likedList", []);
 
         await user.save()
 
@@ -77,12 +81,60 @@ export class UsersService {
     }
 
     async getProfile(userId: number) {
-        const existUser = await this.usersRepository.findOne({where: {id: userId}});
+        const existUser = await this.usersRepository.findOne({where: {id: userId}, include: {all: true}});
 
         if(!existUser) {
             throw new NotFoundException("User not found!");
         }
 
         return existUser;
+    }
+
+    async addToLikedList(addToLikedDto: AddToLikedDto, userId: number) {
+        const existUser = await this.usersRepository.findOne({where: {id: userId}, include: {all: true}});
+        const existMovie = await this.moviesService.findOne({where: {id: +addToLikedDto.movieId}});
+
+        if(!existUser) {
+            throw new NotFoundException("User not found!");
+        }
+
+        if(!existMovie) {
+            throw new NotFoundException("Movie not found!");
+        }
+
+        await existUser.$add("likedList", existMovie.id);
+        const likedMovieItem = await existUser.reload()
+
+        return likedMovieItem;
+    }
+
+    async removeFromLikedList(removeFromLikedDto: AddToLikedDto, userId: number) {
+        const existUser = await this.usersRepository.findOne({ where: { id: userId }, include: { all: true } });
+        const existMovie = await this.moviesService.findOne({ where: { id: +removeFromLikedDto.movieId } });
+    
+        if (!existUser) {
+            throw new NotFoundException("User not found!");
+        }
+    
+        if (!existMovie) {
+            throw new NotFoundException("Movie not found!");
+        }
+    
+        await existUser.$remove("LikedList", existMovie.id);
+        console.log(existUser.likedList);
+        
+
+        return existUser.reload();
+    }
+
+    async getAllLiked(userId: number) {
+        const existUser = await this.usersRepository.findOne({ where: { id: userId }, include: { all: true } });
+    
+        if (!existUser) {
+            throw new NotFoundException("User not found!");
+        }
+
+        return existUser.likedList;
+
     }
 }

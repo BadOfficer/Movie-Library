@@ -100,7 +100,7 @@ export class MoviesService {
 
         await newMovie.save();
         
-        newMovie.$set("genres", [])
+        await newMovie.$set("genres", [])
 
         createMovieDto.genres.split(",").map(async(idGenre) => {
             const genre = await this.genresService.getOne(+idGenre);

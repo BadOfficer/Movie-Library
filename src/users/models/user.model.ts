@@ -1,6 +1,8 @@
-import { Column, DataType, Default, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, Default, Model, Table } from "sequelize-typescript";
 import { Role } from "./role.enum";
 import { IsEmail, IsNotEmpty, Min } from "class-validator";
+import { Movie } from "src/movies/models/movie.model";
+import { LikedList } from "./liked-list.model";
 
 @Table
 export class User extends Model{
@@ -26,4 +28,7 @@ export class User extends Model{
     @Default(Role.ADMIN)
     @Column({type: DataType.ENUM(Role.ADMIN, Role.USER)})
     role: Role;
+
+    @BelongsToMany(() => Movie, () => LikedList)
+    likedList: Movie[];
 }

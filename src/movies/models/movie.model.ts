@@ -1,6 +1,8 @@
 import { BelongsToMany, Column, Model, Table } from "sequelize-typescript";
 import { Genre } from "src/genres/models/genre.model";
 import { MoviesGenres } from "./movies-genres.model";
+import { User } from "src/users/models/user.model";
+import { LikedList } from "src/users/models/liked-list.model";
 
 @Table
 export class Movie extends Model {
@@ -33,4 +35,7 @@ export class Movie extends Model {
 
     @BelongsToMany(() => Genre, () => MoviesGenres)
     genres: Genre[];
+
+    @BelongsToMany(() => User, () => LikedList)
+    likedList: User[];
 }

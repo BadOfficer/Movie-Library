@@ -24,5 +24,6 @@ export class CreateMovieDto {
     @IsString()
     rating: string;
 
+    @IsString()
     genres: string;
 }
