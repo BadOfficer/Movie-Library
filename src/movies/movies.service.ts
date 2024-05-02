@@ -31,7 +31,7 @@ export class MoviesService {
 
     async getAll(count = 10, offset = 0, release = '', seasons = "", genreIds=""): Promise<{rows: Movie[]}> {
         if(!release && !seasons && !genreIds) {
-            return await this.moviesRepository.findAndCountAll({offset, limit: count, include: {all: true}});
+            return await this.moviesRepository.findAndCountAll({offset, limit: count, include: {model: Genre, through: { attributes: [] }, attributes: ["title"]}});
         }
 
         let whereClause: any = {};

@@ -3,6 +3,7 @@ import { Genre } from "src/genres/models/genre.model";
 import { MoviesGenres } from "./movies-genres.model";
 import { User } from "src/users/models/user.model";
 import { LikedList } from "src/users/models/liked-list.model";
+import { Bookmarks } from "src/users/models/bookmarks.model";
 
 @Table
 export class Movie extends Model {
@@ -38,4 +39,7 @@ export class Movie extends Model {
 
     @BelongsToMany(() => User, () => LikedList)
     likedList: User[];
+
+    @BelongsToMany(() => User, () => Bookmarks)
+    bookmars: User[];
 }

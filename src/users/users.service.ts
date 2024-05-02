@@ -137,4 +137,50 @@ export class UsersService {
         return existUser.likedList;
 
     }
+
+    async addToBookmarks(addToBookmarks: AddToLikedDto, userId: number) {
+        const existUser = await this.usersRepository.findOne({where: {id: userId}, include: {all: true}});
+        const existMovie = await this.moviesService.findOne({where: {id: +addToBookmarks.movieId}});
+
+        if(!existUser) {
+            throw new NotFoundException("User not found!");
+        }
+
+        if(!existMovie) {
+            throw new NotFoundException("Movie not found!");
+        }
+
+        await existUser.$add("bookmarks", existMovie.id);
+        const bookmarksItem = await existUser.reload()
+
+        return bookmarksItem;
+    }
+
+    async removeFromBookmarks(removeFromBookmarks: AddToLikedDto, userId: number) {
+        const existUser = await this.usersRepository.findOne({ where: { id: userId }, include: { all: true } });
+        const existMovie = await this.moviesService.findOne({ where: { id: +removeFromBookmarks.movieId } });
+    
+        if (!existUser) {
+            throw new NotFoundException("User not found!");
+        }
+    
+        if (!existMovie) {
+            throw new NotFoundException("Movie not found!");
+        }
+    
+        await existUser.$remove("bookmarks", existMovie.id);
+
+        return await existUser.reload();
+    }
+
+    async getAllBookmarks(userId: number) {
+        const existUser = await this.usersRepository.findOne({ where: { id: userId }, include: { all: true } });
+    
+        if (!existUser) {
+            throw new NotFoundException("User not found!");
+        }
+
+        return existUser.bookmarks;
+
+    }
 }

@@ -3,6 +3,7 @@ import { Role } from "./role.enum";
 import { IsEmail, IsNotEmpty, Min } from "class-validator";
 import { Movie } from "src/movies/models/movie.model";
 import { LikedList } from "./liked-list.model";
+import { Bookmarks } from "./bookmarks.model";
 
 @Table
 export class User extends Model{
@@ -31,4 +32,7 @@ export class User extends Model{
 
     @BelongsToMany(() => Movie, () => LikedList)
     likedList: Movie[];
+
+    @BelongsToMany(() => Movie, () => Bookmarks)
+    bookmarks: Movie[];
 }

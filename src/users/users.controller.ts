@@ -44,4 +44,22 @@ export class UsersController {
     getAllLikes(@Req() req) {
         return this.usersService.getAllLiked(+req.user.id);
     }
+
+    @UseGuards(JwtGuard)
+    @Post("profile/bookmarks/add")
+    addToBookmarks(@Body() addToBookmarksDto: AddToLikedDto, @Req() req) {
+        return this.usersService.addToBookmarks(addToBookmarksDto, req.user.id);
+    }
+
+    @UseGuards(JwtGuard)
+    @Delete("profile/bookmarks/remove")
+    removeFromBookmarks(@Body() removeFromBookmarks: AddToLikedDto, @Req() req) {
+        return this.usersService.removeFromBookmarks(removeFromBookmarks, req.user.id);
+    }
+
+    @UseGuards(JwtGuard)
+    @Get("profile/bookmarks")
+    getAllBookmarks(@Req() req) {
+        return this.usersService.getAllBookmarks(+req.user.id);
+    }
 }
