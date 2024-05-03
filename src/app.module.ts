@@ -10,6 +10,8 @@ import { Movie } from './movies/models/movie.model';
 import { MoviesGenres } from './movies/models/movies-genres.model';
 import { UsersModule } from './users/users.module';
 import { FilesModule } from './files/files.module';
+import { LikedModule } from './liked/liked.module';
+import { Liked } from './liked/models/liked.model';
 
 
 @Module({
@@ -24,7 +26,7 @@ import { FilesModule } from './files/files.module';
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    models:[Genre, User, Movie, MoviesGenres],
+    models:[Genre, User, Movie, MoviesGenres, Liked],
     synchronize: true,
     autoLoadModels: true,
   }),
@@ -32,7 +34,8 @@ import { FilesModule } from './files/files.module';
   AuthModule,
   MoviesModule,
   UsersModule,
-  FilesModule],
+  FilesModule,
+  LikedModule],
   controllers: [],
   providers: [],
 })

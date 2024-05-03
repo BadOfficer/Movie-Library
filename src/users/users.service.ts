@@ -5,10 +5,12 @@ import * as bcrypt from "bcrypt";
 import { UserIf } from './models/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LikedService } from 'src/liked/liked.service';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel(User) private usersRepository: typeof User) {}
+    constructor(@InjectModel(User) private usersRepository: typeof User,
+                                    private likedService: LikedService) {}
 
     async hashPassword(password: string): Promise<string> {
         return bcrypt.hash(password, 12); 
@@ -31,13 +33,13 @@ export class UsersService {
         user.last_name = createUserDto.last_name;
         user.email = createUserDto.email;
         user.password = hashedPassword;
-        user.$set("likedList", []);
 
         await user.save()
 
-        const {first_name, last_name, email, password, role} = user
+        const {id, first_name, last_name, email, password, role} = user
+        await this.likedService.create(id);
 
-        return {first_name, last_name, email, role};
+        return {id, first_name, last_name, email, role};
     }
 
     async updateUser(updateUserDto: UpdateUserDto, id: number): Promise<UserIf> {
@@ -72,6 +74,7 @@ export class UsersService {
         if(!existUser) {
             throw new NotFoundException("User not found!");
         }
+        await this.likedService.delete(existUser.id);
         await existUser.destroy();
 
         return "Account is deleted";
