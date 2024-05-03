@@ -5,13 +5,10 @@ import * as bcrypt from "bcrypt";
 import { UserIf } from './models/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AddToLikedDto } from './dto/add-to-liked.dto';
-import { MoviesService } from 'src/movies/movies.service';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel(User) private usersRepository: typeof User,
-                private moviesService: MoviesService) {}
+    constructor(@InjectModel(User) private usersRepository: typeof User) {}
 
     async hashPassword(password: string): Promise<string> {
         return bcrypt.hash(password, 12); 
@@ -88,99 +85,5 @@ export class UsersService {
         }
 
         return existUser;
-    }
-
-    async addToLikedList(addToLikedDto: AddToLikedDto, userId: number) {
-        const existUser = await this.usersRepository.findOne({where: {id: userId}, include: {all: true}});
-        const existMovie = await this.moviesService.findOne({where: {id: +addToLikedDto.movieId}});
-
-        if(!existUser) {
-            throw new NotFoundException("User not found!");
-        }
-
-        if(!existMovie) {
-            throw new NotFoundException("Movie not found!");
-        }
-
-        await existUser.$add("likedList", existMovie.id);
-        const likedMovieItem = await existUser.reload()
-
-        return likedMovieItem;
-    }
-
-    async removeFromLikedList(removeFromLikedDto: AddToLikedDto, userId: number) {
-        const existUser = await this.usersRepository.findOne({ where: { id: userId }, include: { all: true } });
-        const existMovie = await this.moviesService.findOne({ where: { id: +removeFromLikedDto.movieId } });
-    
-        if (!existUser) {
-            throw new NotFoundException("User not found!");
-        }
-    
-        if (!existMovie) {
-            throw new NotFoundException("Movie not found!");
-        }
-    
-        await existUser.$remove("LikedList", existMovie.id);
-        console.log(existUser.likedList);
-        
-
-        return existUser.reload();
-    }
-
-    async getAllLiked(userId: number) {
-        const existUser = await this.usersRepository.findOne({ where: { id: userId }, include: { all: true } });
-    
-        if (!existUser) {
-            throw new NotFoundException("User not found!");
-        }
-
-        return existUser.likedList;
-
-    }
-
-    async addToBookmarks(addToBookmarks: AddToLikedDto, userId: number) {
-        const existUser = await this.usersRepository.findOne({where: {id: userId}, include: {all: true}});
-        const existMovie = await this.moviesService.findOne({where: {id: +addToBookmarks.movieId}});
-
-        if(!existUser) {
-            throw new NotFoundException("User not found!");
-        }
-
-        if(!existMovie) {
-            throw new NotFoundException("Movie not found!");
-        }
-
-        await existUser.$add("bookmarks", existMovie.id);
-        const bookmarksItem = await existUser.reload()
-
-        return bookmarksItem;
-    }
-
-    async removeFromBookmarks(removeFromBookmarks: AddToLikedDto, userId: number) {
-        const existUser = await this.usersRepository.findOne({ where: { id: userId }, include: { all: true } });
-        const existMovie = await this.moviesService.findOne({ where: { id: +removeFromBookmarks.movieId } });
-    
-        if (!existUser) {
-            throw new NotFoundException("User not found!");
-        }
-    
-        if (!existMovie) {
-            throw new NotFoundException("Movie not found!");
-        }
-    
-        await existUser.$remove("bookmarks", existMovie.id);
-
-        return await existUser.reload();
-    }
-
-    async getAllBookmarks(userId: number) {
-        const existUser = await this.usersRepository.findOne({ where: { id: userId }, include: { all: true } });
-    
-        if (!existUser) {
-            throw new NotFoundException("User not found!");
-        }
-
-        return existUser.bookmarks;
-
     }
 }

@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, Post, Query, Req, UseGuards, UsePipes, V
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { AddToLikedDto } from './dto/add-to-liked.dto';
 
 @Controller('')
 export class UsersController {
@@ -25,45 +24,5 @@ export class UsersController {
     @Delete("profile/personal-data")
     delete(@Req() req) {
         return this.usersService.deleteUser(+req.user.id);
-    }
-
-    @UseGuards(JwtGuard)
-    @Post("profile/liked-list/add")
-    @UsePipes(new ValidationPipe())
-    addToLikedList(@Body() addToLikedDto: AddToLikedDto, @Req() req) {
-        return this.usersService.addToLikedList(addToLikedDto, req.user.id);
-    }
-
-    @UseGuards(JwtGuard)
-    @Delete("profile/liked-list/remove")
-    removeFromLikedList(@Body() removeFromLikedDto: AddToLikedDto, @Req() req) {
-        return this.usersService.removeFromLikedList(removeFromLikedDto, req.user.id);
-    }
-
-    @UseGuards(JwtGuard)
-    @Get("profile/liked-list")
-    @UsePipes(new ValidationPipe())
-    getAllLikes(@Req() req) {
-        return this.usersService.getAllLiked(+req.user.id);
-    }
-
-    @UseGuards(JwtGuard)
-    @Post("profile/bookmarks/add")
-    @UsePipes(new ValidationPipe())
-    addToBookmarks(@Body() addToBookmarksDto: AddToLikedDto, @Req() req) {
-        return this.usersService.addToBookmarks(addToBookmarksDto, req.user.id);
-    }
-
-    @UseGuards(JwtGuard)
-    @Delete("profile/bookmarks/remove")
-    @UsePipes(new ValidationPipe())
-    removeFromBookmarks(@Body() removeFromBookmarks: AddToLikedDto, @Req() req) {
-        return this.usersService.removeFromBookmarks(removeFromBookmarks, req.user.id);
-    }
-
-    @UseGuards(JwtGuard)
-    @Get("profile/bookmarks")
-    getAllBookmarks(@Req() req) {
-        return this.usersService.getAllBookmarks(+req.user.id);
     }
 }
