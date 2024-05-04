@@ -6,11 +6,13 @@ import { UserIf } from './models/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LikedService } from 'src/liked/liked.service';
+import { BookmarksService } from 'src/bookmarks/bookmarks.service';
 
 @Injectable()
 export class UsersService {
     constructor(@InjectModel(User) private usersRepository: typeof User,
-                                    private likedService: LikedService) {}
+                                    private likedService: LikedService,
+                                    private bookmarksService: BookmarksService) {}
 
     async hashPassword(password: string): Promise<string> {
         return bcrypt.hash(password, 12); 
@@ -38,6 +40,7 @@ export class UsersService {
 
         const {id, first_name, last_name, email, password, role} = user
         await this.likedService.create(id);
+        await this.bookmarksService.create(id);
 
         return {id, first_name, last_name, email, role};
     }

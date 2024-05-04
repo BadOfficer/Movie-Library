@@ -2,6 +2,7 @@ import { BelongsToMany, Column, DataType, Default, HasMany, HasOne, Model, Table
 import { Role } from "./role.enum";
 import { IsEmail, IsNotEmpty, Min } from "class-validator";
 import { Liked } from "src/liked/models/liked.model";
+import { Bookmarks } from "src/bookmarks/models/bookmarks.model";
 
 @Table
 export class User extends Model{
@@ -30,4 +31,7 @@ export class User extends Model{
 
     @HasOne(() => Liked, {onDelete: 'CASCADE'})
     liked: Liked;
+
+    @HasOne(() => Bookmarks)
+    bookmarks: Bookmarks;
 }

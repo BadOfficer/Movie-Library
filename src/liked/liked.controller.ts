@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Post, Req, UseGuards, UsePipes, Validati
 import { LikedService } from './liked.service';
 import { AddLikedDto } from './dto/add-liked.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { RemoveLikedDto } from './dto/remove-liked.dto';
 
 @Controller('liked')
 export class LikedController {
@@ -17,8 +18,8 @@ export class LikedController {
     @UsePipes(new ValidationPipe())
     @UseGuards(JwtGuard)
     @Delete("remove")
-    remove(@Req() req, @Body() addLikedDto: AddLikedDto) {
-        return this.likedService.remove(req.user.id, addLikedDto.movieId)
+    remove(@Req() req, @Body() removeLikedDto: RemoveLikedDto) {
+        return this.likedService.remove(req.user.id, removeLikedDto.movieId)
     }
 
     @UseGuards(JwtGuard)

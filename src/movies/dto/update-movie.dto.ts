@@ -7,7 +7,6 @@ export class UpdateMovieDto {
     @IsString()
     description?: string;
 
-    @IsString()
     images?: string[];
 
     @IsString()

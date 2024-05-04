@@ -1,16 +1,16 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Liked } from './models/liked.model';
+import { Bookmarks } from './models/bookmarks.model';
 import { MoviesService } from 'src/movies/movies.service';
 import { Movie } from 'src/movies/models/movie.model';
 
 @Injectable()
-export class LikedService {
-    constructor(@InjectModel(Liked) private likedRepository: typeof Liked,
-                                    private moviesService: MoviesService) {}
+export class BookmarksService {
+    constructor(@InjectModel(Bookmarks) private bookmarksRepository: typeof Bookmarks,
+                                        private moviesService: MoviesService) {}
 
     async getOne(userId: number, movieId: number) {
-        const movie = await this.likedRepository.findOne({where: {userId}, include: {
+        const movie = await this.bookmarksRepository.findOne({where: {userId}, include: {
             model: Movie,
             where: {
                 id: movieId
@@ -20,17 +20,18 @@ export class LikedService {
         return movie;
     }
 
-    async create(userId: number): Promise<Liked> {
-        const likedList = new Liked();
-        likedList.userId = userId;
-        await likedList.$set("movies", []);
+    async create(userId: number): Promise<Bookmarks> {
+        const bookmarks = new Bookmarks();
+        bookmarks.userId = userId;
+        await bookmarks.$set("movies", []);
 
-        return await likedList.save()
+        return await bookmarks.save()
     }
 
-    async add(userId: number, movieId: number): Promise<Liked> {
-        const existLiked = await this.likedRepository.findOne({where: {userId}, include: {all: true}});
+    async add(userId: number, movieId: number): Promise<Bookmarks> {
+        const existLiked = await this.bookmarksRepository.findOne({where: {userId}, include: {all: true}});
         const existMovie = await this.moviesService.findOneById(movieId);
+        
         if(!existLiked) {
             throw new NotFoundException("liked not found!")
         }
@@ -45,20 +46,21 @@ export class LikedService {
         return existLiked;
     }
 
-    async remove(userId: number, movieId: number): Promise<Liked> {
-        const existLiked = await this.likedRepository.findOne({ where: { userId }, include: {all: true} });
+    async remove(userId: number, movieId: number): Promise<Bookmarks> {
+        const existLiked = await this.bookmarksRepository.findOne({ where: { userId }, include: {all: true} });
         const existMovie = await this.moviesService.findOneById(movieId);
-        const existLikedMovie = await this.getOne(userId, movieId);
+        const existBookmarkedMovie = await this.getOne(userId, movieId);
+        
         if (!existLiked) {
             throw new NotFoundException("liked not found!");
         }
         if(!existMovie) {
             throw new NotFoundException("Movie not found!")
         }
-        if(!existLikedMovie) {
+        if(!existBookmarkedMovie) {
             throw new NotFoundException("Movie not found!")
         }
-
+    
         await existLiked.$remove("movies", existMovie.id);
 
         await existLiked.reload();
@@ -66,8 +68,8 @@ export class LikedService {
         return existLiked;
     }
 
-    async getAll(userId: number): Promise<Liked> {
-        const existLiked = await this.likedRepository.findOne({ 
+    async getAll(userId: number): Promise<Bookmarks> {
+        const existLiked = await this.bookmarksRepository.findOne({ 
             where: { userId },
             include: [{ model: Movie, as: 'movies' }] });
         

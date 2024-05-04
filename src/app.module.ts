@@ -13,6 +13,9 @@ import { FilesModule } from './files/files.module';
 import { LikedModule } from './liked/liked.module';
 import { Liked } from './liked/models/liked.model';
 import { LikedMovies } from './liked/models/liked-movies.model';
+import { BookmarksModule } from './bookmarks/bookmarks.module';
+import { Bookmarks } from './bookmarks/models/bookmarks.model';
+import { BookmarksMovies } from './bookmarks/models/bookmarks-movies.model';
 
 
 @Module({
@@ -27,7 +30,7 @@ import { LikedMovies } from './liked/models/liked-movies.model';
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    models:[Genre, User, Movie, MoviesGenres, Liked, LikedMovies],
+    models:[Genre, User, Movie, MoviesGenres, Liked, LikedMovies, Bookmarks, BookmarksMovies],
     synchronize: true,
     autoLoadModels: true,
   }),
@@ -36,7 +39,8 @@ import { LikedMovies } from './liked/models/liked-movies.model';
   MoviesModule,
   UsersModule,
   FilesModule,
-  LikedModule],
+  LikedModule,
+  BookmarksModule],
   controllers: [],
   providers: [],
 })
