@@ -19,6 +19,10 @@ export class MoviesService {
         return this.moviesRepository.findOne({...filter})
     }
 
+    async getAllById(id: number): Promise<MovieIf[]> {
+        return await this.moviesRepository.findAll({where: {id}});
+    }
+
     async findOneById(id: number): Promise<MovieIf> {
         return this.moviesRepository.findOne({where: {
             id

@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Liked } from './models/liked.model';
+import { MoviesService } from 'src/movies/movies.service';
 
 @Injectable()
 export class LikedService {
-    constructor(@InjectModel(Liked) private likedRepository: typeof Liked) {}
+    constructor(@InjectModel(Liked) private likedRepository: typeof Liked,
+                                    private moviesService: MoviesService) {}
 
     async create(userId: number) {
         return this.likedRepository.create({
@@ -46,5 +48,18 @@ export class LikedService {
         await existLiked.save();
     
         return existLiked;
+    }
+
+    async getAll(userId: number) {
+        const existLiked = await this.likedRepository.findOne({ where: { userId } });
+        if (!existLiked) {
+            throw new NotFoundException("liked not found!");
+        }
+        const movies = []
+        existLiked.moviesId.map(movieId => {
+            movies.push(this.moviesService.findOne({where: {id: +movieId}}))
+        })
+
+        return movies
     }
 }
