@@ -7,10 +7,11 @@ import { Genre } from 'src/genres/models/genre.model';
 import { MoviesGenres } from './models/movies-genres.model';
 import { GenresModule } from 'src/genres/genres.module';
 import { FilesModule } from 'src/files/files.module';
-import { User } from 'src/users/models/user.model';
+import { Liked } from 'src/liked/models/liked.model';
+import { LikedMovies } from 'src/liked/models/liked-movies.model';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Movie, Genre, MoviesGenres]), GenresModule, FilesModule],
+  imports: [SequelizeModule.forFeature([Movie, Genre, MoviesGenres, Liked, LikedMovies]), GenresModule, FilesModule],
   providers: [MoviesService],
   controllers: [MoviesController],
   exports: [MoviesService]

@@ -12,6 +12,7 @@ import { UsersModule } from './users/users.module';
 import { FilesModule } from './files/files.module';
 import { LikedModule } from './liked/liked.module';
 import { Liked } from './liked/models/liked.model';
+import { LikedMovies } from './liked/models/liked-movies.model';
 
 
 @Module({
@@ -26,7 +27,7 @@ import { Liked } from './liked/models/liked.model';
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    models:[Genre, User, Movie, MoviesGenres, Liked],
+    models:[Genre, User, Movie, MoviesGenres, Liked, LikedMovies],
     synchronize: true,
     autoLoadModels: true,
   }),

@@ -2,64 +2,64 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectModel } from '@nestjs/sequelize';
 import { Liked } from './models/liked.model';
 import { MoviesService } from 'src/movies/movies.service';
+import { Movie } from 'src/movies/models/movie.model';
 
 @Injectable()
 export class LikedService {
     constructor(@InjectModel(Liked) private likedRepository: typeof Liked,
                                     private moviesService: MoviesService) {}
 
-    async create(userId: number) {
-        return this.likedRepository.create({
-            userId: userId,
-            moviesId: []
-        })
+    async create(userId: number): Promise<Liked> {
+        const likedList = new Liked();
+        likedList.userId = userId;
+        await likedList.$set("movies", []);
+
+        return await likedList.save()
     }
 
-    async delete(userId: number) {
-        const existLiked = await this.likedRepository.findOne({where: {userId}});
+    async add(userId: number, movieId: number): Promise<Liked> {
+        const existLiked = await this.likedRepository.findOne({where: {userId}, include: {all: true}});
+        const existMovie = await this.moviesService.findOneById(movieId);
         if(!existLiked) {
             throw new NotFoundException("liked not found!")
         }
-        return existLiked.destroy();
-    }
-
-    async add(userId: number, movieId: number) {
-        const existLiked = await this.likedRepository.findOne({where: {userId}});
-        if(!existLiked) {
-            throw new NotFoundException("liked not found!")
+        if(!existMovie) {
+            throw new NotFoundException("Movie not found!")
         }
-        existLiked.moviesId = [...existLiked.moviesId, movieId];
 
-        await existLiked.save()
+        await existLiked.$add("movies", existMovie.id);
+
+        await existLiked.reload();
 
         return existLiked;
     }
 
-    async remove(userId: number, movieId: number) {
-        const existLiked = await this.likedRepository.findOne({ where: { userId } });
+    async remove(userId: number, movieId: number): Promise<Liked> {
+        const existLiked = await this.likedRepository.findOne({ where: { userId }, include: {all: true} });
+        const existMovie = await this.moviesService.findOneById(movieId);
         if (!existLiked) {
             throw new NotFoundException("liked not found!");
         }
+        if(!existMovie) {
+            throw new NotFoundException("Movie not found!")
+        }
+    
+        await existLiked.$remove("movies", existMovie.id);
+
+        await existLiked.reload();
+
+        return existLiked;
+    }
+
+    async getAll(userId: number): Promise<Liked> {
+        const existLiked = await this.likedRepository.findOne({ 
+            where: { userId },
+            include: [{ model: Movie, as: 'movies' }] });
         
-        const updatedMoviesId = existLiked.moviesId.filter(id => id !== movieId);
-    
-        existLiked.moviesId = updatedMoviesId;
-    
-        await existLiked.save();
-    
-        return existLiked;
-    }
-
-    async getAll(userId: number) {
-        const existLiked = await this.likedRepository.findOne({ where: { userId } });
         if (!existLiked) {
             throw new NotFoundException("liked not found!");
         }
-        const movies = []
-        existLiked.moviesId.map(movieId => {
-            movies.push(this.moviesService.findOne({where: {id: +movieId}}))
-        })
 
-        return movies
+        return existLiked;
     }
 }

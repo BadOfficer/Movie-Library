@@ -74,7 +74,6 @@ export class UsersService {
         if(!existUser) {
             throw new NotFoundException("User not found!");
         }
-        await this.likedService.delete(existUser.id);
         await existUser.destroy();
 
         return "Account is deleted";
