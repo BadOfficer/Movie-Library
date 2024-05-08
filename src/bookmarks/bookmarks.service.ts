@@ -30,7 +30,7 @@ export class BookmarksService {
 
     async add(userId: number, movieId: number): Promise<Bookmarks> {
         const existLiked = await this.bookmarksRepository.findOne({where: {userId}, include: {all: true}});
-        const existMovie = await this.moviesService.findOneById(movieId);
+        const existMovie = await this.moviesService.getOneById(movieId);
         
         if(!existLiked) {
             throw new NotFoundException("liked not found!")
@@ -48,7 +48,7 @@ export class BookmarksService {
 
     async remove(userId: number, movieId: number): Promise<Bookmarks> {
         const existLiked = await this.bookmarksRepository.findOne({ where: { userId }, include: {all: true} });
-        const existMovie = await this.moviesService.findOneById(movieId);
+        const existMovie = await this.moviesService.getOneById(movieId);
         const existBookmarkedMovie = await this.getOne(userId, movieId);
         
         if (!existLiked) {

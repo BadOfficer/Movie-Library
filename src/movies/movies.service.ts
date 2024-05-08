@@ -11,36 +11,47 @@ import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class MoviesService {
-    constructor(@InjectModel(Movie) private readonly moviesRepository: typeof Movie, 
-                                    private readonly genresService: GenresService,
-                                    private filesService: FilesService) {}
+    constructor(@InjectModel(Movie) private readonly moviesRepository: typeof Movie,
+        private readonly genresService: GenresService,
+        private filesService: FilesService) { }
 
-    async findOne(filter: {where: {id?: number, title?: string, description?: string, rating?: string, seasons?: string, series?: string}}): Promise<MovieIf> {
-        return this.moviesRepository.findOne({...filter})
+    async findOne(filter: { where: { id?: number, title?: string, description?: string, rating?: string, seasons?: string, series?: string } }): Promise<MovieIf> {
+        return this.moviesRepository.findOne({ ...filter })
     }
 
-    async getAllById(id: number): Promise<MovieIf[]> {
-        return await this.moviesRepository.findAll({where: {id}});
+    async getOneById(id: number): Promise<MovieIf> {
+        return this.moviesRepository.findOne({
+            where: {
+                id
+            }, include: {
+                model: Genre,
+                through: { attributes: [] },
+                attributes: ["title"]
+            }
+        })
     }
 
-    async findOneById(id: number): Promise<MovieIf> {
-        return this.moviesRepository.findOne({where: {
-            id
-        }, include: {
-            model: Genre,
-            through: { attributes: [] },
-            attributes: ["title"]
-        }})
+    async getOneByTitle(title: string) {
+        return this.moviesRepository.findOne({
+            where: {
+                title: {
+                    [Op.iLike]: `%${title}%`
+                }
+            }, include: {
+                model: Genre,
+                through: { attributes: [] },
+                attributes: ["title"]
+            }
+        })
     }
 
-    async getAll(count = 10, offset = 0, release = '', seasons = "", genreIds=""): Promise<{rows: Movie[]}> {
-        if(!release && !seasons && !genreIds) {
-            return await this.moviesRepository.findAndCountAll({offset, limit: count, include: {model: Genre, through: { attributes: [] }, attributes: ["title"]}});
-        }
-
+    async getAllMoviesWithFilterAndPagination(filterOptions: FilterOptions): Promise<{ rows: Movie[] }> {
+        const { release, seasons, genreIds, count, offset } = filterOptions;
+        const page = Math.floor(offset / count);
+        const calculatedOffset = offset * count;
         let whereClause: any = {};
         let include: any[] = [];
-
+    
         if (genreIds) {
             const genreIdValues = genreIds.split(',').map(id => parseInt(id));
             include.push({
@@ -50,47 +61,67 @@ export class MoviesService {
                 }
             });
         }
-
+    
         if (release) {
             const releaseValues = release.split(',');
             whereClause.release = releaseValues;
         }
+    
         if (seasons) {
             const seasonValues = seasons.split(',');
             whereClause.seasons = seasonValues;
         }
-        
-
-        const movies = await this.moviesRepository.findAndCountAll({where: whereClause, offset, limit: count,  include: include});
-
-        
+    
+        const movies = await Movie.findAndCountAll({
+            where: whereClause,
+            include: include,
+            limit: count,
+            offset: calculatedOffset
+        });
+    
         return movies;
     }
 
     async search(query: string): Promise<Movie[]> {
         if (!query) {
             return await Movie.findAll();
-          }
-          
-          const movies = await Movie.findAll({
+        }
+
+        const movies = await Movie.findAll({
             where: {
-              title: {
-                [Op.like]: `%${query}%`
-              }
+                title: {
+                    [Op.like]: `%${query}%`
+                }
             }
-          });
+        });
         return movies;
     }
 
+    async getLastTenCreatedMovies(): Promise<Movie[]> {
+        return await this.moviesRepository.findAll({
+            order: [['createdAt', 'DESC']],
+            limit: 10
+        });
+    }
+
     async createMovie(createMovieDto: CreateMovieDto, images: any): Promise<MovieIf> {
-        const isExistMovie = await this.findOne({where: {title: createMovieDto.title}});
-
-        if(isExistMovie) {
-            throw new BadRequestException("This movie is exist!");
+        
+        const existingMovie = await this.findOne({ where: { title: createMovieDto.title } });
+        if (existingMovie) {
+            throw new BadRequestException("This movie already exists!");
         }
-       const imagesNames = await this.filesService.createFiles(images);
-       
-
+    
+        const [imagesNames, validatedGenres] = await Promise.all([
+            this.filesService.createFiles(images),
+            Promise.all(createMovieDto.genres.split(",").map(async (idGenre) => {
+                const genre = await this.genresService.getOne(+idGenre);
+                if (!genre) {
+                    throw new BadRequestException(`Genre with ID ${idGenre} does not exist!`);
+                }
+                return +idGenre;
+            }))
+        ]);
+    
         const newMovie = new Movie({
             title: createMovieDto.title,
             description: createMovieDto.description,
@@ -101,51 +132,48 @@ export class MoviesService {
             duration: createMovieDto.duration,
             rating: createMovieDto.rating,
         });
-
+    
         await newMovie.save();
-        
-        await newMovie.$set("genres", [])
-
-        createMovieDto.genres.split(",").map(async(idGenre) => {
-            const genre = await this.genresService.getOne(+idGenre);
-
-            if(!genre) {
-                throw new BadRequestException("This genre is not exist!");
-            }
-
-            await newMovie.$add("genres", [genre.id])
-        })
+    
+        await newMovie.$add("genres", validatedGenres);
+    
         return newMovie;
     }
+    
 
     async updateMovie(updateMovieDto: UpdateMovieDto, movieId: number): Promise<MovieIf> {
-        const existMovie = await this.moviesRepository.findOne({where: {id: movieId}});
+        const existMovie = await this.moviesRepository.findOne({ where: { id: movieId } });
+        const existMovieByTitle = await this.moviesRepository.findOne({ where: {title: updateMovieDto.title}})
 
-        if(!existMovie) {
+        if (!existMovie) {
             throw new NotFoundException("This movie not found!");
+        }
+
+        if(existMovieByTitle) {
+            throw new BadRequestException("This movie is exist!")
         }
 
         Object.assign(existMovie, updateMovieDto);
 
-        existMovie.$set("genres", [])
+        const [validatedGenres] = await Promise.all([
+            Promise.all(updateMovieDto.genres.split(",").map(async (idGenre) => {
+                const genre = await this.genresService.getOne(+idGenre);
+                if (!genre) {
+                    throw new BadRequestException(`Genre with ID ${idGenre} does not exist!`);
+                }
+                return +idGenre;
+            }))
+        ]);
 
-        updateMovieDto.genres.map(async(idGenre) => {
-            const genre = await this.genresService.getOne(+idGenre);
-
-            if(!genre) {
-                throw new BadRequestException("This genre is not exist!");
-            }
-
-            await existMovie.$add("genres", [genre.id]);
-        })
+        await existMovie.$set("genres", validatedGenres)
 
         return await existMovie.save();
     }
 
     async deleteMovie(movieId: number): Promise<string> {
-        const existMovie = await this.moviesRepository.findOne({where: {id: movieId}});
+        const existMovie = await this.moviesRepository.findOne({ where: { id: movieId } });
 
-        if(!existMovie) {
+        if (!existMovie) {
             throw new NotFoundException("This movie not found!");
         }
 

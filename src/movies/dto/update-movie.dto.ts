@@ -24,5 +24,6 @@ export class UpdateMovieDto {
     @IsString()
     rating?: string;
 
-    genres?: number[];
+    @IsString()
+    genres?: string;
 }

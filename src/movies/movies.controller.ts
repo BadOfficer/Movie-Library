@@ -24,8 +24,26 @@ export class MoviesController {
     }
     
     @Get()
-    getAll(@Query("count") count: number, @Query("offset") offset: number, @Query("release") release: string, @Query("seasons") seasons: string, @Query("genreIds") genreIds: string) {
-        return this.moviesService.getAll(count, offset, release, seasons, genreIds);
+    getAll(
+        @Query('count') count: string = "10",
+        @Query('offset') offset: string = "0",
+        @Query('release') release: string,
+        @Query('seasons') seasons: string,
+        @Query('genreIds') genreIds: string,
+    ) {
+        const filterOptions = {
+            release,
+            seasons,
+            genreIds,
+            count: +count,
+            offset: +offset,
+        };
+        return this.moviesService.getAllMoviesWithFilterAndPagination(filterOptions);
+    }
+
+    @Get("slider")
+    getLastItems() {
+        return this.moviesService.getLastTenCreatedMovies();
     }
 
     @UsePipes(new ValidationPipe())
@@ -49,7 +67,12 @@ export class MoviesController {
     }
 
     @Get(":id")
-    getOne(@Param("id") id: string): Promise<MovieIf> {
-        return this.moviesService.findOneById(+id);
+    getOneById(@Param("id") id: string): Promise<MovieIf> {
+        return this.moviesService.getOneById(+id);
+    }
+
+    @Post("name")
+    getOneByTitle(@Body() {title}: {title: string}) {
+        return this.moviesService.getOneByTitle(title);
     }
 }
