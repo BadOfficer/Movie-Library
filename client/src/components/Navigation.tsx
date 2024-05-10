@@ -1,5 +1,4 @@
 import { FiServer } from "react-icons/fi"
-import { LuCat } from "react-icons/lu";
 import { BiHomeAlt2, BiSolidMoviePlay } from "react-icons/bi";
 import NavButton from "./buttons/NavButton";
 import { FC } from "react";
