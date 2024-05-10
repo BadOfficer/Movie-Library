@@ -27,7 +27,7 @@ export class UsersService {
         const existingUser = await this.usersRepository.findOne({where: {email: createUserDto.email}});
 
         if(existingUser) {
-            return {warningMessage: "User with this email is exist!"}; 
+           throw new BadRequestException("User with this email is exist!"); 
         }
         const hashedPassword = await this.hashPassword(createUserDto.password);
 
@@ -83,7 +83,7 @@ export class UsersService {
     }
 
     async getProfile(userId: number): Promise<UserIf> {
-        const existUser = await this.usersRepository.findOne({where: {id: userId}, include: {all: true}});
+        const existUser = await this.usersRepository.findOne({where: {id: userId}});
 
         if(!existUser) {
             throw new NotFoundException("User not found!");

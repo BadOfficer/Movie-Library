@@ -2,6 +2,10 @@ import React, { FC, useState } from "react";
 import FormInput from "../components/inputs/FormInput";
 import { AuthService } from "../services/auth.service";
 import { toast } from "react-toastify";
+import { setTokenToLocalStorage } from "../helpers/localstorage.helper";
+import { useAppDispatch } from "../store/hooks";
+import { login } from "../store/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const Auth: FC = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -9,6 +13,8 @@ const Auth: FC = () => {
     const [lastName, setLastName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const registrationHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         try {
@@ -32,7 +38,19 @@ const Auth: FC = () => {
 
     const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         try {
-            
+            e.preventDefault()
+            const data = await AuthService.login({
+                email,
+                password
+            })
+
+            if(data) {
+                setTokenToLocalStorage('access_token', data.access_token)
+                dispatch(login(data));
+                toast.success("You were logged in")
+                navigate('/');
+                
+            }
         } catch(err: any) {
             const error = err.response?.data.message;
             toast.error(error.toString());

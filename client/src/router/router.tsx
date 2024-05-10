@@ -8,6 +8,7 @@ import Liked from "../pages/Liked"
 import Bookmarks from "../pages/Bookmarks"
 import Settings from "../pages/Settings"
 import Auth from "../pages/Auth"
+import { ProtectedRoute } from "../components/ProtectedRoute"
 
 export const router = createBrowserRouter([
     {
@@ -29,15 +30,27 @@ export const router = createBrowserRouter([
             },
             {
                 path: 'liked',
-                element: <Liked />
+                element: (
+                    <ProtectedRoute>
+                        <Liked />
+                    </ProtectedRoute>
+                )
             },
             {
                 path: 'bookmarks',
-                element: <Bookmarks />
+                element: (
+                    <ProtectedRoute>
+                        <Bookmarks />
+                    </ProtectedRoute>
+                )
             },
             {
                 path: 'profile',
-                element: <Settings />
+                element: (
+                    <ProtectedRoute>
+                        <Settings />
+                    </ProtectedRoute>
+                )
             },
             {
                 path: 'auth',

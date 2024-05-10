@@ -37,10 +37,11 @@ export class AuthService {
         }
     }
 
-    async login(user: UserIf): Promise<{access_token: string}> {
+    async login(user: UserIf): Promise<{user: UserIf, access_token: string}> {
        const validatedUser = await this.validateUser(user.email, user.password);
 
        return {
+            user: validatedUser,
             access_token: await this.jwtService.signAsync({ user: validatedUser })
        }
     }

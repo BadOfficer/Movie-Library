@@ -3,9 +3,10 @@ import Line from "./Line";
 import { Link } from "react-router-dom";
 import UserActions from "./UserActions";
 import Navigation from "./Navigation";
+import { useAuth } from "../hooks/useAuth";
 
 const SideBar: FC = () => {
-    const isAuth = false;
+    const isAuth = useAuth();
 
     return <div className="bg-light-gray h-dvh flex flex-col fixed min-w-[280px]">
                 {isAuth ? (
@@ -29,7 +30,7 @@ const SideBar: FC = () => {
                     <UserActions />
                 ) : (
                     <div className="flex flex-col items-center mt-12 gap-5">
-                        <Link to={"/auth"} className="px-[25px] py-[8px] border-2 border-light-yellow rounded-xl text-light-yellow hover:bg-dark-yellow hover:text-dark-gray">
+                        <Link to={"/auth"} className="px-[25px] py-[8px] border-2 border-dark-yellow rounded-xl text-light-yellow hover:bg-dark-yellow hover:text-dark-gray">
                             Login
                         </Link>
                     </div>
