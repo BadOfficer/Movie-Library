@@ -46,10 +46,9 @@ const Auth: FC = () => {
 
             if(data) {
                 setTokenToLocalStorage('access_token', data.access_token)
-                dispatch(login(data));
+                dispatch(login(data.user));
                 toast.success("You were logged in")
                 navigate('/');
-                
             }
         } catch(err: any) {
             const error = err.response?.data.message;

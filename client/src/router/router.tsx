@@ -8,7 +8,10 @@ import Liked from "../pages/Liked"
 import Bookmarks from "../pages/Bookmarks"
 import Settings from "../pages/Settings"
 import Auth from "../pages/Auth"
-import { ProtectedRoute } from "../components/ProtectedRoute"
+import { ProtectedRoute } from "../components/routes/ProtectedRoute"
+import GenresManager from "../components/GenresManager"
+import { RoleProtectedRoute } from "../components/routes/RoleProtectedRoute"
+import MoviesManager from "../components/MoviesManager"
 
 export const router = createBrowserRouter([
     {
@@ -55,6 +58,22 @@ export const router = createBrowserRouter([
             {
                 path: 'auth',
                 element: <Auth />
+            },
+            {
+                path: 'genres',
+                element: (
+                    <RoleProtectedRoute>
+                        <GenresManager />
+                    </RoleProtectedRoute>
+                )
+            },
+            {
+                path: 'movies-list',
+                element: (
+                    <RoleProtectedRoute>
+                        <MoviesManager />
+                    </RoleProtectedRoute>
+                )
             },
         ]
     }

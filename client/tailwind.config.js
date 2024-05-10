@@ -16,8 +16,8 @@ export default {
         'light-yellow': '#FFC812',
       },
       fontSize: {
-        'main': '16px',
-        'title-1': '20px'
+        'main': '14px',
+        'title-1': '16px'
       }
     },
   },

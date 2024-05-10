@@ -19,10 +19,15 @@ export interface IUser {
     first_name: string | undefined
     last_name: string | undefined
     email: string | undefined
-    access_token: string
+    role: string
 }
 
 export interface IUserLogin {
     email: string,
     password: string
+}
+
+export interface IResponseUserLogin {
+    access_token: string
+    user: IUser
 }

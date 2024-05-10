@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 
 interface ProtectedRouteProps {
     children: JSX.Element
