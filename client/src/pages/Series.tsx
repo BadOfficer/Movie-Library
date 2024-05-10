@@ -1,9 +1,10 @@
 import { FC } from "react"
+import Header from "../components/Header"
 
 
 const Series: FC = () => {
     return <div>
-        Series
+        <Header currentPage="series"/>
     </div>
 }
 

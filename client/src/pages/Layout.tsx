@@ -4,9 +4,9 @@ import SideBar from "../components/SideBar";
 
 const Layout: FC = () => {
 
-    return <div className="min-h-screen m-0 bg-dark-gray text-white">
+    return <div className="min-h-screen m-0 bg-dark-gray text-white font-inter">
         <SideBar />
-        <div className="ml-[280px]">
+        <div className="ml-[280px] pl-12 container py-9 relative">
             <Outlet />
         </div>
     </div>

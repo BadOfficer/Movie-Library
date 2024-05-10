@@ -1,4 +1,5 @@
 import { FC } from "react";
+import Search from "./inputs/Search";
 
 interface HeaderProps {
     currentPage: string;
@@ -7,8 +8,11 @@ interface HeaderProps {
 const Header: FC<HeaderProps> = ({ currentPage }) => {
 
     return (
-            <header>
-                <h1>{currentPage}</h1>
+            <header className="flex">
+                <h1 className="text-5xl uppercase font-bold">{currentPage}</h1>
+                <div className="flex-1  flex justify-center absolute centered">
+                    <Search />
+                </div>
             </header>
         )
 }

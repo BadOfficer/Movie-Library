@@ -1,8 +1,9 @@
 import { FC } from "react"
+import Header from "../components/Header"
 
 const Home: FC = () => {
     return <div>
-        Home
+        <Header currentPage="home" />
     </div>
 }
 

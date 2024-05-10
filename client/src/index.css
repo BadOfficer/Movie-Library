@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+    .container {
+        max-width: 1495px;
+    }
+
     .active{
         position: relative;
     }
@@ -14,5 +18,10 @@
         width: 5px;
         height: 100%;
         background-color: #FAB23D;
+    }
+    .centered{
+        top:50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 }
