@@ -8,6 +8,16 @@ export default {
     extend: {
       fontFamily: {
         inter: ["Inter", "sans-serif"]
+      },
+      colors: {
+        'dark-gray': '#262626',
+        'light-gray': '#383838',
+        'dark-yellow': '#FAB23D',
+        'light-yellow': '#FFC812',
+      },
+      fontSize: {
+        'main': '16px',
+        'title-1': '20px'
       }
     },
   },
