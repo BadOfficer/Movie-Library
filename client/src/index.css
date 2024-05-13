@@ -7,10 +7,10 @@
         max-width: 1495px;
     }
 
-    .active{
+    .active {
         position: relative;
     }
-    .active::after{
+    .active::after {
         content: '';
         position: absolute;
         left: 0;
@@ -19,9 +19,13 @@
         height: 100%;
         background-color: #FAB23D;
     }
-    .centered{
+    .centered {
         top:50%;
         left: 50%;
         transform: translate(-50%, -50%);
+    }
+    .centeredY {
+        top: 50%;
+        transform: translateY(-50%);
     }
 }

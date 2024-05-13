@@ -38,8 +38,8 @@ export class GenresService {
         return genre;
     }
 
-    async getAll(count = 10, offset = 0): Promise<{rows: GenreIf[]}> {
-        return this.genresRepository.findAndCountAll({offset, limit: count});
+    async getAll(count: string, offset: string): Promise<{rows: GenreIf[]}> {
+        return this.genresRepository.findAndCountAll({offset: +offset, limit: +count, include: {all: true}});
     }
 
     async update(id: number, newGenreData: UpdateGenreDto): Promise<GenreIf> {

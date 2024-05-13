@@ -1,5 +1,5 @@
 import { FC } from "react"
-import Header from "../components/Header"
+import Header from "../components/parts/Header"
 
 const Home: FC = () => {
     return <div>

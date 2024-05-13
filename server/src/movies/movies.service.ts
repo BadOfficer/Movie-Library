@@ -47,7 +47,6 @@ export class MoviesService {
 
     async getAllMoviesWithFilterAndPagination(filterOptions: FilterOptions): Promise<{ rows: Movie[] }> {
         const { release, seasons, genreIds, count, offset } = filterOptions;
-        const page = Math.floor(offset / count);
         const calculatedOffset = offset * count;
         let whereClause: any = {};
         let include: any[] = [];

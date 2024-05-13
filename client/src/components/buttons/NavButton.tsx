@@ -7,7 +7,7 @@ interface NavButtonProps {
 }
 
 const NavButton: FC<NavButtonProps> = ({ children, path }) => {
-    return <NavLink to={path} className={({isActive}) => `${isActive ? "active" : "text-white/50"} text-white flex items-center gap-2.5 px-[35px] hover:text-white`}>
+    return <NavLink to={path} className={({isActive}) => `${isActive ? "active" : "text-white/50"} text-white flex items-center gap-2.5 px-9 hover:text-white`}>
         {children}
     </NavLink>
 }

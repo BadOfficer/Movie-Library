@@ -1,12 +1,12 @@
 import { ChangeEvent, FC } from "react"
 
-interface FormInputProps {
+interface TextInputProps {
     fieldName: string;
     value: string;
     onChange: (value: string) => void;
 }
 
-const FormInput: FC<FormInputProps> = ({ fieldName, value, onChange }) => {
+const TextInput: FC<TextInputProps> = ({ fieldName, value, onChange }) => {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         onChange(event.target.value);
     };
@@ -16,4 +16,4 @@ const FormInput: FC<FormInputProps> = ({ fieldName, value, onChange }) => {
     </div>
 }
 
-export  default FormInput
+export  default TextInput

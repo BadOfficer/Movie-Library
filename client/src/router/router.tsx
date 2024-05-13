@@ -9,9 +9,9 @@ import Bookmarks from "../pages/Bookmarks"
 import Settings from "../pages/Settings"
 import Auth from "../pages/Auth"
 import { ProtectedRoute } from "../components/routes/ProtectedRoute"
-import GenresManager from "../components/GenresManager"
+import GenresManager from "../pages/GenresManager"
 import { RoleProtectedRoute } from "../components/routes/RoleProtectedRoute"
-import MoviesManager from "../components/MoviesManager"
+import MoviesManager from "../pages/MoviesManager"
 
 export const router = createBrowserRouter([
     {

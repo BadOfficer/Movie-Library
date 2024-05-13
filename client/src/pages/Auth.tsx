@@ -1,11 +1,12 @@
 import React, { FC, useState } from "react";
-import FormInput from "../components/inputs/FormInput";
 import { AuthService } from "../services/auth.service";
 import { toast } from "react-toastify";
 import { setTokenToLocalStorage } from "../helpers/localstorage.helper";
 import { useAppDispatch } from "../store/hooks";
 import { login } from "../store/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import TextInput from "../components/inputs/TextInput";
+import PasswordInput from "../components/inputs/PasswordInput";
 
 const Auth: FC = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -57,30 +58,42 @@ const Auth: FC = () => {
     }
 
 
-    return <div className="bg-dark-gray h-screen w-full flex justify-center items-center">
+    return <div className="bg-dark-gray max-h-full w-full flex justify-center items-center h-screen">
             <div className="bg-light-gray p-9 rounded-xl">
                 <h2 className="text-2xl text-center p-0 text-dark-yellow font-medium">{isLogin ? "Login" : "Registration"}</h2>
                 <form className="mt-9 flex flex-col gap-6" onSubmit={isLogin ? loginHandler : registrationHandler}>
                     {!isLogin && (
                         <>
-                            <FormInput fieldName="Firstname" value={firstName} onChange={(value) => setFirstName(value)}/>
-                            <FormInput fieldName="Lastname" value={lastName} onChange={(value) => setLastName(value)}/>
+                            <TextInput fieldName="Firstname" value={firstName} onChange={(value) => setFirstName(value)}/>
+                            <TextInput fieldName="Lastname" value={lastName} onChange={(value) => setLastName(value)}/>
                         </>
                     )}
-                    <FormInput fieldName="Email" value={email} onChange={(value) => setEmail(value)}/>
-                    <FormInput fieldName="Password" value={password} onChange={(value) => setPassword(value)}/>
+                    <TextInput fieldName="Email" value={email} onChange={(value) => setEmail(value)}/>
+                    <PasswordInput value={password} onChange={(value) => setPassword(value)}/>
                     <button className="px-6 py-2 bg-light-yellow rounded-lg text-dark-gray">{isLogin ? "Login" : "Sign Up"}</button>
                 </form>
                 <div className="text-center mt-2.5">
                     {isLogin ? (
                         <>
                             <span className="text-white/75 pr-1.5">Don't have an account?</span>
-                            <button className="text-dark-yellow" onClick={() => setIsLogin(false)}>Register</button>
+                            <button className="text-dark-yellow" onClick={() => {
+                                setIsLogin(false)
+                                setFirstName("");
+                                setLastName('');
+                                setPassword('');
+                                setEmail('');
+                            }}>Register</button>
                         </>
                     ) : (
                         <>
                             <span className="text-white/75 pr-1.5">Already have an account?</span>
-                            <button className="text-dark-yellow" onClick={() => setIsLogin(true)}>Login</button>
+                            <button className="text-dark-yellow" onClick={() => {
+                                setIsLogin(true)
+                                setFirstName("");
+                                setLastName('');
+                                setPassword('');
+                                setEmail('');
+                            }}>Login</button>
                         </>
                     )}
                 </div>
