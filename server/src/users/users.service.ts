@@ -91,4 +91,14 @@ export class UsersService {
 
         return existUser;
     }
+
+    async dataForLogin(userId: number): Promise<{email: string, role: string}> {
+        const existUser = await this.usersRepository.findOne({where: {id: userId}});
+
+        if(!existUser) {
+            throw new NotFoundException("User not found!");
+        }
+
+        return {email: existUser.email, role: existUser.role};
+    }
 }

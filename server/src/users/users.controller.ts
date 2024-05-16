@@ -13,6 +13,13 @@ export class UsersController {
         return this.usersService.getProfile(+req.user.id);
     }
 
+
+    @UseGuards(JwtGuard)
+    @Get("user")
+    getDataForLogin(@Req() req) {
+        return this.usersService.dataForLogin(+req.user.id);
+    }
+
     @UsePipes(new ValidationPipe())
     @UseGuards(JwtGuard)
     @Post("profile/personal-data")

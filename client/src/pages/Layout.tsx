@@ -3,15 +3,11 @@ import { Outlet } from "react-router-dom";
 import SideBar from "../components/SideBar"
 import { HiMenuAlt3 } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
-import { useLikedCount } from "../hooks/useLikedCount";
-import { useBookmarksCount } from "../hooks/useBookmarksCount";
 
 
 const Layout: FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
-    const likedCount = useLikedCount();
-    const bookmarksCount = useBookmarksCount();
 
     useEffect(() => {
         const handleResize = () => {
@@ -31,7 +27,7 @@ const Layout: FC = () => {
 
     return <div className="min-h-screen m-0 bg-dark-gray text-white font-inter">
         {(isSidebarOpen || isDesktop) && (
-            <SideBar liked={likedCount} bookmarks={bookmarksCount}/>
+            <SideBar liked={0} bookmarks={0}/>
         )}
         <div className="z-10 absolute top-2.5 left-2.5 hidden" onClick={handleShowSidebar}>
             {isSidebarOpen ? (

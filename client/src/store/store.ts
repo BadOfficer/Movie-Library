@@ -5,7 +5,7 @@ import { genresApi } from '../services/genres.service'
 export const store = configureStore({
   reducer: {
     user: userReducer,
-    [genresApi.reducerPath]: genresApi.reducer
+    [genresApi.reducerPath]: genresApi.reducer,
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(genresApi.middleware)
 })

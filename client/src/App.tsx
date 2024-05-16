@@ -13,10 +13,13 @@ function App() {
     const token = getTokenFromLocalStorage()
     try{
       if(token) {
-        const data = await AuthService.getProfile();
-
+        const data = await AuthService.getUserData();
+        console.log(data);
+        
         if(data) {
           dispatch(login(data))
+          console.log(login(data));
+          
         } else {
           dispatch(logout())
         }

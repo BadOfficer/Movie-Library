@@ -11,10 +11,12 @@ export const AuthService = {
         
         return data;
     },
-    async getProfile(): Promise<IUser | undefined> {
-        const response = await instance.get<IUser>('profile/personal-data');
+    async getUserData(): Promise<IUser | undefined> {
+        const response = await instance.get<IUser>('user');
         if(response) {
             const data = response.data;
+            console.log(data);
+            
             return data;
         }
     },

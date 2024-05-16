@@ -40,7 +40,7 @@ const SideBar: FC<Props> = ({ liked, bookmarks }) => {
                 {isAuth ? (
                     <div className="flex flex-col items-center  px-[50px] pt-[35px]">
                         <div className="w-[50px] h-[50px] bg-[#D9D9D9] text-black flex justify-center items-center rounded-full">50x50</div>
-                        <h2 className="text-title-1 mt-[10px]">{user?.first_name} {user?.last_name}</h2>
+                        <h2 className="text-title-1 mt-[10px]">First Name</h2>
                     </div>
                 ) : (
                     <div className="flex justify-center">
