@@ -1,6 +1,6 @@
 import { FC } from "react"
 
-const Liked: FC = () => {
+const Liked: FC = () => { 
     return <div>
         Liked
     </div>

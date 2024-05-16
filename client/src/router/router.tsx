@@ -9,7 +9,7 @@ import Bookmarks from "../pages/Bookmarks"
 import Settings from "../pages/Settings"
 import Auth from "../pages/Auth"
 import { ProtectedRoute } from "../components/routes/ProtectedRoute"
-import GenresManager from "../pages/GenresManager"
+import GenresManager, { genresAction, genresLoader } from "../pages/GenresManager"
 import { RoleProtectedRoute } from "../components/routes/RoleProtectedRoute"
 import MoviesManager from "../pages/MoviesManager"
 
@@ -61,6 +61,8 @@ export const router = createBrowserRouter([
             },
             {
                 path: 'genres',
+                action: genresAction,
+                loader: genresLoader,
                 element: (
                     <RoleProtectedRoute>
                         <GenresManager />

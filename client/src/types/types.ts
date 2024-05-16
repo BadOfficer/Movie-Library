@@ -31,3 +31,20 @@ export interface IResponseUserLogin {
     access_token: string
     user: IUser
 }
+
+export interface IGenre {
+    id: number,
+    title: string,
+    description: string,
+    createdAt: string,
+    updatedAt: string,
+    movies: []
+}
+
+export interface ILikedCounter {
+    movies: []
+}
+
+export interface IBookmarksCounter {
+    movies: []
+}

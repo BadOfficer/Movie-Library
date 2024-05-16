@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react"
+import { FC } from "react"
 import Line from "./Line";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "./parts/Navigation";
@@ -14,15 +14,16 @@ import { useRole } from "../hooks/useRole";
 import { logout } from "../store/user/userSlice";
 import { removeTokenFromLocalStorage } from "../helpers/localstorage.helper";
 import { toast } from "react-toastify";
-import { getUserLiked } from "../api/requests";
 
+interface Props {
+    liked: number;
+    bookmarks: number;
+}
 
-const SideBar: FC = () => {
+const SideBar: FC<Props> = ({ liked, bookmarks }) => {
     const isAuth = useAuth();
     const isAdmin = useRole();
     const user = useAppSelector(state => state.user.user);
-    const [likedCount, setLikedCount] = useState(0);
-    const [bookmarksCount, setBookmarksCount] = useState(0);
     
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -77,14 +78,14 @@ const SideBar: FC = () => {
                             <NavButton path="/liked">
                                 <FaRegHeart size={20}/>
                                 <span className="flex-1">Liked</span>
-                                <span className="px-2 bg-dark-yellow rounded-full text-dark-gray">{likedCount}</span>
+                                <span className="px-2 bg-dark-yellow rounded-full text-dark-gray">{liked}</span>
                             </NavButton>
                             </li>
                             <li>
                                 <NavButton path="/bookmarks">
                                     <FaRegBookmark size={20}/>
                                     <span className="flex-1">Bookmarks</span>
-                                    <span className="px-2 bg-dark-yellow rounded-full text-dark-gray">{bookmarksCount}</span>
+                                    <span className="px-2 bg-dark-yellow rounded-full text-dark-gray">{bookmarks}</span>
                                 </NavButton>
                             </li>
                         </Navigation>
