@@ -1,23 +1,47 @@
 import { FC, useState } from "react";
-import { Form } from "react-router-dom";
 import GenreButton from "./GenreButton";
 import GenreCancelButton from "./GenreCancelButton";
+import { IGenreInput } from "../../types/types";
 
 interface Props {
     setVisible: (state: boolean) => void;
     type: "post" | "patch";
     id?: number;
-    curTitle?: string | ''
-    curDescription?: string | ''
+    curTitle?: string
+    curDescription?: string
+    handleClick?: (genre: IGenreInput) => void
 }
 
-const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription }) => {
-    const [titleValue, setTitleValue] = useState(curTitle);
-    const [descriptionValue, setDescriptionValue] = useState(curDescription)
+const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription, handleClick = () => {} }) => {
+    const [titleValue, setTitleValue] = useState(curTitle || '');
+    const [descriptionValue, setDescriptionValue] = useState(curDescription || '')
+
+    const handleAdd = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const genre = {
+           title: formData.get('title') as string,
+           description: formData.get('description') as string 
+        };
+        handleClick(genre);
+        setVisible(false)
+    }
+
+    const handleUpdate = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const genre = {
+            id: +formData.get('id')!,
+            title: formData.get('title') as string,
+            description: formData.get('description') as string 
+        }
+        handleClick(genre);
+        setVisible(false)
+    }
 
     return <div className="fixed w-full h-full bottom-0 top-0 right-0 left-0 flex justify-center items-center bg-dark-gray/75 z-50">
                 <div className="bg-light-gray p-9 rounded-xl">
-                    <Form action='/genres' method={type} className="flex flex-col gap-5" onSubmit={() => setVisible(false)}>
+                    <form className="flex flex-col gap-5" onSubmit={type === "post" ? handleAdd : handleUpdate}>
                         <h2 className="text-center text-xl uppercase font-semibold">Adding Genre</h2>
                         <label htmlFor="title" className="flex gap-2.5 items-center text-lg capitalize">
                             <span className="flex-1">Genre title: </span>
@@ -38,7 +62,7 @@ const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription 
                             <GenreButton type="submit">{type === 'post' ? "Add" : "Update"}</GenreButton>
                             <GenreCancelButton handleClick={() => setVisible(false)}>Cancel</GenreCancelButton>
                         </div>
-                    </Form>
+                    </form>
                 </div>
             </div>
 }

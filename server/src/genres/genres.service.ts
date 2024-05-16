@@ -38,8 +38,16 @@ export class GenresService {
         return genre;
     }
 
-    async getAll(count: string, offset: string): Promise<GenreIf[]> {
-        return this.genresRepository.findAll({offset: +offset, limit: +count, include: {all: true}});
+    async getAll(count: string, offset: string, query: string): Promise<GenreIf[]> {
+        if(!query) {
+            return this.genresRepository.findAll({offset: +offset, limit: +count, include: {all: true}});
+        }
+        
+        return this.genresRepository.findAll({offset: +offset, limit: +count, include: {all: true}, where: {
+            title: {
+                [Op.iLike]: `%${query}%`
+              }
+        }})
     }
 
     async update(id: number, newGenreData: UpdateGenreDto): Promise<GenreIf> {

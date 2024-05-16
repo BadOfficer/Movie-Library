@@ -30,8 +30,8 @@ export class GenresController {
     @Roles(Role.ADMIN)
     @UseGuards(JwtGuard, RolesGuard)
     @Get()
-    getAll(@Query("count") count: string = "10", @Query("offset") offset: string = "0"): Promise<GenreIf[]> {
-        return this.genresService.getAll(count, offset);
+    getAll(@Query("count") count: string = "10", @Query("offset") offset: string = "0", @Query("query") query: string = ''): Promise<GenreIf[]> {
+        return this.genresService.getAll(count, offset, query);
     }
 
     @Roles(Role.ADMIN)
@@ -50,10 +50,10 @@ export class GenresController {
     }
 
 
-    @Roles(Role.ADMIN)
-    @UseGuards(JwtGuard, RolesGuard)
-    @Get("/search")
-    searchGenre(@Query("query") query: string): Promise<GenreIf[]> {
-        return this.genresService.search(query);
-    }
+    // @Roles(Role.ADMIN)
+    // @UseGuards(JwtGuard, RolesGuard)
+    // @Get("/search")
+    // searchGenre(@Query("query") query: string = ''): Promise<GenreIf[]> {
+    //     return this.genresService.search(query);
+    // }
 }

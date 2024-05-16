@@ -2,113 +2,100 @@ import { FC, useState } from "react"
 import Header from "../components/parts/Header";
 import Genre from "../components/genres/Genre";
 import GenreModal from "../components/genres/GenreModal";
-import { instance } from "../api/axios.api";
 import GenreButton from "../components/genres/GenreButton";
+import { IGenreInput } from "../types/types";
+import { useCreateGenreMutation, useDeleteGenreMutation, useGetGenresQuery, useUpdateGenreMutation } from "../services/genres.service";
+import Loader from "../components/parts/Loader";
 import { toast } from "react-toastify";
-import { useLoaderData } from "react-router-dom";
-import { IGenre } from "../types/types";
 
-export const genresAction = async({ request }: any) => {
-    switch(request.method) {
-        case "POST": {
-            const formData = await request.formData()
-            const genre = {
-                title: formData.get('title'),
-                description: formData.get('description')
-            }
-            try{
-                await instance.post('/genres/create', genre);
-                toast.success(`Genre ${formData.get('title')} is created!`)
-            } catch(err: any) {
-                const error = err.response?.data.message;
-                toast.error(error.toString());
-            }
-            return null;
-        }
-        case "PATCH": {
-            const formData = await request.formData();
-            const genre = {
-                id: formData.get('id'),
-                title: formData.get('title'),
-                description: formData.get('description')
-            }
-
-            try{
-                await instance.patch(`genres/${genre.id}`, genre);
-                toast.success(`Genre ${formData.get('title')} is updated!`)
-            } catch(err: any) {
-                const error = err.response?.data.message;
-                toast.error(error.toString());
-            }
-            return null
-        }
-        case "DELETE": {
-            const formData = await request.formData();
-            const genreId = formData.get('id');
-            try{
-                await instance.delete(`genres/${genreId}`)
-                toast.success(`Genre is deleted!`)
-            } catch(err: any) {
-                const error = err.response?.data.message;
-                toast.error(error.toString());
-            }
-
-            return null
-        }
-    }
-}
-
-export const genresLoader = async () => {
-    const { data } = await instance.get<IGenre[]>('/genres');
-
-    return data
-}
-
-const GenresManager: FC = () => {
-    const genres = useLoaderData() as IGenre[];
+const GenresManager: FC = () => { 
     const [showModal, setShowModal] = useState<boolean>(false); 
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [genreId, setGenreId] = useState<number>(0);
     const [curTitle, setCurTitle] = useState('');
     const [curDescription, setCurDescription] = useState('');
+    
+    const [searchData, setSearchData] = useState('');
+    const {isLoading, isError, data: genres, refetch} = useGetGenresQuery(searchData);
+    const [createGenre, {isError: creatingError}] = useCreateGenreMutation();
+    const [updateGenre, {isError: updatingError}] = useUpdateGenreMutation();
+    const [deleteGenre, {isError: deletingError}] = useDeleteGenreMutation();
+
+    const handleSearch = (text: string) => {
+        refetch();
+        setSearchData(text);
+    }
+
+    const handleCreate = async(genre: IGenreInput) => {
+        await createGenre(genre);
+
+        if(creatingError) {
+            toast.success(`${genre.title} has been added!`)
+        } else {
+            toast.error("Something went wrong!")
+        }
+        
+    }
+
+    const handleUpdate = async(genre: IGenreInput) => {
+        await updateGenre(genre)
+       
+        if(!updatingError) {
+            toast.success(`${genre.title} has been updated!`)
+        } else {
+            toast.error("Something went wrong!")
+        }
+    }
+
+    const handleDelete = async(genreId: number) => {
+        await deleteGenre(genreId);
+       
+        if(!deletingError) {
+            toast.success('Genre has been deleted!')
+        } else {
+            toast.error("Something went wrong!")
+        }
+    }
 
     return <>
-        {showModal && <GenreModal setVisible={setShowModal} type="post"/>}
-        {showModal && isEdit && <GenreModal setVisible={setShowModal} type="patch" id={genreId} curTitle={curTitle} curDescription={curDescription}/>}
-        <div>
-        <Header currentPage="Genres" />
-        <div className="relatrive mt-12">
-            <div className="w-full bg-light-gray py-2.5 px-6 flex justify-between items-center rounded-xl">
-                <h3 className="text-xl">Actions: </h3>
-                <div>
-                    <GenreButton handleClick={() => setShowModal(true)}>Add genre</GenreButton>
+        {showModal && <GenreModal setVisible={setShowModal} type="post" handleClick={handleCreate}/>}
+        {showModal && isEdit && <GenreModal setVisible={setShowModal} type="patch" id={genreId} curTitle={curTitle} curDescription={curDescription} handleClick={handleUpdate}/>}
+        <>
+            <Header currentPage="Genres" handleClick={handleSearch}/>
+            <div className="relatrive mt-12 flex-1 flex flex-col">
+                <div className="w-full bg-light-gray py-2.5 px-6 flex justify-between items-center rounded-xl">
+                    <h3 className="text-xl">Actions: </h3>
+                    <div>
+                        <GenreButton handleClick={() => setShowModal(true)}>Add genre</GenreButton>
+                    </div>
+                </div>
+
+                <h2 className="mt-12 text-2xl text-center uppercase font-semibold">Genres list</h2>
+                <div className="flex justify-center flex-1">
+                    {isLoading && (<Loader />)}
+                    {isError && (<p>Something went wrong!!!</p>)}
+                    {genres?.length === 0 ? (
+                        <div className="text-3xl text-orange-700 flex items-center">
+                            <p>Genres list is empty!</p>
+                        </div>
+                    ) : (
+                        <ul className="grid mt-9 gap-9 grid-cols-8 grid-flow-row">
+                            {genres?.map((genre, index) => (
+                                <li key={index}>
+                                    <Genre title={genre.title} amount={genre.movies.length} id={genre.id} handleClick={() => {
+                                        setShowModal(true)
+                                        setGenreId(genre.id)
+                                        setCurTitle(genre.title)
+                                        setCurDescription(genre.description)
+                                        setIsEdit(true)
+                                    }} handleDelete={handleDelete}/>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             </div>
-
-            <h2 className="mt-12 text-2xl text-center uppercase font-semibold">Genres list</h2>
-            <div className="flex justify-center">
-                {genres.length === 0 ? (
-                    <div className="mt-40 text-3xl text-orange-700">
-                        <p>Genres list is empty!</p>
-                    </div>
-                ) : (
-                <ul className="grid mt-9 gap-9 grid-cols-8 grid-flow-row">
-                    {genres.map((genre, index) => (
-                        <li key={index}>
-                            <Genre title={genre.title} amount={genre.movies.length} id={genre.id} handleClick={() => {
-                                setShowModal(true)
-                                setGenreId(genre.id)
-                                setCurTitle(genre.title)
-                                setCurDescription(genre.description)
-                                setIsEdit(true)
-                            }}/>
-                        </li>
-                    ))}
-                </ul>
-            )}
-            </div>
-        </div>
-    </div>
+        </>
     </>
 }
 

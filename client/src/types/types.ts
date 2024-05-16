@@ -41,6 +41,12 @@ export interface IGenre {
     movies: []
 }
 
+export interface IGenreInput {
+    id?: number;
+    title: string,
+    description: string
+}
+
 export interface ILikedCounter {
     movies: []
 }

@@ -40,7 +40,7 @@ const Layout: FC = () => {
                 <HiMenuAlt3 size={30}/>
             )}
         </div>
-        <div className="ml-72 pl-12 container relative overflow-hidden">
+        <div className="ml-72 pl-12 container relative overflow-hidden flex flex-col min-h-screen">
             <Outlet />
         </div>
     </div>
