@@ -1,8 +1,8 @@
-import { FC, useEffect, useState } from "react"
+import { FC, useState } from "react"
 import Header from "../components/parts/Header";
 import MoviesNavigation from "../components/movies/MoviesNavigation";
 import { useGetGenresQuery } from "../services/genres.service";
-import { useGetMoviesQuery } from "../services/movies.service";
+import { useGetAllowFilmsQuery, useGetMoviesQuery } from "../services/movies.service";
 import SectionTitle from "../components/parts/SectionTitle";
 import CountSelect from "../components/parts/CountSelect";
 import FilterSortButton from "../components/buttons/FilterSortButton";
@@ -20,21 +20,24 @@ const Movies: FC = () => {
     const [activeReleases, setActiveReleases] = useState<any[]>([]);
     const [activeDurations, setActiveDuration] = useState<any[]>([]);
     const [activeRatings, setActiveRatings] = useState<any[]>([]);
+    const [idsGenres, setIdsGenres] = useState<number[]>([]);
+    const [searchData, setSearchData] = useState('');
 
     const {data: genres} = useGetGenresQuery('');
     const [showFilter, setShowFilter] = useState(false);
     
-    
-    const [idsGenres, setIdsGenres] = useState<number[]>([]);
-    const [searchData, setSearchData] = useState('');
-    const [page, setPage] = useState(1);
-    const {data: movies, isLoading: loadingMovies} = useGetMoviesQuery('');
+    const {data: moviesResponse, isLoading: loadingMovies} = useGetMoviesQuery(`${countValue},${offsetValue},${activeReleases.join(';')},${activeDurations.join(';')},${activeRatings.join(';')},${searchData},${idsGenres.join(';')}`);
+    const {data: allowMoviesResponse} = useGetAllowFilmsQuery('');
+
+    const movies = moviesResponse?.rows;
+    const allowMovies = allowMoviesResponse?.rows;
+
     let ratings: string[] = [];
     let years: string[] = [];
     let durations: string[] = [];
 
-    if(movies) {
-        movies.map(movie => {
+    if(allowMovies) {
+        allowMovies.map(movie => {
             if(!ratings.includes(movie.rating)) {
                 ratings.push(movie.rating)
             }
@@ -53,36 +56,42 @@ const Movies: FC = () => {
         const releaseYears = formData.getAll('release[]');
         const durations = formData.getAll('duration[]');
         const ratings = formData.getAll('rating[]');
-        setActiveReleases(releaseYears)
-        setActiveDuration(durations)
+        setActiveReleases(releaseYears);
+        setActiveDuration(durations);
         setActiveRatings(ratings);
+        setOffsetValue(0)
         setShowFilter(false);
     }
 
-    useEffect(() => {
-        console.log(activeRatings);
-        console.log(activeReleases);
-        console.log(activeDurations);
-        
-        
-    }, [activeReleases])
-
     const handleChangeCount = (count: number) => {
+        setOffsetValue(0);
         setCountValue(count);
     }
 
     const handleSearch = (text: string) => {
+        setOffsetValue(0);
         setSearchData(text);
     }
 
     const handleShowFilters = () => {
         setShowFilter(state => !state);
     }
+
+    const handleSetGenresIds = (id: number) => {
+        setIdsGenres(prevIds => {
+          if (prevIds.includes(id)) {
+              const newItems = prevIds.filter(item => item !== id)
+              return newItems;
+          } else {
+              return [...prevIds, id];
+          }
+        });
+    }
     
     return <div className="flex flex-col min-h-screen">
         <Header currentPage="movies" handleClick={handleSearch}/>
         <div className="mt-12 flex gap-12 flex-col flex-1">
-            <MoviesNavigation genres={genres} />
+            <MoviesNavigation genres={genres} handleIdsGenres={handleSetGenresIds}/>
             <div className="flex justify-between items-center">
                 <SectionTitle>All Movies</SectionTitle>
                 <div className="flex items-center gap-9">
@@ -102,7 +111,7 @@ const Movies: FC = () => {
                     </div>
                 )}
                 {movies && movies.length !== 0 && (
-                    <PaginatedMovies movies={movies} itemsPerPage={countValue} offsetValue={offsetValue} handleNewOffset={setOffsetValue}/>
+                    <PaginatedMovies movies={movies} itemsPerPage={countValue} handleNewOffset={setOffsetValue} countMovies={moviesResponse.count}/>
                 )}
             </div>
         </div>

@@ -45,64 +45,81 @@ export class MoviesService {
         })
     }
 
-    async getMovies(filterOptions: FilterOptions): Promise<MovieIf[]> {
-        const {genresIds, release, seasons, duration, rating, query, count, offset, series} = filterOptions
-
-        let movies = await this.moviesRepository.findAll({where: {
+    async getMovies(filterOptions: FilterOptions): Promise<{rows: MovieIf[], count: number}> {
+        const {genresIds, release, seasons, duration, rating, query, count, offset, series} = filterOptions;
+    
+        const whereClause: any = {
             [Op.or]: [
                 { seasons: 1 },
                 { series: 1 }
             ]
-        }, limit: count, offset: offset * count, include: {
-            model: Genre
-        }});
-
-        if(query) {
-            movies = await this.moviesRepository.findAll({where: {
-                [Op.and]: [
-                    {
-                        [Op.or]: [
-                            { seasons: 1 },
-                            { series: 1 }
-                        ]
-                    },
-                    {
-                        title: {
-                        [Op.like]: `%${query}%`
+        };
+    
+        if (query) {
+            whereClause.title = {
+                [Op.like]: `%${query}%`
+            };
+        }
+    
+        if (release) {
+            whereClause.release = {
+                [Op.in]: release.split(';')
+            };
+        }
+    
+        if (seasons) {
+            whereClause.seasons = {
+                [Op.in]: seasons.split(';')
+            };
+        }
+    
+        if (series) {
+            whereClause.series = {
+                [Op.in]: series.split(';')
+            };
+        }
+    
+        if (duration) {
+            whereClause.duration = {
+                [Op.in]: duration.split(';')
+            };
+        }
+    
+        if (rating) {
+            whereClause.rating = {
+                [Op.in]: rating.split(';')
+            };
+        }
+    
+        const include: any[] = [];
+    
+        if (genresIds) {
+            const genreIdValues = genresIds.split(';').map(id => parseInt(id));
+            include.push({
+                model: Genre,
+                where: {
+                    id: {
+                        [Op.in]: genreIdValues
                     }
-                    }
-                ]
-            }, limit: count, offset: offset * count, include: {
-                model: Genre
-            }})
+                }
+            });
+        } else {
+            include.push({ model: Genre });
         }
-
-        if(genresIds) {
-            movies = await this.filterMoviesByGenres(genresIds, movies);
-        }
-
-        if(release) {
-            movies = await this.filterMoviesByRelease(release, movies);
-        }
-
-        if(seasons) {
-            movies = await this.filterMoviesBySeasons(seasons, movies);
-        }
-
-        if(series) {
-            movies = await this.filterMoviesBySeries(series, movies);
-        }
-
-        if(duration) {
-            movies = await this.filterMoviesByDuraion(duration, movies);
-        }
-
-        if(rating) {
-            movies = await this.filterMoviesByRating(rating, movies);
-        }
-
-        return movies;
-    }
+    
+        const movies = await this.moviesRepository.findAndCountAll({
+            where: whereClause,
+            include: include,
+            limit: count,
+            offset: offset * count
+        });
+    
+        return {
+            rows: movies.rows,
+            count: movies.count
+        };
+        
+    }    
 
     async getSeries(filterOptions: FilterOptions): Promise<MovieIf[]> {
         const {genresIds, release, seasons, duration, rating, query, count, offset, series} = filterOptions

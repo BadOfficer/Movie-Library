@@ -4,7 +4,7 @@ import { IGenre } from "../../types/types";
 
 interface Props {
     genres: IGenre[] | undefined
-    handleIdsGenres?: (id: number) => void;
+    handleIdsGenres: (id: number) => void;
 }
 
 const MoviesNavigation: FC<Props> = ({ genres, handleIdsGenres }) => {
@@ -14,7 +14,7 @@ const MoviesNavigation: FC<Props> = ({ genres, handleIdsGenres }) => {
         <ul className="flex relative gap-6">
             {genres?.map(genre => (
                 <li key={genre.id}>
-                    <GenreFilterButton title={genre.title} id={genre.id} moviesAmount={genre.movies.length} setGenreId={() => {}}/>
+                    <GenreFilterButton title={genre.title} id={genre.id} moviesAmount={genre.movies.length} setGenreId={handleIdsGenres}/>
                 </li>
             ))}
         </ul>

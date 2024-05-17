@@ -28,12 +28,12 @@ export class MoviesController {
         @Query('count') count: string = "18",
         @Query('offset') offset: string = "0",
         @Query('query') query: string = '',
-        @Query('release') release: string,
-        @Query('seasons') seasons: string,
-        @Query('series') series: string,
-        @Query('genresIds') genresIds: string,
-        @Query('duration') duration: string,
-        @Query('rating') rating: string,
+        @Query('release') release: string = '',
+        @Query('seasons') seasons: string = '',
+        @Query('series') series: string = '',
+        @Query('genresIds') genresIds: string = '',
+        @Query('duration') duration: string = '',
+        @Query('rating') rating: string = '',
     ) {
         const filterOptions = {
             count: +count,

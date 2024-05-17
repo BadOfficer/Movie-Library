@@ -8,18 +8,16 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 interface Props {
     itemsPerPage: number;
     movies: IMovie[];
-    offsetValue: number;
-    handleNewOffset: (offset: number) => void
+    handleNewOffset: (offset: number) => void;
+    countMovies: number
 }
 
-const PaginatedMovies: FC<Props> = ({ itemsPerPage, movies, offsetValue, handleNewOffset }) => {
-
-    const endOffset = offsetValue + itemsPerPage;
-    const pageCount = Math.ceil(movies.length / itemsPerPage);
+const PaginatedMovies: FC<Props> = ({ itemsPerPage, movies, handleNewOffset, countMovies }) => {
+    const pageCount = Math.ceil(countMovies / itemsPerPage);
    
     const handlePageClick = (event: any) => {
-        const newOffset = (event.selected * itemsPerPage) % movies.length;
-
+        const newOffset = event.selected;
+    
         handleNewOffset(newOffset);
     };
 

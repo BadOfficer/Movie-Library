@@ -8,13 +8,28 @@ export const moviesApi = createApi({
     }),
     tagTypes: ['Movies'],
     endpoints: build => ({
-        getMovies: build.query<IMovie[], string>({
+        getMovies: build.query<IMoviesResponse<IMovie[]>, string>({
+            query: (arg: string) => ({  
+                url: '/movies/films',
+                params: {
+                    count: arg.split(',')[0],
+                    offset: arg.split(',')[1],
+                    release: arg.split(',')[2],
+                    duration: arg.split(',')[3],
+                    rating: arg.split(',')[4],
+                    query: arg.split(',')[5],
+                    genresIds: arg.split(',')[6]
+                }
+            }),
+            providesTags: ['Movies']
+        }),
+        getAllowFilms: build.query<IMoviesResponse<IMovie[]>, string>({
             query: () => ({  
-                url: '/movies/films'
+                url: '/movies/films',
             }),
             providesTags: ['Movies']
         }),
     })
 })
 
-export const { useGetMoviesQuery } = moviesApi
+export const { useGetMoviesQuery, useGetAllowFilmsQuery } = moviesApi
