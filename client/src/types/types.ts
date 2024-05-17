@@ -61,6 +61,21 @@ export interface IMoviesResponse<T> {
     rows: IMovie[];
 }
 
+export interface IUserData {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+}
+
+export interface IUserUpdate {
+    first_name: string
+    last_name: string
+    email: string
+    password: string;
+    oldPassword: string;
+}
+
 export interface ILikedCounter {
     movies: []
 }

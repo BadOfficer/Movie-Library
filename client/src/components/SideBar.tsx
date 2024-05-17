@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, useEffect } from "react"
 import Line from "./Line";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "./parts/Navigation";
@@ -14,6 +14,7 @@ import { useRole } from "../hooks/useRole";
 import { logout } from "../store/user/userSlice";
 import { removeTokenFromLocalStorage } from "../helpers/localstorage.helper";
 import { toast } from "react-toastify";
+import { useGetUserQuery } from "../services/user.service";
 
 interface Props {
     liked: number;
@@ -23,6 +24,7 @@ interface Props {
 const SideBar: FC<Props> = ({ liked, bookmarks }) => {
     const isAuth = useAuth();
     const isAdmin = useRole();
+    const {data: userData} = useGetUserQuery('', { skip: !isAuth });
     
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -39,7 +41,7 @@ const SideBar: FC<Props> = ({ liked, bookmarks }) => {
                 {isAuth ? (
                     <div className="flex flex-col items-center  px-[50px] pt-[35px]">
                         <div className="w-[50px] h-[50px] bg-[#D9D9D9] text-black flex justify-center items-center rounded-full">50x50</div>
-                        <h2 className="text-title-1 mt-[10px]">Welcome Title</h2>
+                        <h2 className="text-title-1 mt-[10px]">Welcome {userData?.first_name}</h2>
                     </div>
                 ) : (
                     <div className="flex justify-center">

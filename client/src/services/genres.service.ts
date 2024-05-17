@@ -6,8 +6,12 @@ export const genresApi = createApi({
     reducerPath: 'genres',
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:3000',
-        headers: {
-            Authorization: 'Bearer ' + getTokenFromLocalStorage(),
+        prepareHeaders: (headers) => {
+            const token = getTokenFromLocalStorage();
+            if (token) {
+                headers.set('Authorization', `Bearer ${token}`);
+            }
+            return headers;
         }
     }),
     tagTypes: ['Genre'],

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './models/user.model';
 import * as bcrypt from "bcrypt";
-import { UserIf } from './models/user.interface';
+import { DeleteProfileIf, GetProfileIf, UserIf } from './models/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LikedService } from 'src/liked/liked.service';
@@ -52,7 +52,7 @@ export class UsersService {
             throw new NotFoundException("User not found!");
         }
     
-        if (updateUserDto.email && updateUserDto.email !== existUser.email) {
+        if (updateUserDto.email !== existUser.email) {
             const existEmail = await this.usersRepository.findOne({ where: { email: updateUserDto.email } });
     
             if (existEmail) {
@@ -60,36 +60,50 @@ export class UsersService {
             }
         }
 
-        if (updateUserDto.password) {
-            const hashedPassword = await this.hashPassword(updateUserDto.password);
-            updateUserDto.password = hashedPassword;
+        const validatePassword = await bcrypt.compare(updateUserDto.oldPassword, existUser.password);
+
+        if(validatePassword) {
+            const newPassword = updateUserDto.password === '' ? existUser.password : await this.hashPassword(updateUserDto.password)
+            Object.assign(existUser, {
+                first_name: updateUserDto.first_name,
+                last_name: updateUserDto.last_name,
+                email: updateUserDto.email,
+                password: newPassword
+            });
+    
+            return await existUser.save();
         }
-    
-        Object.assign(existUser, updateUserDto);
-    
-        return await existUser.save();
+
+        throw new BadRequestException("Incorrect password!")
     }
     
 
-    async deleteUser(userId: number): Promise<string> {
+    async deleteUser(deleteUserPas: DeleteProfileIf, userId: number): Promise<string> {
         const existUser = await this.usersRepository.findOne({where: {id: userId}});
 
         if(!existUser) {
             throw new NotFoundException("User not found!");
         }
-        await existUser.destroy();
 
-        return "Account is deleted";
+        const validatePassword = await bcrypt.compare(deleteUserPas.password, existUser.password);
+
+        
+        if(validatePassword) {
+            await existUser.destroy();
+            return "Account is deleted";
+        }
+
+        throw new BadRequestException("Incorrect password!")
     }
 
-    async getProfile(userId: number): Promise<UserIf> {
+    async getProfile(userId: number): Promise<GetProfileIf> {
         const existUser = await this.usersRepository.findOne({where: {id: userId}});
 
         if(!existUser) {
             throw new NotFoundException("User not found!");
         }
 
-        return existUser;
+        return {id: existUser.id, first_name: existUser.first_name, last_name: existUser.last_name, email: existUser.email};
     }
 
     async dataForLogin(userId: number): Promise<{email: string, role: string}> {

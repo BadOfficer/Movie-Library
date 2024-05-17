@@ -8,3 +8,14 @@ export interface UserIf {
     password?: string;
     role?: Role;
 }
+
+export interface GetProfileIf {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+}
+
+export interface DeleteProfileIf {
+    password: string;
+}

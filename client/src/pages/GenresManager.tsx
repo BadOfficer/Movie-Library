@@ -29,7 +29,7 @@ const GenresManager: FC = () => {
     const handleCreate = async(genre: IGenreInput) => {
         await createGenre(genre);
 
-        if(creatingError) {
+        if(!creatingError) {
             toast.success(`${genre.title} has been added!`)
         } else {
             toast.error("Something went wrong!")
@@ -72,7 +72,9 @@ const GenresManager: FC = () => {
 
                 <h2 className="mt-12 text-2xl text-center uppercase font-semibold">Genres list</h2>
                 <div className="flex justify-center flex-1">
-                    {isLoading && (<Loader />)}
+                    {isLoading && (<div className="flex-1 flex items-center justify-center">
+                        <Loader />
+                    </div>)}
                     {isError && (<p>Something went wrong!!!</p>)}
                     {genres?.length === 0 ? (
                         <div className="text-3xl text-orange-700 flex items-center">

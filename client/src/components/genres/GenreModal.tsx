@@ -45,7 +45,7 @@ const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription,
                         <h2 className="text-center text-xl uppercase font-semibold">Adding Genre</h2>
                         <label htmlFor="title" className="flex gap-2.5 items-center text-lg capitalize">
                             <span className="flex-1">Genre title: </span>
-                            <input type="text" name="title" className="w-80 text-lg border-2 border-dark-yellow bg-transparent outline-0 focus:border-dark-yellow rounded-xl text-white"
+                            <input type="text" name="title" className="text-main p-0 text-dark-gray px-2.5 py-2 min-w-96 rounded-md"
                                     placeholder="Genre title" 
                                     value={titleValue}
                                     onChange={(e) => setTitleValue(e.target.value)} />
@@ -53,14 +53,14 @@ const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription,
                         </label>
                         <label htmlFor="description" className="flex gap-2.5 items-start text-lg capitalize">
                             <span>Genre description: </span>
-                            <textarea name="description" className="w-80 text-lg border-2 border-dark-yellow bg-transparent outline-0 focus:border-dark-yellow rounded-xl text-white" 
+                            <textarea name="description" className="text-main p-0 text-dark-gray px-2.5 py-2 min-w-96 rounded-md min-h-48 resize-none" 
                                         placeholder="Genre description" 
                                         value={descriptionValue}
                                         onChange={(e) => setDescriptionValue(e.target.value)} />
                         </label>
                         <div className="flex justify-center gap-2.5">
                             <GenreButton type="submit">{type === 'post' ? "Add" : "Update"}</GenreButton>
-                            <GenreCancelButton handleClick={() => setVisible(false)}>Cancel</GenreCancelButton>
+                            <GenreCancelButton handleClick={() => setVisible(false)} type="reset">Cancel</GenreCancelButton>
                         </div>
                     </form>
                 </div>

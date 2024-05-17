@@ -2,14 +2,16 @@ import { configureStore } from '@reduxjs/toolkit'
 import userReducer from './user/userSlice'
 import { genresApi } from '../services/genres.service'
 import { moviesApi } from '../services/movies.service'
+import { userApi } from '../services/user.service'
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     [genresApi.reducerPath]: genresApi.reducer,
-    [moviesApi.reducerPath]: moviesApi.reducer
+    [moviesApi.reducerPath]: moviesApi.reducer,
+    [userApi.reducerPath]: userApi.reducer
   },
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(genresApi.middleware, moviesApi.middleware)
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(genresApi.middleware, moviesApi.middleware, userApi.middleware)
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

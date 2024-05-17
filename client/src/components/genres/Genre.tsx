@@ -11,7 +11,7 @@ interface Props {
 }
 
 const Genre: FC<Props> = ({ title, amount, id, handleClick, handleDelete }) => {
-    return <div className="px-9 py-2.5 bg-light-gray rounded-xl relative group">
+    return <div className="px-4 py-2.5 bg-light-gray rounded-xl relative group w-32">
         <h3 className="text-white text-[20px]">{title}</h3>
         <p className="text-dark-yellow text-[14px]">{amount} {amount === 1 ? 'item' : 'items'}</p>
         <div className="absolute w-full h-full bg-light-gray top-0 left-0 rounded-xl hidden flex-col items-center justify-center group-hover:flex">

@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { DeleteProfileIf } from './models/user.interface';
 
 @Controller('')
 export class UsersController {
@@ -22,14 +23,14 @@ export class UsersController {
 
     @UsePipes(new ValidationPipe())
     @UseGuards(JwtGuard)
-    @Post("profile/personal-data")
+    @Patch("profile/personal-data")
     update(@Body() updateUserDto: UpdateUserDto, @Req() req) {
         return this.usersService.updateUser(updateUserDto, +req.user.id);
     }
 
     @UseGuards(JwtGuard)
     @Delete("profile/personal-data")
-    delete(@Req() req) {
-        return this.usersService.deleteUser(+req.user.id);
+    delete(@Body() password: DeleteProfileIf, @Req() req) {
+        return this.usersService.deleteUser(password, +req.user.id);
     }
 }

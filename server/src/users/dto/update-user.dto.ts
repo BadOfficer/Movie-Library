@@ -10,8 +10,8 @@ export class UpdateUserDto {
 
     @IsEmail()
     email?: string;
-    
-    @IsString()
-    @MinLength(6, {message: "Password must be more than 6 symbols"})
+
     password?: string;
+
+    oldPassword: string
 }
