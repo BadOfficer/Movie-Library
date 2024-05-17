@@ -15,7 +15,7 @@ const Search: FC<Props> = ({ handleClick = () => {} }) => {
             }
             setSearch(e.target.value)
         }}/>
-        <button className="bg-light-yellow p-2.5 rounded-full text-dark-gray absolute right-0" onClick={() => handleClick(search)}>
+        <button className="bg-light-yellow p-2.5 rounded-full text-dark-gray absolute right-0 hover:bg-dark-yellow" onClick={() => handleClick(search)}>
             <IoSearch size={16}/>
         </button>
     </div>

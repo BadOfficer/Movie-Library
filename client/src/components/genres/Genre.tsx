@@ -21,10 +21,12 @@ const Genre: FC<Props> = ({ title, amount, id, handleClick, handleDelete }) => {
             </button>
 
             <div>
-                <button className="flex gap-2.5 items-center hover:text-orange-700" onClick={() => handleDelete(id)}>
-                    <MdDeleteOutline />
-                    <span>Delete</span>
-                </button>
+                {!amount && (
+                    <button className="flex gap-2.5 items-center hover:text-orange-700" onClick={() => handleDelete(id)}>
+                        <MdDeleteOutline />
+                        <span>Delete</span>
+                    </button>
+                )}
             </div>
         </div>
     </div>

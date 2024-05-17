@@ -20,7 +20,7 @@ const MoviesManager: FC = () => {
             <div className="flex justify-center flex-1">
                 <ul className="grid mt-9 gap-14 grid-cols-6 grid-flow-row">
                     <li>
-                        <Movie />
+                        {/* <Movie /> */}
                     </li>
                 </ul>
             </div>

@@ -44,6 +44,23 @@ export interface IGenreInput {
     description: string
 }
 
+export interface IMovie {
+    id: number;
+    title: string;
+    description: string;
+    images: string[];
+    rating: string;
+    release: string;
+    seasons: number;
+    series: number;
+    duration: string;
+}
+
+export interface IMoviesResponse<T> {
+    count: number;
+    rows: IMovie[];
+}
+
 export interface ILikedCounter {
     movies: []
 }

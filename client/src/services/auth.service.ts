@@ -15,7 +15,6 @@ export const AuthService = {
         const response = await instance.get<IUser>('user');
         if(response) {
             const data = response.data;
-            console.log(data);
             
             return data;
         }

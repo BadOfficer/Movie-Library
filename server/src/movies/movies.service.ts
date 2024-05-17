@@ -53,7 +53,7 @@ export class MoviesService {
                 { seasons: 1 },
                 { series: 1 }
             ]
-        }, limit: count, offset: offset, include: {
+        }, limit: count, offset: offset * count, include: {
             model: Genre
         }});
 
@@ -72,7 +72,7 @@ export class MoviesService {
                     }
                     }
                 ]
-            }, limit: count, offset: offset, include: {
+            }, limit: count, offset: offset * count, include: {
                 model: Genre
             }})
         }
@@ -112,7 +112,7 @@ export class MoviesService {
                 { seasons: { [Op.gt]: 1 } },
                 { series: { [Op.gt]: 1 } } 
             ]
-        }, limit: count, offset: offset, include: {
+        }, limit: count, offset: offset * count, include: {
             model: Genre
         }});
 
@@ -131,7 +131,7 @@ export class MoviesService {
                         }
                     }
                 ]
-            }, limit: count, offset: offset, include: {
+            }, limit: count, offset: offset * count, include: {
                 model: Genre
             }})
         }
