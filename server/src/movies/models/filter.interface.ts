@@ -1,7 +1,11 @@
 interface FilterOptions {
-    release?: string;
-    seasons?: string;
-    genreIds?: string;
-    count: number;
-    offset: number;
+    genresIds?: string,
+    release?: string, 
+    seasons?: string, 
+    duration?: string, 
+    rating?: string, 
+    query?: string, 
+    count: number,
+    offset: number, 
+    series?: string
 }

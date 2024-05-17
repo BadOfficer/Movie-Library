@@ -22,23 +22,56 @@ export class MoviesController {
     create(@Body() movie: CreateMovieDto, @UploadedFiles() images): Promise<MovieIf> {
         return this.moviesService.createMovie(movie, images);
     }
-    
-    @Get()
-    getAll(
-        @Query('count') count: string = "10",
+
+    @Get('/films')
+    getAllMovies(
+        @Query('count') count: string = "18",
         @Query('offset') offset: string = "0",
+        @Query('query') query: string = '',
         @Query('release') release: string,
         @Query('seasons') seasons: string,
-        @Query('genreIds') genreIds: string,
+        @Query('series') series: string,
+        @Query('genresIds') genresIds: string,
+        @Query('duration') duration: string,
+        @Query('rating') rating: string,
     ) {
         const filterOptions = {
-            release,
-            seasons,
-            genreIds,
             count: +count,
             offset: +offset,
+            query,
+            release,
+            seasons,
+            series,
+            genresIds,
+            duration,
+            rating
         };
-        return this.moviesService.getAllMoviesWithFilterAndPagination(filterOptions);
+        return this.moviesService.getMovies(filterOptions);
+    }
+    @Get('/series-films')
+    getAllSeries (
+        @Query('count') count: string = "18",
+        @Query('offset') offset: string = "0",
+        @Query('query') query: string = '',
+        @Query('release') release: string,
+        @Query('seasons') seasons: string,
+        @Query('series') series: string,
+        @Query('genresIds') genresIds: string,
+        @Query('duration') duration: string,
+        @Query('rating') rating: string,
+    ) {
+        const filterOptions = {
+            count: +count,
+            offset: +offset,
+            query,
+            release,
+            seasons,
+            series,
+            genresIds,
+            duration,
+            rating
+        };
+        return this.moviesService.getSeries(filterOptions);
     }
 
     @Get("slider")

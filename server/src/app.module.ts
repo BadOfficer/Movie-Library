@@ -16,6 +16,8 @@ import { LikedMovies } from './liked/models/liked-movies.model';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { Bookmarks } from './bookmarks/models/bookmarks.model';
 import { BookmarksMovies } from './bookmarks/models/bookmarks-movies.model';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 
 @Module({
@@ -33,6 +35,9 @@ import { BookmarksMovies } from './bookmarks/models/bookmarks-movies.model';
     models:[Genre, User, Movie, MoviesGenres, Liked, LikedMovies, Bookmarks, BookmarksMovies],
     synchronize: true,
     autoLoadModels: true,
+  }),
+  ServeStaticModule.forRoot({
+    rootPath: join(__dirname, 'static'),
   }),
   GenresModule,
   AuthModule,
