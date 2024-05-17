@@ -101,7 +101,7 @@ const Movies: FC = () => {
             </div>
             <div className="flex flex-1 flex-col items-center gap-12">
                 {movies?.length === 0 && (
-                    <div className="flex items-center">
+                    <div className="flex items-center flex-1">
                         <p className="text-3xl text-orange-700">Movies not found!</p>
                     </div>
                 )}

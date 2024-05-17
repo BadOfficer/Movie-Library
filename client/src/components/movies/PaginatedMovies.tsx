@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { IMovie } from "../../types/types";
 import Movie from "./Movie";
-import ReactPaginate, { ReactPaginateProps } from "react-paginate";
+import ReactPaginate from "react-paginate";
 import ArrowButton from "../buttons/ArrowButton";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 

@@ -3,7 +3,7 @@ import Line from "./Line";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "./parts/Navigation";
 import { useAuth } from "../hooks/useAuth";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useAppDispatch } from "../store/hooks";
 import NavButton from "./buttons/NavButton";
 import { BiHomeAlt2, BiSolidMoviePlay } from "react-icons/bi";
 import { FiServer } from "react-icons/fi";
@@ -23,7 +23,6 @@ interface Props {
 const SideBar: FC<Props> = ({ liked, bookmarks }) => {
     const isAuth = useAuth();
     const isAdmin = useRole();
-    const user = useAppSelector(state => state.user.user);
     
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
