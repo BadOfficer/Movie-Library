@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Bookmarks } from './models/bookmarks.model';
 import { MoviesService } from 'src/movies/movies.service';
 import { Movie } from 'src/movies/models/movie.model';
+import { Op } from 'sequelize';
+import { BookmarksIf } from './models/bookmarks.interface';
 
 @Injectable()
 export class BookmarksService {
@@ -68,15 +70,31 @@ export class BookmarksService {
         return existLiked;
     }
 
-    async getAll(userId: number): Promise<Bookmarks> {
+    async getAll(userId: number, query: string): Promise<BookmarksIf> {
         const existLiked = await this.bookmarksRepository.findOne({ 
             where: { userId },
-            include: [{ model: Movie, as: 'movies' }] });
+            include: [{model: Movie, as: 'movies'}] 
+        });
         
         if (!existLiked) {
-            throw new NotFoundException("liked not found!");
+            throw new NotFoundException("bookmarks not found!");
+        }
+
+        if(query) {
+            return this.search(existLiked, query);
         }
 
         return existLiked;
+    } 
+
+    async search(bookmarks: BookmarksIf, query: string): Promise<BookmarksIf> {
+        if(query) {
+            return {
+                userId: bookmarks.userId,
+                movies: bookmarks.movies.filter(movie => movie.title.includes(query))
+            }
+        }
+
+        return bookmarks;
     }
 }

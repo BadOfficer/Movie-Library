@@ -31,7 +31,7 @@ export class MoviesService {
         })
     }
 
-    async getOneByTitle(title: string) {
+    async getOneByTitle(title: string): Promise<MovieIf> {
         return this.moviesRepository.findOne({
             where: {
                 title: {

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { BookmarksService } from './bookmarks.service';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { AddBookmarksDto } from './dto/add-bookmarks.dto';
@@ -24,7 +24,7 @@ export class BookmarksController {
 
     @UseGuards(JwtGuard)
     @Get()
-    getAll(@Req() req) {
-        return this.bookmarksService.getAll(+req.user.id);
+    getAll(@Req() req, @Query('query') query: string) {
+        return this.bookmarksService.getAll(+req.user.id, query);
     }
 }

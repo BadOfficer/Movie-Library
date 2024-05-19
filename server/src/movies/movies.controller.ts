@@ -104,8 +104,8 @@ export class MoviesController {
         return this.moviesService.getOneById(+id);
     }
 
-    @Post("name")
-    getOneByTitle(@Body() {title}: {title: string}) {
+    @Get("/details/:title")
+    getOneByTitle(@Param("title") title: string) {
         return this.moviesService.getOneByTitle(title);
     }
 }

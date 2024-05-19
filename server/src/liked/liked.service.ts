@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Liked } from './models/liked.model';
 import { MoviesService } from 'src/movies/movies.service';
 import { Movie } from 'src/movies/models/movie.model';
+import { LikedIf } from './models/liked.interface';
 
 @Injectable()
 export class LikedService {
@@ -66,7 +67,7 @@ export class LikedService {
         return existLiked;
     }
 
-    async getAll(userId: number): Promise<Liked> {
+    async getAll(userId: number, query: string): Promise<LikedIf> {
         const existLiked = await this.likedRepository.findOne({ 
             where: { userId },
             include: [{ model: Movie, as: 'movies' }] });
@@ -75,6 +76,21 @@ export class LikedService {
             throw new NotFoundException("liked not found!");
         }
 
+        if(query) {
+            return this.search(existLiked, query);
+        }
+
         return existLiked;
+    }
+
+    async search(liked: LikedIf, query: string): Promise<LikedIf> {
+        if(query) {
+            return {
+                userId: liked.userId,
+                movies: liked.movies.filter(movie => movie.title.includes(query))
+            }
+        }
+
+        return liked;
     }
 }
