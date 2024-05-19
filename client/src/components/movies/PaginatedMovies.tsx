@@ -25,7 +25,7 @@ const PaginatedMovies: FC<Props> = ({ itemsPerPage, movies, handleNewOffset, cou
         <ul className="grid gap-12 grid-cols-6 grid-flow-row flex-1">
             {movies?.map(movie => (
                 <li key={movie.id}>
-                    <Movie title={movie.title} image={`http://localhost:3000/${movie.images[0]}`} rating={movie.rating} year={movie.release}/>
+                    <Movie title={movie.title} image={`http://localhost:3000/${movie.images[0]}`} rating={movie.rating} year={movie.release} id={movie.id}/>
                 </li>
             ))}
         </ul>

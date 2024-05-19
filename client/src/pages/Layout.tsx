@@ -27,7 +27,7 @@ const Layout: FC = () => {
 
     return <div className="min-h-screen m-0 bg-dark-gray text-white font-inter">
         {(isSidebarOpen || isDesktop) && (
-            <SideBar liked={0} bookmarks={0}/>
+            <SideBar/>
         )}
         <div className="z-10 absolute top-2.5 left-2.5 hidden" onClick={handleShowSidebar}>
             {isSidebarOpen ? (

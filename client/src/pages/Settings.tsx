@@ -7,7 +7,7 @@ import SettingsPasswordInput from "../components/settings/SettingsPasswordInput"
 
 const Settings: FC = () => {
     const { data: userData, refetch } = useGetUserQuery('');
-    const [updateUser, {isError: updatingError}] = useUpdateUserDataMutation();
+    const [updateUser, {}] = useUpdateUserDataMutation();
     const [showConfirm, setShowConfirm] = useState(false);
 
     const handleUpdate = async(userData: IUserUpdate) => {

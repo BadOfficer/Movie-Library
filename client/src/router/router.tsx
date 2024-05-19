@@ -12,6 +12,7 @@ import { ProtectedRoute } from "../components/routes/ProtectedRoute"
 import GenresManager from "../pages/GenresManager"
 import { RoleProtectedRoute } from "../components/routes/RoleProtectedRoute"
 import MoviesManager from "../pages/MoviesManager"
+import MovieDetails from "../pages/MovieDetails"
 
 export const router = createBrowserRouter([
     {
@@ -75,6 +76,10 @@ export const router = createBrowserRouter([
                     </RoleProtectedRoute>
                 )
             },
+            {
+                path: 'movie-details/:title',
+                element: <MovieDetails />
+            }
         ]
     }
 ])

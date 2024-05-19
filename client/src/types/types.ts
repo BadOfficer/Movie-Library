@@ -76,10 +76,16 @@ export interface IUserUpdate {
     oldPassword: string;
 }
 
-export interface ILikedCounter {
-    movies: []
+export interface ILiked {
+    movies: IMovie[];
+    userId: number;
 }
 
-export interface IBookmarksCounter {
-    movies: []
+export interface IActionSaved {
+    movieId: number;
+}
+
+export interface IBookmarks {
+    movies: IMovie[];
+    userId: number;
 }

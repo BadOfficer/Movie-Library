@@ -15,16 +15,16 @@ import { logout } from "../store/user/userSlice";
 import { removeTokenFromLocalStorage } from "../helpers/localstorage.helper";
 import { toast } from "react-toastify";
 import { useGetUserQuery } from "../services/user.service";
+import { useGetLikedQuery } from "../services/liked.service";
+import { useGetBookmarksQuery } from "../services/bookmarks.service";
 
-interface Props {
-    liked: number;
-    bookmarks: number;
-}
-
-const SideBar: FC<Props> = ({ liked, bookmarks }) => {
+const SideBar: FC = () => {
     const isAuth = useAuth();
     const isAdmin = useRole();
-    const {data: userData} = useGetUserQuery('', { skip: !isAuth });
+    const {data: userData, refetch} = useGetUserQuery('', { skip: !isAuth });
+    const {data: likedMovies} = useGetLikedQuery('', { skip: !isAuth });
+    const {data: bookmarksMovies} = useGetBookmarksQuery('', { skip: !isAuth });
+
     
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -36,6 +36,11 @@ const SideBar: FC<Props> = ({ liked, bookmarks }) => {
         navigate('/')
     }
     
+    useEffect(() => {
+        if (isAuth) {
+            refetch();
+        }
+    }, [isAuth, refetch]);
 
     return <div className="bg-light-gray h-dvh flex flex-col fixed min-w-72 gap-12 z-0">
                 {isAuth ? (
@@ -79,14 +84,14 @@ const SideBar: FC<Props> = ({ liked, bookmarks }) => {
                             <NavButton path="/liked">
                                 <FaRegHeart size={20}/>
                                 <span className="flex-1">Liked</span>
-                                <span className="px-2 bg-dark-yellow rounded-full text-dark-gray">{liked}</span>
+                                <span className="px-2 bg-dark-yellow rounded-full text-dark-gray">{likedMovies?.movies.length || 0}</span>
                             </NavButton>
                             </li>
                             <li>
                                 <NavButton path="/bookmarks">
                                     <FaRegBookmark size={20}/>
                                     <span className="flex-1">Bookmarks</span>
-                                    <span className="px-2 bg-dark-yellow rounded-full text-dark-gray">{bookmarks}</span>
+                                    <span className="px-2 bg-dark-yellow rounded-full text-dark-gray">{bookmarksMovies?.movies.length || 0}</span>
                                 </NavButton>
                             </li>
                         </Navigation>
