@@ -7,13 +7,16 @@ import { login } from "../store/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import TextInput from "../components/inputs/TextInput";
 import PasswordInput from "../components/inputs/PasswordInput";
+import SolidButton from "../components/buttons/SolidButton";
 
 const Auth: FC = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
+
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -57,6 +60,12 @@ const Auth: FC = () => {
         }
     }
 
+    const handleResetStates = () => {
+        setFirstName('');
+        setLastName('');
+        setPassword('');
+        setEmail('');
+    }
 
     return <div className="bg-dark-gray max-h-full w-full flex justify-center items-center h-screen">
             <div className="bg-light-gray p-9 rounded-xl">
@@ -70,7 +79,7 @@ const Auth: FC = () => {
                     )}
                     <TextInput fieldName="Email" value={email} onChange={(value) => setEmail(value)}/>
                     <PasswordInput value={password} onChange={(value) => setPassword(value)}/>
-                    <button className="px-6 py-2 bg-light-yellow rounded-lg text-dark-gray">{isLogin ? "Login" : "Sign Up"}</button>
+                    <SolidButton type="submit">{isLogin ? "Login" : "Sign Up"}</SolidButton>
                 </form>
                 <div className="text-center mt-2.5">
                     {isLogin ? (
@@ -78,10 +87,7 @@ const Auth: FC = () => {
                             <span className="text-white/75 pr-1.5">Don't have an account?</span>
                             <button className="text-dark-yellow" onClick={() => {
                                 setIsLogin(false)
-                                setFirstName("");
-                                setLastName('');
-                                setPassword('');
-                                setEmail('');
+                                handleResetStates()
                             }}>Register</button>
                         </>
                     ) : (
@@ -89,10 +95,7 @@ const Auth: FC = () => {
                             <span className="text-white/75 pr-1.5">Already have an account?</span>
                             <button className="text-dark-yellow" onClick={() => {
                                 setIsLogin(true)
-                                setFirstName("");
-                                setLastName('');
-                                setPassword('');
-                                setEmail('');
+                                handleResetStates()
                             }}>Login</button>
                         </>
                     )}

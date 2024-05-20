@@ -15,10 +15,12 @@ interface Props {
 
 const Movie: FC<Props> = ({ image, title, rating, year, id }) => {
     const isAuth = useAuth();
+
     const [addToLiked, {}] = useAddToLikedMutation();
     const [addToBookmarks, {}] = useAddToBookmarksMutation();
     const [removeFromLiked, {}] = useRemoveFromLikedMutation();
     const [removeFromBookmarks, {}] = useRemoveFromBookmarksMutation();
+
     const {data: likedList} = useGetLikedQuery('', { skip: !isAuth });
     const {data: bookmarksList} = useGetBookmarksQuery('', { skip: !isAuth});
 
@@ -33,32 +35,15 @@ const Movie: FC<Props> = ({ image, title, rating, year, id }) => {
         isBookmarked = bookmarksList?.movies.some(movie => movie.id === id);
     }
 
-
-    const handleAddToLiked = (movieId: number, e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
-        addingToLiked(movieId);
     }
 
-    const handleRemoveFromLiked = (movieId: number, e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        removingFromLiked(movieId);
-    }
 
-    const handleAddToBookmarks = (movieId: number, e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        addingToBookmarks(movieId);
-    }
-
-    const handleRemoveFromBookmarks = (movieId: number, e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        removingFromBookmarks(movieId);
-    }
-
-    const addingToLiked = async(movieId: number) => {
+    const handleAddToLiked = async(movieId: number, e: React.MouseEvent<HTMLButtonElement>) => {
+        handleReset(e);
+        
         const movie = {
             movieId: movieId
         }
@@ -66,15 +51,9 @@ const Movie: FC<Props> = ({ image, title, rating, year, id }) => {
         await addToLiked(movie);
     }
 
-    const addingToBookmarks = async(movieId: number) => {
-        const movie = {
-            movieId: movieId
-        }
-
-        await addToBookmarks(movie);
-    }
-
-    const removingFromLiked = async(movieId: number) => {
+    const handleRemoveFromLiked = async(movieId: number, e: React.MouseEvent<HTMLButtonElement>) => {
+        handleReset(e);
+        
         const movie = {
             movieId: movieId
         }
@@ -82,7 +61,19 @@ const Movie: FC<Props> = ({ image, title, rating, year, id }) => {
         await removeFromLiked(movie);
     }
 
-    const removingFromBookmarks = async(movieId: number) => {
+    const handleAddToBookmarks = async(movieId: number, e: React.MouseEvent<HTMLButtonElement>) => {
+        handleReset(e);
+        
+        const movie = {
+            movieId: movieId
+        }
+
+        await addToBookmarks(movie);
+    }
+
+    const handleRemoveFromBookmarks = async(movieId: number, e: React.MouseEvent<HTMLButtonElement>) => {
+        handleReset(e);
+        
         const movie = {
             movieId: movieId
         }
@@ -90,51 +81,49 @@ const Movie: FC<Props> = ({ image, title, rating, year, id }) => {
         await removeFromBookmarks(movie);
     }
 
-    return <Link to={`/movie-details/${title}`} className="flex flex-col gap-2.5 max-w-48 text-lg relative group cursor-pointer">
-        <div className="overflow-hidden max-h-64 rounded-xl">
-            <img src={image} alt={image} />
-        </div>
-        <h2 className="capitalize">{title}</h2>
-        <div className="flex gap-2.5">
-            <div className="flex gap-2.5 items-center">
-                <FaStar className="text-light-yellow"/>
-                <span>{rating}</span>
-            </div>
-            <span>|</span>
-            <div>
-                <span>{year}</span>
-            </div>
-        </div>
-        <div className="absolute p-2.5 bg-dark-gray/75 gap-2.5 top-1 right-1 rounded-full hidden group-hover:flex">
-           {isAuth && (
-             <>
-                <>
-                    {isLiked ? (
-                        <button onClick={(e) => handleRemoveFromLiked(id, e)}>
-                            <FaHeart size={14} className="text-dark-yellow"/>
-                        </button>
-                    ) : (
-                        <button onClick={(e) => handleAddToLiked(id, e)}>
-                            <FaRegHeart size={14}/>
-                        </button>
-                    )}
-                </>
-                <div className="w-0.5 h-4 bg-dark-yellow rounded-full"></div>
-                <>
-                    {isBookmarked ? (
-                        <button onClick={(e) => handleRemoveFromBookmarks(id, e)}>
-                            <FaBookmark size={14} className="text-dark-yellow"/>
-                        </button>
-                    ) : (
-                        <button onClick={(e) => handleAddToBookmarks(id, e)}>
-                            <FaRegBookmark size={14}/>
-                        </button>
-                    )}
-                </>
-             </>
-           )}
-        </div>
-    </Link>
+    return <Link to={`/movie-details/${id}`} className="flex flex-col gap-2.5 max-w-48 text-lg relative group cursor-pointer">
+                <div className="overflow-hidden max-h-64 rounded-xl">
+                    <img src={image} alt={image} />
+                </div>
+                <h2 className="capitalize">{title}</h2>
+                <div className="flex gap-2.5">
+                    <div className="flex gap-2.5 items-center">
+                        <FaStar className="text-light-yellow"/>
+                        <span>{rating}</span>
+                    </div>
+                    <span>|</span>
+                    <div>
+                        <span>{year}</span>
+                    </div>
+                </div>
+                {isAuth && (
+                            <div className="absolute p-2.5 bg-dark-gray/75 gap-2.5 top-1 right-1 rounded-full hidden group-hover:flex">
+                                <>
+                                    {isLiked ? (
+                                        <button onClick={(e) => handleRemoveFromLiked(id, e)}>
+                                            <FaHeart size={14} className="text-dark-yellow"/>
+                                        </button>
+                                    ) : (
+                                        <button onClick={(e) => handleAddToLiked(id, e)}>
+                                            <FaRegHeart size={14}/>
+                                        </button>
+                                    )}
+                                </>
+                                <div className="w-0.5 h-4 bg-dark-yellow rounded-full"></div>
+                                <>
+                                    {isBookmarked ? (
+                                        <button onClick={(e) => handleRemoveFromBookmarks(id, e)}>
+                                            <FaBookmark size={14} className="text-dark-yellow"/>
+                                        </button>
+                                    ) : (
+                                        <button onClick={(e) => handleAddToBookmarks(id, e)}>
+                                            <FaRegBookmark size={14}/>
+                                        </button>
+                                    )}
+                                </>
+                            </div>
+                        )}
+            </Link>
 }
 
 export default Movie;

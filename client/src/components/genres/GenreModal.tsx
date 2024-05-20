@@ -1,7 +1,8 @@
 import { FC, useState } from "react";
-import GenreButton from "./GenreButton";
-import GenreCancelButton from "./GenreCancelButton";
 import { IGenreInput } from "../../types/types";
+import TitledInput from "../inputs/TitledInput";
+import SolidButton from "../buttons/SolidButton";
+import BorderButton from "../buttons/BorderButton";
 
 interface Props {
     setVisible: (state: boolean) => void;
@@ -10,11 +11,12 @@ interface Props {
     curTitle?: string
     curDescription?: string
     handleClick?: (genre: IGenreInput) => void
+    setEditState: (state: boolean) => void;
 }
 
-const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription, handleClick = () => {} }) => {
-    const [titleValue, setTitleValue] = useState(curTitle || '');
-    const [descriptionValue, setDescriptionValue] = useState(curDescription || '')
+const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription, handleClick = () => {}, setEditState }) => {
+    const [titleValue, setTitleValue] = useState<string>(curTitle || '');
+    const [descriptionValue, setDescriptionValue] = useState<string>(curDescription || '');
 
     const handleAdd = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -24,7 +26,8 @@ const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription,
            description: formData.get('description') as string 
         };
         handleClick(genre);
-        setVisible(false)
+        handleReset()
+        setEditState(false);
     }
 
     const handleUpdate = (event: React.FormEvent<HTMLFormElement>) => {
@@ -36,31 +39,30 @@ const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription,
             description: formData.get('description') as string 
         }
         handleClick(genre);
-        setVisible(false)
+        handleReset()
+        setEditState(false);
+    }
+
+    const handleReset = () => {
+        setTitleValue('');
+        setDescriptionValue('');
+        setVisible(false);
+        setEditState(false);
     }
 
     return <div className="fixed w-full h-full bottom-0 top-0 right-0 left-0 flex justify-center items-center bg-dark-gray/75 z-50">
                 <div className="bg-light-gray p-9 rounded-xl">
                     <form className="flex flex-col gap-5" onSubmit={type === "post" ? handleAdd : handleUpdate}>
                         <h2 className="text-center text-xl uppercase font-semibold">Adding Genre</h2>
-                        <label htmlFor="title" className="flex gap-2.5 items-center text-lg capitalize">
-                            <span className="flex-1">Genre title: </span>
-                            <input type="text" name="title" className="text-main p-0 text-dark-gray px-2.5 py-2 min-w-96 rounded-md"
-                                    placeholder="Genre title" 
-                                    value={titleValue}
-                                    onChange={(e) => setTitleValue(e.target.value)} />
-                            <input type="hidden" name="id" value={id}/>
-                        </label>
-                        <label htmlFor="description" className="flex gap-2.5 items-start text-lg capitalize">
-                            <span>Genre description: </span>
-                            <textarea name="description" className="text-main p-0 text-dark-gray px-2.5 py-2 min-w-96 rounded-md min-h-48 resize-none" 
-                                        placeholder="Genre description" 
-                                        value={descriptionValue}
-                                        onChange={(e) => setDescriptionValue(e.target.value)} />
-                        </label>
+                        <TitledInput fieldLabel="Genre title:" name="title" handleChange={(e) => setTitleValue(e.target.value)} type="text" placeholder="Genre title" value={titleValue} 
+                                        id={id} el="input" />
+                                        
+                        <TitledInput fieldLabel="Genre description" el="textarea" name="description" handleChange={(e) => setDescriptionValue(e.target.value)} 
+                                        placeholder="Genre description" value={descriptionValue} />
+
                         <div className="flex justify-center gap-2.5">
-                            <GenreButton type="submit">{type === 'post' ? "Add" : "Update"}</GenreButton>
-                            <GenreCancelButton handleClick={() => setVisible(false)} type="reset">Cancel</GenreCancelButton>
+                            <SolidButton type="submit">{type === 'post' ? "Add" : "Update"}</SolidButton>
+                            <BorderButton handleClick={handleReset} type="reset">Cancel</BorderButton>
                         </div>
                     </form>
                 </div>

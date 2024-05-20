@@ -11,11 +11,14 @@ import PaginatedMovies from "../components/movies/PaginatedMovies";
 import Footer from "../components/parts/Footer";
 import Filters from "../components/parts/Filters";
 import FilterGroup from "../components/parts/FilterGroup";
+import IsEmpty from "../components/parts/IsEmpty";
+import SolidButton from "../components/buttons/SolidButton";
+import BorderButton from "../components/buttons/BorderButton";
 
 const Movies: FC = () => {
 
     const [countValue, setCountValue] = useState<number>(18);
-    const [offsetValue, setOffsetValue] = useState(0)
+    const [offsetValue, setOffsetValue] = useState<number>(0)
 
     const [activeReleases, setActiveReleases] = useState<any[]>([]);
     const [activeDurations, setActiveDuration] = useState<any[]>([]);
@@ -23,7 +26,8 @@ const Movies: FC = () => {
     const [idsGenres, setIdsGenres] = useState<number[]>([]);
     const [searchData, setSearchData] = useState('');
 
-    const {data: genres} = useGetGenresQuery('');
+    const {data: genresResponse} = useGetGenresQuery('');
+    const genres = genresResponse?.rows;
     const [showFilter, setShowFilter] = useState(false);
     
     const {data: moviesResponse, isLoading: loadingMovies} = useGetMoviesQuery(`${countValue},${offsetValue},${activeReleases.join(';')},${activeDurations.join(';')},${activeRatings.join(';')},${searchData},${idsGenres.join(';')}`);
@@ -56,6 +60,7 @@ const Movies: FC = () => {
         const releaseYears = formData.getAll('release[]');
         const durations = formData.getAll('duration[]');
         const ratings = formData.getAll('rating[]');
+        
         setActiveReleases(releaseYears);
         setActiveDuration(durations);
         setActiveRatings(ratings);
@@ -89,8 +94,8 @@ const Movies: FC = () => {
     }
     
     return <div className="flex flex-col min-h-screen">
-        <Header currentPage="movies" handleClick={handleSearch}/>
-        <div className="mt-12 flex gap-12 flex-col flex-1">
+        <Header currentPage="movies" handleClick={handleSearch} showSearchBox={true}/>
+        <div className="flex gap-12 flex-col flex-1">
             <MoviesNavigation genres={genres} handleIdsGenres={handleSetGenresIds}/>
             <div className="flex justify-between items-center">
                 <SectionTitle>All Movies</SectionTitle>
@@ -102,7 +107,7 @@ const Movies: FC = () => {
             <div className="flex flex-1 flex-col items-center gap-12">
                 {movies?.length === 0 && (
                     <div className="flex items-center flex-1">
-                        <p className="text-3xl text-orange-700">Movies not found!</p>
+                        <IsEmpty text="It seems that no movies was found." />
                     </div>
                 )}
                 {loadingMovies && (
@@ -140,8 +145,8 @@ const Movies: FC = () => {
                         <FilterGroup name="rating" data={ratings} selectedItems={activeRatings}/>
                     </div>
                     <div className="flex gap-6 justify-center">
-                        <button type="submit" className="px-4 py-2 border-2 border-light-yellow bg-light-yellow text-dark-gray rounded-xl font-medium hover:bg-dark-yellow hover:border-dark-yellow">Apply</button>
-                        <button onClick={() => setShowFilter(false)} className="px-4 py-2 border-2 rounded-xl border-dark-yellow hover:bg-dark-yellow font-medium hover:text-dark-gray">Cancel</button>
+                        <SolidButton type="submit" >Apply</SolidButton>
+                        <BorderButton handleClick={() => setShowFilter(false)}>Cancel</BorderButton>
                     </div>
                 </form>
             </Filters>

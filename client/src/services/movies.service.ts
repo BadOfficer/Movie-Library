@@ -29,11 +29,11 @@ export const moviesApi = createApi({
             }),
             providesTags: ['Movies']
         }),
-        getMovieByTitle: build.query<IMovie, string>({
-            query: (title: string) => ({
-                url: `/movies/details/${title}`,
+        getMovieByID: build.query<IMovie, string>({
+            query: (id: string) => ({
+                url: `/movies/details/${id}`,
                 params: {
-                    title
+                    id
                 }
             }),
             providesTags: ['Movies']
@@ -41,4 +41,4 @@ export const moviesApi = createApi({
     })
 })
 
-export const { useGetMoviesQuery, useGetAllowFilmsQuery, useGetMovieByTitleQuery } = moviesApi
+export const { useGetMoviesQuery, useGetAllowFilmsQuery, useGetMovieByIDQuery } = moviesApi

@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getTokenFromLocalStorage } from "../helpers/localstorage.helper";
-import { IGenre, IGenreInput } from "../types/types";
+import { IGenre, IGenreInput, IGenreResponse } from "../types/types";
 
 export const genresApi = createApi({
     reducerPath: 'genres',
@@ -16,11 +16,13 @@ export const genresApi = createApi({
     }),
     tagTypes: ['Genre'],
     endpoints: build => ({
-        getGenres: build.query<IGenre[], string>({
+        getGenres: build.query<IGenreResponse<IGenre[]>, string>({
             query: (arg: string) => ({  
                 url: '/genres',
                 params: {
-                    query: arg
+                    query: arg.split(',')[0],
+                    count: arg.split(',')[1],
+                    offset: arg.split(',')[2],
                 }
             }),
             providesTags: ['Genre']

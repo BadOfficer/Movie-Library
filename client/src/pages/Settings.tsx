@@ -4,6 +4,8 @@ import { useGetUserQuery, useUpdateUserDataMutation } from "../services/user.ser
 import { IUserUpdate } from "../types/types";
 import { toast } from "react-toastify";
 import SettingsPasswordInput from "../components/settings/SettingsPasswordInput";
+import SolidButton from "../components/buttons/SolidButton";
+import BorderButton from "../components/buttons/BorderButton";
 
 const Settings: FC = () => {
     const { data: userData, refetch } = useGetUserQuery('');
@@ -62,14 +64,14 @@ const Settings: FC = () => {
                         <SettingsInput initialValue={userData.email} name="email" title="Email" />
                         <SettingsPasswordInput initialValue="" name="password" title="New password" />
 
-                        <button className="px-4 py-2 border-2 border-light-yellow bg-light-yellow text-dark-gray rounded-xl font-medium hover:bg-dark-yellow hover:border-dark-yellow" onClick={(e) => handleTryUpdate(e)}>Update</button>
+                        <SolidButton handleClick={(e) => handleTryUpdate(e)}>Update</SolidButton>
                         {showConfirm && (
                             <div className="absolute top-0 left-0 w-full h-full bg-dark-gray/75 flex justify-center items-center" onClick={handleCancelConfirm}>
                                 <div className="p-9 bg-light-gray rounded-xl flex flex-col gap-6" onClick={(e) => e.stopPropagation()}>
                                     <h3>Confirm your old password</h3>
                                     <SettingsPasswordInput initialValue="" name="oldPassword" title="Password" />
-                                    <button type="submit" className="px-4 py-2 border-2 border-light-yellow bg-light-yellow text-dark-gray rounded-xl font-medium hover:bg-dark-yellow hover:border-dark-yellow">Confirm</button>
-                                    <button className="px-4 py-2 border-2 border-light-yellow text-white rounded-xl font-medium hover:bg-light-yellow hover:text-dark-gray" onClick={handleCancelConfirm}>Cancel</button>
+                                    <SolidButton type="submit">Confirm</SolidButton>
+                                    <BorderButton  handleClick={handleCancelConfirm}>Cancel</BorderButton>
                                 </div>
                             </div>
                         )}

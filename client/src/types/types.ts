@@ -38,6 +38,11 @@ export interface IGenre {
     movies: []
 }
 
+export interface IGenreResponse<T> {
+    rows: IGenre[];
+    count: number;
+}
+
 export interface IGenreInput {
     id?: number;
     title: string,

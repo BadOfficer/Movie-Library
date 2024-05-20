@@ -10,14 +10,15 @@ interface Props {
 const MoviesNavigation: FC<Props> = ({ genres, handleIdsGenres }) => {
     
     return <div>
-        {/* <GenreFilterButton title="All" moviesAmount={0} id={1} /> */}
-        <ul className="flex relative gap-6">
-            {genres?.map(genre => (
-                <li key={genre.id}>
-                    <GenreFilterButton title={genre.title} id={genre.id} moviesAmount={genre.movies.length} setGenreId={handleIdsGenres}/>
-                </li>
-            ))}
-        </ul>
+        {genres?.length !== 0 && (
+            <ul className="flex relative gap-6 mt-12">
+                {genres?.map(genre => (
+                    <li key={genre.id}>
+                        <GenreFilterButton title={genre.title} id={genre.id} moviesAmount={genre.movies.length} setGenreId={handleIdsGenres}/>
+                    </li>
+                ))}
+            </ul>
+        )}
     </div>
 }
 

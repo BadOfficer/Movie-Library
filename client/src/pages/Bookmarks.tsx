@@ -2,10 +2,13 @@ import { FC, useState } from "react"
 import { useGetBookmarksQuery } from "../services/bookmarks.service";
 import Header from "../components/parts/Header";
 import Loader from "../components/parts/Loader";
-import Movie from "../components/movies/Movie";
+import IsEmpty from "../components/parts/IsEmpty";
+import SimplyPagination from "../components/parts/SimplyPagination";
+import Footer from "../components/parts/Footer";
 
 const Bookmarks: FC = () => {
     const [searchData, setSearchData] = useState('');
+
     const {data: bookmarksMovies, isLoading} = useGetBookmarksQuery(searchData);
     const bookmarks = bookmarksMovies?.movies; 
 
@@ -14,24 +17,23 @@ const Bookmarks: FC = () => {
     }
     
     return <div className="min-h-screen flex flex-col">
-        <Header currentPage="bookmarks" handleClick={handleSearch}/>
+        <Header currentPage="bookmarks" handleClick={handleSearch} showSearchBox={true}/>
         <div className="flex flex-1">
-            {isLoading && <div className="flex justify-center items-center flex-1">
+            {isLoading && (
+                <div className="flex justify-center items-center flex-1">
                     <Loader />
-                </div>}
-            {bookmarks && bookmarks?.length !== 0 && (
-                <div className="grid grid-cols-6">
-                    {bookmarks.map(movie => (
-                        <Movie key={movie.id} id={movie.id} title={movie.title} image={`http://localhost:3000/${movie.images[0]}`} rating={movie.rating} year={movie.release} />
-                    ))}
                 </div>
+            )}
+            {bookmarks && bookmarks?.length !== 0 && (
+                <SimplyPagination itemsPerPage={18} movies={bookmarks} />
             )}
             {bookmarks && bookmarks?.length === 0 && (
                 <div className="flex flex-1 items-center justify-center">
-                    Movies list is empty!
+                    <IsEmpty path="/movies" text="Looks like you don't have any movies" textButton="+ Movies" key="bookmarksIsEmpty" />
                 </div>
             )}
         </div>
+        <Footer />
     </div>
 }
 

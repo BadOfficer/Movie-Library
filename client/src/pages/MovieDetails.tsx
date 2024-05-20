@@ -1,11 +1,11 @@
 import { FC } from "react";
 import { useParams } from "react-router-dom";
-import { useGetMovieByTitleQuery } from "../services/movies.service";
+import { useGetMovieByIDQuery } from "../services/movies.service";
 
 const MovieDetails: FC = () => {
 
-    const { title } = useParams();
-    const {data: movie, isLoading, isError} = useGetMovieByTitleQuery(title as string)
+    const { id } = useParams();
+    const {data: movie, isLoading, isError} = useGetMovieByIDQuery(id as string)
 
     if(movie) {
         console.log(movie);
@@ -13,7 +13,7 @@ const MovieDetails: FC = () => {
     
 
     return <div>
-        {title}
+        {id}
     </div>
 }
 
