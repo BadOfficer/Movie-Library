@@ -20,7 +20,7 @@ export class MoviesService {
     }
 
     async getOneById(id: number): Promise<MovieIf> {
-        return this.moviesRepository.findOne({
+        const existMovie = await this.moviesRepository.findOne({
             where: {
                 id
             }, include: {
@@ -29,6 +29,12 @@ export class MoviesService {
                 attributes: ["title"]
             }
         })
+
+        if(!existMovie) {
+            throw new NotFoundException("Movie not found!");
+        }
+
+        return existMovie;
     }
 
     async getOneByTitle(title: string): Promise<MovieIf> {
@@ -57,7 +63,7 @@ export class MoviesService {
     
         if (query) {
             whereClause.title = {
-                [Op.like]: `%${query}%`
+                [Op.iLike]: `%${query}%`
             };
         }
     
@@ -251,53 +257,6 @@ export class MoviesService {
         return movies
     }
 
-    // async getAllMovies(filterOptions: FilterOptions): Promise<{ rows: Movie[] }> {
-    //     const { release, seasons, genreIds, count, offset, query } = filterOptions;
-    //     const calculatedOffset = offset * count;
-    //     let whereClause: any = {};
-    //     let include: any[] = [];
-    
-        
-    //     if (genreIds) {
-    //         const genreIdValues = genreIds.split(';').map(id => parseInt(id));
-    //         include.push({
-    //             model: Genre,
-    //             where: {
-    //                 [Op.in]: genreIdValues
-    //             }
-    //         });
-    //     }
-    
-    //     if (release) {
-    //         const releaseValues = release.split(';');
-    //         whereClause.release = {
-    //             [Op.in]: releaseValues
-    //         };
-    //     }
-    
-    //     if (seasons) {
-    //         const seasonValues = seasons.split(';');
-    //         whereClause.seasons = {
-    //             [Op.in]: seasonValues
-    //         };
-    //     }
-
-    //     if (query) {
-    //         whereClause.title = {
-    //             [Op.like]: `%${query}%`
-    //         };
-    //     }
-    
-    //     const movies = await Movie.findAndCountAll({
-    //         where: whereClause,
-    //         include: include,
-    //         limit: count,
-    //         offset: calculatedOffset
-    //     });
-    
-    //     return movies;
-    // }
-
     async search(query: string): Promise<Movie[]> {
         if (!query) {
             return await Movie.findAll();
@@ -321,12 +280,6 @@ export class MoviesService {
     }
 
     async createMovie(createMovieDto: CreateMovieDto, images: any): Promise<MovieIf> {
-        
-        const existingMovie = await this.findOne({ where: { title: createMovieDto.title } });
-        if (existingMovie) {
-            throw new BadRequestException("This movie already exists!");
-        }
-    
         const [imagesNames, validatedGenres] = await Promise.all([
             this.filesService.createFiles(images),
             Promise.all(createMovieDto.genres.split(",").map(async (idGenre) => {

@@ -1,27 +1,38 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import * as fs from "fs";
-import * as path from "path";
-import * as uuid from "uuid";
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import * as uuid from 'uuid';
 
 @Injectable()
 export class FilesService {
-    async createFiles(files) {
+    private readonly staticFolderPath = path.resolve(__dirname, '..', 'static');
+
+    constructor() {
+        this.ensureStaticFolderExists();
+    }
+
+    private async ensureStaticFolderExists() {
         try {
-            const filesNames = []
-            files.map(file => {
-                const fileName = uuid.v4() + '.jpg';
-                const filePath = path.resolve(__dirname, "..", "static")
-                if(!fs.existsSync(filePath)) {
-                    fs.mkdirSync(filePath, {recursive: true})
-                }
-                fs.writeFileSync(path.join(filePath, fileName), file.buffer);
-                filesNames.push(fileName);
-            })
-            console.log(filesNames);
-            
+            await fs.access(this.staticFolderPath);
+        } catch (e) {
+            await fs.mkdir(this.staticFolderPath, { recursive: true });
+        }
+    }
+
+    async createFiles(files: Express.Multer.File[]): Promise<string[]> {
+        try {
+            await this.ensureStaticFolderExists(); // Ensure the static folder exists before saving files
+
+            const filesNames = await Promise.all(files.map(async file => {
+                const fileName = `${uuid.v4()}.jpg`;
+                const filePath = path.join(this.staticFolderPath, fileName);
+                await fs.writeFile(filePath, file.buffer);
+                return fileName;
+            }));
+
             return filesNames;
-        } catch(e) {
-            throw new HttpException("Images don't added!", HttpStatus.INTERNAL_SERVER_ERROR)
+        } catch (e) {
+            throw new HttpException("Images don't added!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

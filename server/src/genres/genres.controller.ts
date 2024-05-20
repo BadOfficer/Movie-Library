@@ -27,10 +27,9 @@ export class GenresController {
         return this.genresService.getOne(+id);
     }
 
-    @Roles(Role.ADMIN)
-    @UseGuards(JwtGuard, RolesGuard)
+
     @Get()
-    getAll(@Query("count") count: string = "10", @Query("offset") offset: string = "0", @Query("query") query: string = ''): Promise<GenreIf[]> {
+    getAll(@Query("count") count: string = "10", @Query("offset") offset: string = "0", @Query("query") query: string = ''): Promise<{rows: GenreIf[], count: number}> {
         return this.genresService.getAll(count, offset, query);
     }
 

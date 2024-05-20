@@ -4,6 +4,7 @@ import { Liked } from './models/liked.model';
 import { MoviesService } from 'src/movies/movies.service';
 import { Movie } from 'src/movies/models/movie.model';
 import { LikedIf } from './models/liked.interface';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class LikedService {
@@ -68,29 +69,37 @@ export class LikedService {
     }
 
     async getAll(userId: number, query: string): Promise<LikedIf> {
+
         const existLiked = await this.likedRepository.findOne({ 
             where: { userId },
-            include: [{ model: Movie, as: 'movies' }] });
-        
-        if (!existLiked) {
-            throw new NotFoundException("liked not found!");
+            include: [{
+                model: Movie, as: 'movies'
+            }]
+        });
+
+        if(!existLiked) {
+            throw new NotFoundException("Liked not found!");
         }
 
+        
         if(query) {
-            return this.search(existLiked, query);
+            const existMovies =  await this.likedRepository.findOne({ 
+                where: { userId },
+                include: [{ 
+                    model: Movie, as: 'movies', where: { title: { [Op.iLike]: `%${query}%` } } 
+                }] 
+            });
+
+            if(!existMovies) {
+                return {
+                    userId,
+                    movies: []
+                }
+            }
+
+            return existMovies
         }
 
         return existLiked;
-    }
-
-    async search(liked: LikedIf, query: string): Promise<LikedIf> {
-        if(query) {
-            return {
-                userId: liked.userId,
-                movies: liked.movies.filter(movie => movie.title.includes(query))
-            }
-        }
-
-        return liked;
     }
 }

@@ -24,7 +24,7 @@ export class LikedController {
 
     @UseGuards(JwtGuard)
     @Get()
-    getAll(@Req() req, @Query('query') query: string) {
+    getAll(@Req() req, @Query('query') query: string = '') {
         return this.likedService.getAll(+req.user.id, query);
     }
 }

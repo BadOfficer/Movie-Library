@@ -71,30 +71,33 @@ export class BookmarksService {
     }
 
     async getAll(userId: number, query: string): Promise<BookmarksIf> {
-        const existLiked = await this.bookmarksRepository.findOne({ 
+        const existBookmarks = await this.bookmarksRepository.findOne({ 
             where: { userId },
             include: [{model: Movie, as: 'movies'}] 
         });
         
-        if (!existLiked) {
+        if (!existBookmarks) {
             throw new NotFoundException("bookmarks not found!");
         }
 
         if(query) {
-            return this.search(existLiked, query);
-        }
+            const existMovies =  await this.bookmarksRepository.findOne({ 
+                where: { userId },
+                include: [{ 
+                    model: Movie, as: 'movies', where: { title: { [Op.iLike]: `%${query}%` } }
+                }] 
+            });
 
-        return existLiked;
-    } 
-
-    async search(bookmarks: BookmarksIf, query: string): Promise<BookmarksIf> {
-        if(query) {
-            return {
-                userId: bookmarks.userId,
-                movies: bookmarks.movies.filter(movie => movie.title.includes(query))
+            if(!existMovies) {
+                return {
+                    userId,
+                    movies: []
+                }
             }
+
+            return existMovies
         }
 
-        return bookmarks;
-    }
+        return existBookmarks;
+    } 
 }
