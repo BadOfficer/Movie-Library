@@ -40,7 +40,7 @@ export class GenresService {
 
     async getAll(count: string, offset: string, query: string): Promise<{rows: GenreIf[], count: number}> {
         if(!query) {
-            return await this.genresRepository.findAndCountAll({offset: +offset, limit: +count, include: {all: true}});
+            return await this.genresRepository.findAndCountAll({offset: +offset * +count, limit: +count, include: {all: true}});
         }
         
         return await this.genresRepository.findAndCountAll({offset: +offset, limit: +count, include: {all: true}, where: {

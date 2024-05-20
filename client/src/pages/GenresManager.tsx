@@ -20,15 +20,15 @@ const GenresManager: FC = () => {
     const [curDescription, setCurDescription] = useState('');
     
     const [searchData, setSearchData] = useState('');
+    const [offset, setOffset] = useState(0);
+    const count = 18;
     
-    const {isLoading, isError, data: genresResponse} = useGetGenresQuery(searchData);
+    const {isLoading, isError, data: genresResponse} = useGetGenresQuery(`${searchData},${count},${offset}`);
     const genres = genresResponse?.rows;
 
     const [createGenre, {isError: creatingError}] = useCreateGenreMutation();
     const [updateGenre, {isError: updatingError}] = useUpdateGenreMutation();
     const [deleteGenre, {isError: deletingError}] = useDeleteGenreMutation();
-
-    const [offset, setOffset] = useState(0);
 
     const handleSearch = (text: string) => {
         setSearchData(text);
@@ -99,7 +99,7 @@ const GenresManager: FC = () => {
                         <IsEmpty text="It seems that no genre was found!" />
                     </div>
                 ) : (
-                    <PaginatedGenres genres={genres} handleClick={handleClick} handleDelete={handleDelete} countGenres={genresResponse?.count || 0} handleSetNewOffset={setOffset} itemsPerPage={10}/>
+                    <PaginatedGenres genres={genres} handleClick={handleClick} handleDelete={handleDelete} countGenres={genresResponse?.count || 0} handleSetNewOffset={setOffset} itemsPerPage={count}/>
                 )}
             </div>
             <Footer />
