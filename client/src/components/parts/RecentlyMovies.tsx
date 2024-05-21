@@ -5,7 +5,6 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { IMovie } from "../../types/types";
 import Loader from "./Loader";
 import Movie from "../movies/Movie";
-import IsEmpty from "./IsEmpty";
 
 interface Props {
     sectionTitle: string;
