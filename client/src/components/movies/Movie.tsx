@@ -1,9 +1,10 @@
 import { FC } from "react";
-import { FaBookmark, FaHeart, FaRegBookmark, FaRegHeart, FaStar } from "react-icons/fa";
+import { FaBookmark, FaHeart, FaRegBookmark, FaRegHeart } from "react-icons/fa";
 import { useAddToLikedMutation, useGetLikedQuery, useRemoveFromLikedMutation } from "../../services/liked.service";
 import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
 import { useAddToBookmarksMutation, useGetBookmarksQuery, useRemoveFromBookmarksMutation } from "../../services/bookmarks.service";
+import Rating from "../parts/Rating";
 
 interface Props {
     id: number;
@@ -87,10 +88,7 @@ const Movie: FC<Props> = ({ image, title, rating, year, id }) => {
                 </div>
                 <h2 className="capitalize">{title}</h2>
                 <div className="flex gap-2.5">
-                    <div className="flex gap-2.5 items-center">
-                        <FaStar className="text-light-yellow"/>
-                        <span>{rating}</span>
-                    </div>
+                    <Rating rating={rating} />
                     <span>|</span>
                     <div>
                         <span>{year}</span>

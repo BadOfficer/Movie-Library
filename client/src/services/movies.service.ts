@@ -54,14 +54,32 @@ export const moviesApi = createApi({
         }),
         getMovieByID: build.query<IMovie, string>({
             query: (id: string) => ({
-                url: `/movies/details/${id}`,
+                url: `/movies/${id}`,
                 params: {
                     id
                 }
             }),
             providesTags: ['Movies']
-        })
+        }),
+        getSlierMovies: build.query<IMovie[], string>({
+            query: () => ({
+                url: '/movies/slider',
+            }),
+            providesTags: ['Movies']
+        }),
+        getRecentlyFilms: build.query<IMovie[], string>({
+            query: () => ({
+                url: '/movies/last-films'
+            }),
+            providesTags: ['Movies']
+        }),
+        getRecentlySeries: build.query<IMovie[], string>({
+            query: () => ({
+                url: '/movies/last-series'
+            }),
+            providesTags: ['Movies']
+        }),
     })
 })
 
-export const { useGetMoviesQuery, useGetAllowFilmsQuery, useGetMovieByIDQuery, useGetSeriesQuery, useGetAllowSeriesQuery } = moviesApi
+export const { useGetMoviesQuery, useGetAllowFilmsQuery, useGetMovieByIDQuery, useGetSeriesQuery, useGetAllowSeriesQuery, useGetSlierMoviesQuery, useGetRecentlyFilmsQuery, useGetRecentlySeriesQuery } = moviesApi

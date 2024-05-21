@@ -195,18 +195,18 @@ export class MoviesService {
         })
     }
 
-    async getLastTenCreatedFilms(): Promise<Movie[]> {
+    async getLastTenCreatedFilms(limit: number = 10): Promise<Movie[]> {
         return await this.moviesRepository.findAll({
             where: {
                 seasons: 1,
                 series: 1
             },
             order: [['createdAt', 'DESC']],
-            limit: 10
+            limit
         });
     }
 
-    async getLastTenCreatedSeries(): Promise<Movie[]> {
+    async getLastTenCreatedSeries(limit: number = 10): Promise<Movie[]> {
         return await this.moviesRepository.findAll({
             where: {
                 seasons: {
@@ -217,7 +217,7 @@ export class MoviesService {
                 }
             },
             order: [['createdAt', 'DESC']],
-            limit: 10
+            limit
         });
     }
 

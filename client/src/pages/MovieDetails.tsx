@@ -14,6 +14,7 @@ const MovieDetails: FC = () => {
 
     return <div>
         {id}
+        {movie?.title}
     </div>
 }
 
