@@ -74,9 +74,19 @@ export class MoviesController {
         return this.moviesService.getSeries(filterOptions);
     }
 
-    @Get("slider")
-    getLastItems() {
-        return this.moviesService.getLastTenCreatedMovies();
+    @Get("last-films")
+    getLastTenFilms() {
+        return this.moviesService.getLastTenCreatedFilms();
+    }
+
+    @Get("last-series")
+    getLastTenSeries() {
+        return this.moviesService.getLastTenCreatedSeries();
+    }
+
+    @Get('slider')
+    getFiveBetterMovies() {
+        return this.moviesService.getTopRatedMovies();
     }
 
     @UsePipes(new ValidationPipe())
@@ -94,18 +104,8 @@ export class MoviesController {
         return this.moviesService.deleteMovie(+id);
     }
 
-    @Get("/search")
-    search(@Query("query") query: string): Promise<Movie[]> {
-        return this.moviesService.search(query);
-    }
-
     @Get(":id")
     getOneById(@Param("id") id: string): Promise<MovieIf> {
         return this.moviesService.getOneById(+id);
-    }
-
-    @Get("/details/:title")
-    getOneByTitle(@Param("title") title: string) {
-        return this.moviesService.getOneByTitle(title);
     }
 }

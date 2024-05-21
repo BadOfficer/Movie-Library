@@ -8,7 +8,7 @@ interface Props {
 }
 
 const FilterGroup: FC<Props> = ({ name, data, selectedItems }) => {
-    return <div className="flex flex-col pl-6 mt-4">
+    return <div className="flex flex-col pl-6 mt-4 max-h-24 overflow-auto">
             {data.map(item => (
                 <CheckBox item={item} active={selectedItems.includes(item)} key={item} name={name}/>
             ))}

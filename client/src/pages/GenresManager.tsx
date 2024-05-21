@@ -26,9 +26,9 @@ const GenresManager: FC = () => {
     const {isLoading, isError, data: genresResponse} = useGetGenresQuery(`${searchData},${count},${offset}`);
     const genres = genresResponse?.rows;
 
-    const [createGenre, {isError: creatingError}] = useCreateGenreMutation();
-    const [updateGenre, {isError: updatingError}] = useUpdateGenreMutation();
-    const [deleteGenre, {isError: deletingError}] = useDeleteGenreMutation();
+    const [createGenre, {}] = useCreateGenreMutation();
+    const [updateGenre, {}] = useUpdateGenreMutation();
+    const [deleteGenre, {}] = useDeleteGenreMutation();
 
     const handleSearch = (text: string) => {
         setSearchData(text);
@@ -43,35 +43,32 @@ const GenresManager: FC = () => {
     }
 
     const handleCreate = async(genre: IGenreInput) => {
-        await createGenre(genre);
-
-        if(!creatingError) {
+        try{
+            await createGenre(genre);
             toast.success(`${genre.title} has been added!`)
-        } else {
+        } catch(e) {
             toast.error("Something went wrong!")
         }
         
     }
 
     const handleUpdate = async(genre: IGenreInput) => {
-        await updateGenre(genre)
-       
-        if(!updatingError) {
+        try{
+            await updateGenre(genre)
             toast.success(`${genre.title} has been updated!`);
             setIsEdit(false)
-        } else {
+        } catch(e) {
             toast.error("Something went wrong!")
         }
     }
 
     const handleDelete = async(genreId: number) => {
-        await deleteGenre(genreId);
-       
-        if(!deletingError) {
+        try {
+            await deleteGenre(genreId);
             toast.success('Genre has been deleted!')
-        } else {
+        } catch(e) {
             toast.error("Something went wrong!")
-        }
+        }``
     }
 
     return <>
