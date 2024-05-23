@@ -8,7 +8,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 interface Props {
     genres: IGenre[] | undefined;
     handleClick: (id: number, title: string, description: string) => void;
-    handleDelete: (id: number) => void;
+    handleDelete: (id: number, e: any) => void;
     handleSetNewOffset: (offsetValue: number) => void;
     countGenres: number;
     itemsPerPage: number

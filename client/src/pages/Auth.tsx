@@ -35,8 +35,13 @@ const Auth: FC = () => {
                 setIsLogin((isLoginState) => !isLoginState)
             }
         } catch(err: any) {
-            const error = err.response?.data.message;
-            toast.error(error.toString());
+            const errorData = err.response?.data.message;
+                
+            if (Array.isArray(errorData)) {
+                errorData.forEach((msg: string) => toast.error(msg));
+            } else {
+                toast.error(errorData.message);
+            }
         }
     }
 

@@ -42,33 +42,60 @@ const GenresManager: FC = () => {
         setIsEdit(true)
     }
 
-    const handleCreate = async(genre: IGenreInput) => {
-        try{
-            await createGenre(genre);
+    const handleCreate = async(genre: IGenreInput, e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        const {data, error} = await createGenre(genre)
+        if(data) {
             toast.success(`${genre.title} has been added!`)
-        } catch(e) {
-            toast.error("Something went wrong!")
+        }
+        if(error) {
+            if ('data' in error) {
+                const errorData = error.data as { message: string[] | string };
+                
+                if (Array.isArray(errorData.message)) {
+                    errorData.message.forEach(msg => toast.error(msg));
+                } else {
+                    toast.error(errorData.message);
+                }
+            }
         }
         
     }
 
-    const handleUpdate = async(genre: IGenreInput) => {
-        try{
-            await updateGenre(genre)
-            toast.success(`${genre.title} has been updated!`);
-            setIsEdit(false)
-        } catch(e) {
-            toast.error("Something went wrong!")
+    const handleUpdate = async(genre: IGenreInput, e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        const {data, error} = await updateGenre(genre)
+        if(data) {
+            toast.success(`${genre.title} has been updated!`)
+        }
+        if(error) {
+            if ('data' in error) {
+                const errorData = error.data as { message: string[] | string };
+                
+                if (Array.isArray(errorData.message)) {
+                    errorData.message.forEach(msg => toast.error(msg));
+                } else {
+                    toast.error(errorData.message);
+                }
+            }
         }
     }
 
-    const handleDelete = async(genreId: number) => {
-        try {
-            await deleteGenre(genreId);
-            toast.success('Genre has been deleted!')
-        } catch(e) {
-            toast.error("Something went wrong!")
-        }``
+    const handleDelete = async(genreId: number, e: any) => {
+        e.preventDefault();
+        const {error} = await deleteGenre(genreId)
+        if(error) {
+            if ('data' in error) {
+                const errorData = error.data as { message: string[] | string };
+                
+                if (Array.isArray(errorData.message)) {
+                    errorData.message.forEach(msg => toast.error(msg));
+                } else {
+                    toast.error(errorData.message);
+                }
+            }
+        }
+        toast.success("Genre has been deleted!")
     }
 
     return <>

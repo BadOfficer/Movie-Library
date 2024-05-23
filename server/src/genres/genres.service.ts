@@ -52,9 +52,14 @@ export class GenresService {
 
     async update(id: number, newGenreData: UpdateGenreDto): Promise<GenreIf> {
         const genre = await this.genresRepository.findOne({where: {id}})
+        const existGenre = await this.genresRepository.findOne({where: {title: newGenreData.title}})
 
         if(!genre) {
             throw new NotFoundException("Genre not found!");
+        }
+        
+        if(existGenre) {
+            throw new BadRequestException(`${newGenreData.title} is exist`)
         }
 
         Object.assign(genre, newGenreData);

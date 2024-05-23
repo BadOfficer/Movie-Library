@@ -7,7 +7,7 @@ interface Props {
     title: string,
     amount: number,
     handleClick?: () => void
-    handleDelete: (id: number) => void
+    handleDelete: (id: number, e: any) => void
 }
 
 const Genre: FC<Props> = ({ title, amount, id, handleClick, handleDelete }) => {
@@ -21,7 +21,7 @@ const Genre: FC<Props> = ({ title, amount, id, handleClick, handleDelete }) => {
                     </button>
 
                     <div>
-                        <button className="flex gap-2.5 items-center hover:text-orange-700" onClick={() => handleDelete(id)}>
+                        <button className="flex gap-2.5 items-center hover:text-orange-700" onClick={(e) => handleDelete(id, e)}>
                             <MdDeleteOutline />
                             <span>Delete</span>
                         </button>

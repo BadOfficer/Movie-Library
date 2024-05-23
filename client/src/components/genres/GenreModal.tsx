@@ -10,7 +10,7 @@ interface Props {
     id?: number;
     curTitle?: string
     curDescription?: string
-    handleClick?: (genre: IGenreInput) => void
+    handleClick?: (genre: IGenreInput, e: React.FormEvent<HTMLFormElement>) => void
     setEditState: (state: boolean) => void;
 }
 
@@ -25,7 +25,7 @@ const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription,
            title: formData.get('title') as string,
            description: formData.get('description') as string 
         };
-        handleClick(genre);
+        handleClick(genre, event);
         handleReset()
         setEditState(false);
     }
@@ -38,7 +38,7 @@ const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription,
             title: formData.get('title') as string,
             description: formData.get('description') as string 
         }
-        handleClick(genre);
+        handleClick(genre, event);
         handleReset()
         setEditState(false);
     }
