@@ -59,6 +59,7 @@ export interface IMovie {
     seasons: number;
     series: number;
     duration: string;
+    genres: any[];
 }
 
 export interface IMoviesResponse<T> {

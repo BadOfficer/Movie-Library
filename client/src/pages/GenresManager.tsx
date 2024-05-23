@@ -74,9 +74,9 @@ const GenresManager: FC = () => {
     return <>
         {showModal && <GenreModal setVisible={setShowModal} type="post" handleClick={handleCreate} setEditState={setIsEdit}/>}
         {showModal && isEdit && <GenreModal setVisible={setShowModal} type="patch" id={genreId} curTitle={curTitle} curDescription={curDescription} handleClick={handleUpdate} setEditState={setIsEdit}/>}
-        <>
+        <div className="w-full flex flex-col flex-1">
             <Header currentPage="Genres" handleClick={handleSearch} showSearchBox={true}/>
-            <div className="relatrive mt-12 flex-1 flex flex-col">
+            <div className="relatrive mt-12 flex-1 flex flex-col mx-2.5 lg:mx-2.5">
                 <div className="w-full bg-light-gray py-2.5 px-6 flex justify-between items-center rounded-xl">
                     <h3 className="text-xl">Actions: </h3>
                     <div>
@@ -100,7 +100,7 @@ const GenresManager: FC = () => {
                 )}
             </div>
             <Footer />
-        </>
+        </div>
     </>
 }
 

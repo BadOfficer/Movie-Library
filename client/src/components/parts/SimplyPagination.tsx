@@ -22,10 +22,10 @@ const SimplyPagination: FC<Props> = ({movies, itemsPerPage}) => {
       };
 
     return (
-        <div className="flex  flex-1 flex-col">
-            <div className="flex flex-wrap mt-12 flex-1 gap-12">
+        <div className="flex  flex-1 flex-col gap-12">
+            <div className="flex flex-wrap mt-12 flex-1 gap-12 justify-center lg:justify-start">
                 {currentItems && currentItems.map((movie) => (
-                    <Movie key={movie.id} id={movie.id} title={movie.title} image={`http://localhost:3000/${movie.images[0]}`} rating={movie.rating} year={movie.release} />
+                    <Movie key={movie.id} id={movie.id} title={movie.title} image={`http://localhost:3000/${movie.images[1]}`} rating={movie.rating} year={movie.release} />
                 ))}
             </div>
             <ReactPaginate
@@ -41,7 +41,7 @@ const SimplyPagination: FC<Props> = ({movies, itemsPerPage}) => {
                 </ArrowButton>)}
                 renderOnZeroPageCount={null}
                 activeClassName="text-white"
-                className="flex gap-9 items-center text-white/75 mb-9 justify-center"
+                className="flex gap-9 items-center text-white/75 mb-3 lg:mb-9 justify-center"
             />
         </div>
     )

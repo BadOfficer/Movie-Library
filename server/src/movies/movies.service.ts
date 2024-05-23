@@ -33,7 +33,7 @@ export class MoviesService {
         if(!existMovie) {
             throw new NotFoundException("Movie not found!");
         }
-
+        
         return existMovie;
     }
 
@@ -191,7 +191,12 @@ export class MoviesService {
     async getTopRatedMovies(limit: number = 5): Promise<Movie[]> {
         return this.moviesRepository.findAll({
             order: [['rating', 'DESC']],
-            limit: limit
+            limit: limit, 
+            include: {
+                model: Genre,
+                through: { attributes: [] },
+                attributes: ["title"]
+            }
         })
     }
 

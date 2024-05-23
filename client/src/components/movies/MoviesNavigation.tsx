@@ -11,7 +11,7 @@ const MoviesNavigation: FC<Props> = ({ genres, handleIdsGenres }) => {
     
     return <div>
         {genres?.length !== 0 && (
-            <ul className="flex relative gap-6 mt-12">
+            <ul className="flex relative gap-6 mt-12 overflow-auto">
                 {genres?.map(genre => (
                     <li key={genre.id}>
                         <GenreFilterButton title={genre.title} id={genre.id} moviesAmount={genre.movies.length} setGenreId={handleIdsGenres}/>

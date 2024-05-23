@@ -51,7 +51,7 @@ const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription,
     }
 
     return <div className="fixed w-full h-full bottom-0 top-0 right-0 left-0 flex justify-center items-center bg-dark-gray/75 z-50">
-                <div className="bg-light-gray p-9 rounded-xl">
+                <div className="bg-light-gray p-3 rounded-xl sm:p-9">
                     <form className="flex flex-col gap-5" onSubmit={type === "post" ? handleAdd : handleUpdate}>
                         <h2 className="text-center text-xl uppercase font-semibold">Adding Genre</h2>
                         <TitledInput fieldLabel="Genre title:" name="title" handleChange={(e) => setTitleValue(e.target.value)} type="text" placeholder="Genre title" value={titleValue} 

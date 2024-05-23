@@ -6,7 +6,7 @@ interface Props {
 }
 
 const ArrowButton: FC<Props> = ({ children, handleClick }) => {
-    return <button onClick={handleClick} className="p-2.5 rounded-xl bg-light-yellow hover:bg-dark-yellow text-dark-gray">
+    return <button onClick={handleClick} className="p-2.5 rounded-xl bg-light-yellow lg:hover:bg-dark-yellow text-dark-gray">
         {children}
     </button>
 }

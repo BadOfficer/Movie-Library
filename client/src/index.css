@@ -2,10 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+    box-sizing: border-box;
+  }
+
 @layer components {
-    .container {
-        max-width: 1495px;
-    }
+    
 
     .active {
         position: relative;
@@ -30,5 +32,15 @@
     }
     .unfocused:focus{
         outline: none !important;
+    }
+
+    .sidebar::-webkit-scrollbar {
+        display: none;
+      }
+      
+      /* Hide scrollbar for IE, Edge and Firefox */
+    .sidebar {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
     }
 }

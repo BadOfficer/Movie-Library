@@ -93,16 +93,16 @@ const Movies: FC = () => {
         });
     }
     
-    return <div className="flex flex-col min-h-screen">
+    return <div className="flex flex-col min-h-screen w-full">
         <Header currentPage="movies" handleClick={handleSearch} showSearchBox={true}/>
-        <div className="flex gap-12 flex-col flex-1">
+        <div className="flex gap-12 flex-col flex-1 p-6 lg:p-0">
             <MoviesNavigation genres={genres} handleIdsGenres={handleSetGenresIds}/>
-            <div className="flex justify-between items-center">
-                <SectionTitle>All Movies</SectionTitle>
-                <div className="flex items-center gap-9">
-                    <CountSelect handleCount={handleChangeCount} count={countValue}/>
-                    <FilterSortButton handleClick={handleShowFilters}/>
+            <div className="flex justify-between items-center gap-3 lg:gap-9">
+                <div className="justify-start flex lg:flex-1">
+                    <SectionTitle>All Movies</SectionTitle>
                 </div>
+                <CountSelect handleCount={handleChangeCount} count={countValue}/>
+                <FilterSortButton handleClick={handleShowFilters}/>
             </div>
             <div className="flex flex-1 flex-col items-center gap-12">
                 {movies?.length === 0 && (

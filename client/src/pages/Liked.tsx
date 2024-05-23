@@ -15,7 +15,7 @@ const Liked: FC = () => {
         setSearchData(text);
     }
     
-    return <div className="min-h-screen flex flex-col">
+    return <div className="min-h-screen flex flex-col w-full">
         <Header currentPage="liked" handleClick={handleSearch} showSearchBox={true}/>
         <div className="flex flex-1">
             {isLoading && (

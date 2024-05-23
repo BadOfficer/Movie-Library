@@ -54,9 +54,9 @@ const Settings: FC = () => {
     }
 
     return (
-        <div className="h-screen flex justify-center items-center">
+        <div className="h-screen flex justify-center items-center w-full">
             {userData && (
-                <div className="bg-light-gray p-9 rounded-xl flex flex-col items-center">
+                <div className="bg-light-gray p-3 rounded-xl lg:p-9 flex flex-col items-center">
                     <h2 className="text-3xl uppercase font-semibold text-center">Settings</h2>
                     <form className="flex flex-col gap-6 mt-6" onSubmit={handleSubmit}>
                         <SettingsInput initialValue={userData.first_name} name="first_name" title="First name" />
@@ -67,7 +67,7 @@ const Settings: FC = () => {
                         <SolidButton handleClick={(e) => handleTryUpdate(e)}>Update</SolidButton>
                         {showConfirm && (
                             <div className="absolute top-0 left-0 w-full h-full bg-dark-gray/75 flex justify-center items-center" onClick={handleCancelConfirm}>
-                                <div className="p-9 bg-light-gray rounded-xl flex flex-col gap-6" onClick={(e) => e.stopPropagation()}>
+                                <div className="p-3 lg:p-9 bg-light-gray rounded-xl flex flex-col gap-6 items-center" onClick={(e) => e.stopPropagation()}>
                                     <h3>Confirm your old password</h3>
                                     <SettingsPasswordInput initialValue="" name="oldPassword" title="Password" />
                                     <SolidButton type="submit">Confirm</SolidButton>

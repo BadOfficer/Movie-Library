@@ -5,7 +5,7 @@ import MovieModal from "../components/movies/MovieModal";
 const MoviesManager: FC = () => {
     const [showModal, setShowModal] = useState(false);
 
-    return <div>
+    return <div className="w-full">
         <Header currentPage="Movies" showSearchBox={true} />
         <div className="relatrive mt-12 flex-1 flex flex-col">
             <div className="w-full bg-light-gray py-2.5 px-6 flex justify-between items-center rounded-xl">

@@ -26,7 +26,7 @@ const PaginatedGenres: FC<Props> = ({genres, handleClick, handleDelete, handleSe
     return (
         <>
             <div className="flex items-start justify-center flex-1">
-                <ul className="flex flex-wrap mt-9 gap-9">
+                <ul className="flex flex-wrap mt-9 gap-9 justify-center lg:justify-start">
                 {genres?.map((genre, index) => (
                     <li key={index} className="block">
                         <Genre title={genre.title} amount={genre.movies.length} id={genre.id} handleClick={() => handleClick(genre.id, genre.title, genre.description)} handleDelete={handleDelete}/>
@@ -47,7 +47,7 @@ const PaginatedGenres: FC<Props> = ({genres, handleClick, handleDelete, handleSe
             </ArrowButton>)}
             renderOnZeroPageCount={null}
             activeClassName="text-white"
-            className="flex gap-9 items-center justify-center text-white/75 mb-9"
+            className="flex gap-9 items-center justify-center text-white/75 mb-3 mt-3 lg:mb-9"
     />
         </>
     )

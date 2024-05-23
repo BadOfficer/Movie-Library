@@ -95,7 +95,7 @@ const Movie: FC<Props> = ({ image, title, rating, year, id }) => {
                     </div>
                 </div>
                 {isAuth && (
-                            <div className="absolute p-2.5 bg-dark-gray/75 gap-2.5 top-1 right-1 rounded-full hidden group-hover:flex">
+                            <div className="absolute p-2.5 bg-dark-gray/75 gap-2.5 top-1 right-1 rounded-full flex lg:group-hover:flex lg:hidden">
                                 <>
                                     {isLiked ? (
                                         <button onClick={(e) => handleRemoveFromLiked(id, e)}>

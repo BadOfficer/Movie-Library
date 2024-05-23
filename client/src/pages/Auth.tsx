@@ -68,7 +68,7 @@ const Auth: FC = () => {
     }
 
     return <div className="bg-dark-gray max-h-full w-full flex justify-center items-center h-screen">
-            <div className="bg-light-gray p-9 rounded-xl">
+            <div className="bg-light-gray p-3 lg:p-9 rounded-xl">
                 <h2 className="text-2xl text-center p-0 text-dark-yellow font-medium">{isLogin ? "Login" : "Registration"}</h2>
                 <form className="mt-9 flex flex-col gap-6" onSubmit={isLogin ? loginHandler : registrationHandler}>
                     {!isLogin && (

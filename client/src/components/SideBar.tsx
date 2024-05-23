@@ -18,7 +18,11 @@ import { useGetUserQuery } from "../services/user.service";
 import { useGetLikedQuery } from "../services/liked.service";
 import { useGetBookmarksQuery } from "../services/bookmarks.service";
 
-const SideBar: FC = () => {
+interface Props {
+    handleActive: (state: boolean) => void;
+}
+
+const SideBar: FC<Props> = ({ handleActive }) => {
     const isAuth = useAuth();
     const isAdmin = useRole();
     const {data: userData, refetch} = useGetUserQuery('', { skip: !isAuth });
@@ -35,6 +39,10 @@ const SideBar: FC = () => {
         toast.success('You are logged out')
         navigate('/')
     }
+
+    const handleSetActive = () => {
+        handleActive(false);
+    }
     
     useEffect(() => {
         if (isAuth) {
@@ -42,11 +50,11 @@ const SideBar: FC = () => {
         }
     }, [isAuth, refetch]);
 
-    return <div className="bg-light-gray h-dvh flex flex-col fixed min-w-72 gap-12 z-0">
+    return <div className="overflow-auto sidebar bg-light-gray h-screen z-30 flex gap-6 flex-col fixed min-w-[18rem] 2xl:min-w-[18rem] xl:gap-9 2xl:gap-12 w-full lg:w-auto">
                 {isAuth ? (
-                    <div className="flex flex-col items-center  px-[50px] pt-[35px]">
-                        <div className="w-[50px] h-[50px] bg-[#D9D9D9] text-black flex justify-center items-center rounded-full">50x50</div>
-                        <h2 className="text-title-1 mt-[10px]">Welcome {userData?.first_name}</h2>
+                    <div className="flex flex-col items-center px-[50px]">
+                        <img src="Logo.png" alt="logo" className="max-w-28"/>
+                        <h2 className="text-title-1 font-semibold">Welcome {userData?.first_name}</h2>
                     </div>
                 ) : (
                     <div className="flex justify-center">
@@ -56,19 +64,19 @@ const SideBar: FC = () => {
 
                 <Navigation>
                     <li>
-                        <NavButton path="/">
+                        <NavButton path="/" handleClick={handleSetActive}>
                             <BiHomeAlt2 size={20}/>
                             <span>Home</span>
                         </NavButton>
                     </li>
                     <li>
-                        <NavButton path="/movies">
+                        <NavButton path="/movies" handleClick={handleSetActive}>
                             <BiSolidMoviePlay size={20}/>
                             <span>Movies</span>
                         </NavButton>
                     </li>
                     <li>
-                        <NavButton path="/series">
+                        <NavButton path="/series" handleClick={handleSetActive}>
                             <FiServer size={20}/>
                             <span>Series</span>
                         </NavButton>
@@ -81,14 +89,14 @@ const SideBar: FC = () => {
                     <>
                         <Navigation>
                             <li>
-                            <NavButton path="/liked">
+                            <NavButton path="/liked" handleClick={handleSetActive}>
                                 <FaRegHeart size={20}/>
                                 <span className="flex-1">Liked</span>
                                 <span className="px-2 bg-dark-yellow rounded-full text-dark-gray">{likedMovies?.movies.length || 0}</span>
                             </NavButton>
                             </li>
                             <li>
-                                <NavButton path="/bookmarks">
+                                <NavButton path="/bookmarks" handleClick={handleSetActive}>
                                     <FaRegBookmark size={20}/>
                                     <span className="flex-1">Bookmarks</span>
                                     <span className="px-2 bg-dark-yellow rounded-full text-dark-gray">{bookmarksMovies?.movies.length || 0}</span>
@@ -98,7 +106,7 @@ const SideBar: FC = () => {
 
                         <Line />
 
-                        <NavButton path="/profile">
+                        <NavButton path="/profile" handleClick={handleSetActive}>
                             <IoSettingsOutline size={20}/>
                             <span className="flex-1">Settings</span>
                         </NavButton>
@@ -109,13 +117,13 @@ const SideBar: FC = () => {
                             <>
                                 <Navigation>
                                     <li>
-                                        <NavButton path="movies-list">
+                                        <NavButton path="movies-list" handleClick={handleSetActive}>
                                             <MdVideoSettings size={20}/>
                                             <span className="flex-1">Movies Manager</span>
                                         </NavButton>
                                     </li>
                                     <li>
-                                        <NavButton path="genres">
+                                        <NavButton path="genres" handleClick={handleSetActive}>
                                             <MdOutlineDisplaySettings size={20}/>
                                             <span className="flex-1">Genres Manager</span>
                                         </NavButton>
@@ -126,9 +134,11 @@ const SideBar: FC = () => {
                             </>
                         )}
 
-            <button className="py-[8px] border-2 border-dark-yellow rounded-xl text-light-yellow hover:bg-dark-yellow hover:text-dark-gray mx-9" onClick={logoutHadler}>
-                Logout
-            </button>
+            <div className="flex justify-center">
+                <button className="py-2 px-6 border-2 border-dark-yellow rounded-xl text-light-yellow hover:bg-dark-yellow hover:text-dark-gray mx-9" onClick={logoutHadler}>
+                    Logout
+                </button>
+            </div>
                     </>
                 ) : (
                     <div className="flex flex-col items-center gap-5">

@@ -22,10 +22,10 @@ const PaginatedMovies: FC<Props> = ({ itemsPerPage, movies, handleNewOffset, cou
     };
 
     return <>
-        <ul className="grid gap-12 grid-cols-6 grid-flow-row flex-1">
+        <ul className="flex flex-wrap gap-12 flex-1 justify-center lg:justify-start w-full">
             {movies?.map(movie => (
                 <li key={movie.id}>
-                    <Movie title={movie.title} image={`http://localhost:3000/${movie.images[0]}`} rating={movie.rating} year={movie.release} id={movie.id}/>
+                    <Movie title={movie.title} image={`http://localhost:3000/${movie.images[1]}`} rating={movie.rating} year={movie.release} id={movie.id}/>
                 </li>
             ))}
         </ul>
@@ -42,7 +42,7 @@ const PaginatedMovies: FC<Props> = ({ itemsPerPage, movies, handleNewOffset, cou
             </ArrowButton>)}
             renderOnZeroPageCount={null}
             activeClassName="text-white"
-            className="flex gap-9 items-center text-white/75 mb-9"
+            className="flex gap-9 items-center text-white/75 mb-3 lg:mb-9"
         />
     </>
 }
