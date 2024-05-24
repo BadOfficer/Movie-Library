@@ -8,7 +8,6 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/users/models/role.enum';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { Movie } from './models/movie.model';
 
 @Controller('movies')
 export class MoviesController {
@@ -24,7 +23,7 @@ export class MoviesController {
     }
 
     @Get('/films')
-    getAllMovies(
+    getAllFilms(
         @Query('count') count: string = "18",
         @Query('offset') offset: string = "0",
         @Query('query') query: string = '',
@@ -107,5 +106,10 @@ export class MoviesController {
     @Get(":id")
     getOneById(@Param("id") id: string): Promise<MovieIf> {
         return this.moviesService.getOneById(+id);
+    }
+
+    @Get('')
+    getAllMovies(@Query('query') query: string = '', @Query('count') count: string = "18", @Query('offset') offset: string = "0"): Promise<{rows: MovieIf[], count: number}> {
+        return this.moviesService.getAllMovies(query, +count, +offset);
     }
 }

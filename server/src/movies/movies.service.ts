@@ -297,4 +297,25 @@ export class MoviesService {
 
         return `Movie ${existMovie.title} is deleted!`;
     }
+
+    async getAllMovies(query: string, count: number, offset: number): Promise<{rows: MovieIf[], count: number}> {
+        if (query) {
+            const movies = await this.moviesRepository.findAndCountAll({
+                where: {
+                    title: {
+                        [Op.iLike]: `%${query}%`
+                    }
+                },
+                limit: count,
+                offset: offset * count
+            });
+
+            return movies
+        }
+
+        return await this.moviesRepository.findAndCountAll({
+            limit: count,
+            offset: offset * count
+        });
+    }
 }

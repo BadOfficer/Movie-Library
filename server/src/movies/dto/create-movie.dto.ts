@@ -7,8 +7,6 @@ export class CreateMovieDto {
     @IsString()
     description: string;
 
-    images: string[];
-
     @IsString()
     release: string;
 
