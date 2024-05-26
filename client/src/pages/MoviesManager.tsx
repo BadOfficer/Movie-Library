@@ -8,6 +8,7 @@ import IsEmpty from "../components/parts/IsEmpty";
 import PaginatedMovies from "../components/movies/PaginatedMovies";
 import useSearchPagination from "../hooks/useSearchPagination";
 import { IMovieModal } from "../types/types";
+import Footer from "../components/parts/Footer";
 
 const MoviesManager: FC = () => {
     const [showModal, setShowModal] = useState(false);
@@ -67,6 +68,7 @@ const MoviesManager: FC = () => {
                 </div>
             )}
         </div>
+        <Footer />
     </div>
     </>
 }

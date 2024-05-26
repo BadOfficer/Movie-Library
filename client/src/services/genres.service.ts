@@ -27,6 +27,18 @@ export const genresApi = createApi({
             }),
             providesTags: ['Genre']
         }),
+        getFilmsGenres: build.query<IGenre[], string>({
+            query: () => ({
+                url: '/genres/films',
+            }),
+            providesTags: ['Genre']
+        }),
+        getSeriesGenres: build.query<IGenre[], string>({
+            query: () => ({
+                url: '/genres/series',
+            }),
+            providesTags: ['Genre']
+        }),
         createGenre: build.mutation<IGenre, IGenreInput>({
             query: (genre: IGenre) => ({
                 url: '/genres/create',
@@ -53,4 +65,12 @@ export const genresApi = createApi({
     })
 })
 
-export const { useGetGenresQuery, useCreateGenreMutation, useUpdateGenreMutation, useDeleteGenreMutation, useLazyGetGenresQuery } = genresApi;
+export const {
+    useGetGenresQuery,
+    useLazyGetFilmsGenresQuery,
+    useLazyGetSeriesGenresQuery,
+    useCreateGenreMutation, 
+    useUpdateGenreMutation, 
+    useDeleteGenreMutation, 
+    useLazyGetGenresQuery
+} = genresApi;

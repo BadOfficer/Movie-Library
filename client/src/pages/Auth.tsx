@@ -78,12 +78,12 @@ const Auth: FC = () => {
                 <form className="mt-9 flex flex-col gap-6" onSubmit={isLogin ? loginHandler : registrationHandler}>
                     {!isLogin && (
                         <>
-                            <TextInput fieldName="Firstname" value={firstName} onChange={(value) => setFirstName(value)}/>
-                            <TextInput fieldName="Lastname" value={lastName} onChange={(value) => setLastName(value)}/>
+                            <TextInput fieldName="Firstname" value={firstName} onChange={(value) => setFirstName(value)} required={true}/>
+                            <TextInput fieldName="Lastname" value={lastName} onChange={(value) => setLastName(value)} required={true}/>
                         </>
                     )}
-                    <TextInput fieldName="Email" value={email} onChange={(value) => setEmail(value)}/>
-                    <PasswordInput value={password} onChange={(value) => setPassword(value)}/>
+                    <TextInput fieldName="Email" value={email} onChange={(value) => setEmail(value)} required={true}/>
+                    <PasswordInput value={password} onChange={(value) => setPassword(value)} required={true}/>
                     <SolidButton type="submit">{isLogin ? "Login" : "Sign Up"}</SolidButton>
                 </form>
                 <div className="text-center mt-2.5">

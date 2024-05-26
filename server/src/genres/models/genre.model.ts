@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { BelongsToMany, Column, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, Model, Table } from "sequelize-typescript";
 import { Movie } from "src/movies/models/movie.model";
 import { MoviesGenres } from "src/movies/models/movies-genres.model";
 
@@ -9,11 +9,11 @@ export class Genre extends Model{
     id: number;
     
     @IsNotEmpty({message: "title can't be empty!"})
-    @Column({allowNull: false})
+    @Column({allowNull: false, type: DataType.STRING})
     title: string;
 
     @IsNotEmpty({message: "description can't be empty!"})
-    @Column({allowNull: false})
+    @Column({allowNull: false, type: DataType.TEXT})
     description: string;
 
     @BelongsToMany(() => Movie, () => MoviesGenres)

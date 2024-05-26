@@ -5,6 +5,7 @@ import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { GenreIf } from './models/genre.interface';
 import { Op } from 'sequelize';
+import { Movie } from 'src/movies/models/movie.model';
 
 @Injectable()
 export class GenresService {
@@ -38,16 +39,58 @@ export class GenresService {
         return genre;
     }
 
-    async getAll(count: string, offset: string, query: string): Promise<{rows: GenreIf[], count: number}> {
-        if(!query) {
-            return await this.genresRepository.findAndCountAll({offset: +offset * +count, limit: +count, include: {all: true}});
-        }
-        
-        return await this.genresRepository.findAndCountAll({offset: +offset, limit: +count, include: {all: true}, where: {
-            title: {
+    async getAll(count: string, offset: string, query: string): Promise<{ rows: GenreIf[], count: number }> {
+        const whereClause: any = {};
+    
+        if (query) {
+            whereClause.title = {
                 [Op.iLike]: `%${query}%`
-              }
-        }})
+            };
+        }
+    
+        const totalCount = await this.genresRepository.count({ where: whereClause });
+    
+        const genres = await this.genresRepository.findAll({
+            where: whereClause,
+            include: { all: true },
+            limit: +count,
+            offset: +offset
+        });
+    
+        return {
+            rows: genres,
+            count: totalCount
+        };
+    }
+
+    async getAllForFilms(): Promise<GenreIf[]> {
+        const genres = await this.genresRepository.findAll({
+            include: [{
+                model: Movie,
+                where: {
+                    seasons: 1,
+                    series: 1
+                }
+            }]
+        });
+
+        return genres;
+    }
+
+    async getAllForSeries(): Promise<GenreIf[]> {
+        const genres = await this.genresRepository.findAll({
+            include: [{
+                model: Movie,
+                where: {
+                    [Op.or]: [
+                        { seasons: { [Op.gt]: 1 } },
+                        { series: { [Op.gt]: 1 } }
+                    ]
+                }
+            }]
+        });
+
+        return genres;
     }
 
     async update(id: number, newGenreData: UpdateGenreDto): Promise<GenreIf> {

@@ -1,7 +1,7 @@
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import Header from "../components/parts/Header";
 import MoviesNavigation from "../components/movies/MoviesNavigation";
-import { useGetGenresQuery } from "../services/genres.service";
+import { useLazyGetFilmsGenresQuery } from "../services/genres.service";
 import { useGetAllowFilmsQuery, useGetMoviesQuery } from "../services/movies.service";
 import SectionTitle from "../components/parts/SectionTitle";
 import CountSelect from "../components/parts/CountSelect";
@@ -20,25 +20,30 @@ const Movies: FC = () => {
     const [countValue, setCountValue] = useState<number>(18);
     const [offsetValue, setOffsetValue] = useState<number>(0)
 
-    const [activeReleases, setActiveReleases] = useState<any[]>([]);
-    const [activeDurations, setActiveDuration] = useState<any[]>([]);
-    const [activeRatings, setActiveRatings] = useState<any[]>([]);
+    const [activeReleases, setActiveReleases] = useState<string[]>([]);
+    const [activeDurations, setActiveDuration] = useState<string[]>([]);
+    const [activeRatings, setActiveRatings] = useState<string[]>([]);
     const [idsGenres, setIdsGenres] = useState<number[]>([]);
     const [searchData, setSearchData] = useState('');
 
-    const {data: genresResponse} = useGetGenresQuery('');
-    const genres = genresResponse?.rows;
+    const [triggerGetGenres, { data: genres }] = useLazyGetFilmsGenresQuery();
     const [showFilter, setShowFilter] = useState(false);
     
     const {data: moviesResponse, isLoading: loadingMovies} = useGetMoviesQuery(`${countValue},${offsetValue},${activeReleases.join(';')},${activeDurations.join(';')},${activeRatings.join(';')},${searchData},${idsGenres.join(';')}`);
     const {data: allowMoviesResponse} = useGetAllowFilmsQuery('');
 
     const movies = moviesResponse?.rows;
+    console.log(moviesResponse);
+    
     const allowMovies = allowMoviesResponse?.rows;
 
     let ratings: string[] = [];
     let years: string[] = [];
     let durations: string[] = [];
+
+    useEffect(() => {
+        triggerGetGenres("");
+    }, [triggerGetGenres]);
 
     if(allowMovies) {
         allowMovies.map(movie => {
@@ -57,9 +62,9 @@ const Movies: FC = () => {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        const releaseYears = formData.getAll('release[]');
-        const durations = formData.getAll('duration[]');
-        const ratings = formData.getAll('rating[]');
+        const releaseYears = formData.getAll('release[]') as string[];
+        const durations = formData.getAll('duration[]') as string[];
+        const ratings = formData.getAll('rating[]') as string[];
         
         setActiveReleases(releaseYears);
         setActiveDuration(durations);

@@ -41,7 +41,7 @@ export class MoviesService {
         const {genresIds, release, seasons, duration, rating, query, count, offset, series} = filterOptions;
     
         const whereClause: any = {
-            [Op.or]: [
+            [Op.and]: [
                 { seasons: 1 },
                 { series: 1 }
             ]
@@ -84,7 +84,7 @@ export class MoviesService {
         }
     
         const include: any[] = [];
-    
+
         if (genresIds) {
             const genreIdValues = genresIds.split(';').map(id => parseInt(id));
             include.push({
@@ -98,17 +98,23 @@ export class MoviesService {
         } else {
             include.push({ model: Genre });
         }
-    
-        const movies = await this.moviesRepository.findAndCountAll({
+
+        const moviesQuery = {
             where: whereClause,
-            include: include,
             limit: count,
             offset: offset * count
+        };
+
+        const totalCount = await this.moviesRepository.count({ where: whereClause });
+
+        const movies = await this.moviesRepository.findAll({
+            ...moviesQuery,
+            include: include
         });
-    
+
         return {
-            rows: movies.rows,
-            count: movies.count
+            rows: movies,
+            count: totalCount
         };
         
     }    
@@ -160,7 +166,7 @@ export class MoviesService {
         }
     
         const include: any[] = [];
-    
+
         if (genresIds) {
             const genreIdValues = genresIds.split(';').map(id => parseInt(id));
             include.push({
@@ -174,17 +180,23 @@ export class MoviesService {
         } else {
             include.push({ model: Genre });
         }
-    
-        const movies = await this.moviesRepository.findAndCountAll({
+
+        const moviesQuery = {
             where: whereClause,
-            include: include,
             limit: count,
             offset: offset * count
+        };
+
+        const totalCount = await this.moviesRepository.count({ where: whereClause });
+
+        const movies = await this.moviesRepository.findAll({
+            ...moviesQuery,
+            include: include
         });
-    
+
         return {
-            rows: movies.rows,
-            count: movies.count
+            rows: movies,
+            count: totalCount
         };
     }
 
@@ -214,12 +226,10 @@ export class MoviesService {
     async getLastTenCreatedSeries(limit: number = 10): Promise<Movie[]> {
         return await this.moviesRepository.findAll({
             where: {
-                seasons: {
-                    [Op.gt]: 1
-                },
-                series: {
-                    [Op.gt]: 1
-                }
+                [Op.or]: [
+                    { seasons: { [Op.gt]: 1 } },
+                    { series: { [Op.gt]: 1 } }
+                ]
             },
             order: [['createdAt', 'DESC']],
             limit
@@ -302,26 +312,18 @@ export class MoviesService {
     }
 
     async getAllMovies(query: string, count: number, offset: number): Promise<{rows: MovieIf[], count: number}> {
-        if (query) {
-            const movies = await this.moviesRepository.findAndCountAll({
-                where: {
-                    title: {
-                        [Op.iLike]: `%${query}%`
-                    }
-                },
-                include: {
-                    model: Genre,
-                    through: { attributes: [] },
-                    attributes: ["title"]
-                },
-                limit: count,
-                offset: offset * count
-            });
+        const whereClause: any = {};
 
-            return movies
+        if (query) {
+            whereClause.title = {
+                [Op.iLike]: `%${query}%`
+            };
         }
 
-        return await this.moviesRepository.findAndCountAll({
+        const totalCount = await this.moviesRepository.count({ where: whereClause });
+
+        const movies = await this.moviesRepository.findAll({
+            where: whereClause,
             include: {
                 model: Genre,
                 through: { attributes: [] },
@@ -330,5 +332,10 @@ export class MoviesService {
             limit: count,
             offset: offset * count
         });
+
+        return {
+            rows: movies,
+            count: totalCount
+        };
     }
 }

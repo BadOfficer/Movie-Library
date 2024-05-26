@@ -22,7 +22,7 @@ export class GenresController {
 
     @Roles(Role.ADMIN)
     @UseGuards(JwtGuard, RolesGuard)
-    @Get(":id")
+    @Get("genre/:id")
     getOne(@Param("id") id: string): Promise<GenreIf> {
         return this.genresService.getOne(+id);
     }
@@ -31,6 +31,16 @@ export class GenresController {
     @Get()
     getAll(@Query("count") count: string = "10", @Query("offset") offset: string = "0", @Query("query") query: string = ''): Promise<{rows: GenreIf[], count: number}> {
         return this.genresService.getAll(count, offset, query);
+    }
+
+    @Get("/films")
+    getAllForFilms() {
+        return this.genresService.getAllForFilms();
+    }
+
+    @Get("/series")
+    getAllForSeries() {
+        return this.genresService.getAllForSeries();
     }
 
     @Roles(Role.ADMIN)
@@ -47,12 +57,4 @@ export class GenresController {
     deleteGenre(@Param("id") id: string): Promise<string> {
         return this.genresService.remove(+id);
     }
-
-
-    // @Roles(Role.ADMIN)
-    // @UseGuards(JwtGuard, RolesGuard)
-    // @Get("/search")
-    // searchGenre(@Query("query") query: string = ''): Promise<GenreIf[]> {
-    //     return this.genresService.search(query);
-    // }
 }

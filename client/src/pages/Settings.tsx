@@ -59,9 +59,9 @@ const Settings: FC = () => {
                 <div className="bg-light-gray p-3 rounded-xl lg:p-9 flex flex-col items-center">
                     <h2 className="text-3xl uppercase font-semibold text-center">Settings</h2>
                     <form className="flex flex-col gap-6 mt-6" onSubmit={handleSubmit}>
-                        <SettingsInput initialValue={userData.first_name} name="first_name" title="First name" />
-                        <SettingsInput initialValue={userData.last_name} name="last_name" title="Last name" />
-                        <SettingsInput initialValue={userData.email} name="email" title="Email" />
+                        <SettingsInput initialValue={userData.first_name} name="first_name" title="First name" required={true}/>
+                        <SettingsInput initialValue={userData.last_name} name="last_name" title="Last name" required={true}/>
+                        <SettingsInput initialValue={userData.email} name="email" title="Email" required={true}/>
                         <SettingsPasswordInput initialValue="" name="password" title="New password" />
 
                         <SolidButton handleClick={(e) => handleTryUpdate(e)}>Update</SolidButton>

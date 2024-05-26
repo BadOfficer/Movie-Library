@@ -1,6 +1,6 @@
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import Header from "../components/parts/Header"
-import { useGetGenresQuery } from "../services/genres.service";
+import { useLazyGetSeriesGenresQuery } from "../services/genres.service";
 import { useGetAllowSeriesQuery, useGetSeriesQuery } from "../services/movies.service";
 import MoviesNavigation from "../components/movies/MoviesNavigation";
 import SectionTitle from "../components/parts/SectionTitle";
@@ -20,16 +20,15 @@ const Series: FC = () => {
     const [countValue, setCountValue] = useState<number>(18);
     const [offsetValue, setOffsetValue] = useState<number>(0)
 
-    const [activeSeries, setActiveSeries] = useState<any[]>([]);
-    const [activeSeasons, setActiveSeasons] = useState<any[]>([]);
-    const [activeReleases, setActiveReleases] = useState<any[]>([]);
-    const [activeDurations, setActiveDuration] = useState<any[]>([]);
-    const [activeRatings, setActiveRatings] = useState<any[]>([]);
+    const [activeSeries, setActiveSeries] = useState<string[]>([]);
+    const [activeSeasons, setActiveSeasons] = useState<string[]>([]);
+    const [activeReleases, setActiveReleases] = useState<string[]>([]);
+    const [activeDurations, setActiveDuration] = useState<string[]>([]);
+    const [activeRatings, setActiveRatings] = useState<string[]>([]);
     const [idsGenres, setIdsGenres] = useState<number[]>([]);
     const [searchData, setSearchData] = useState('');
 
-    const {data: genresResponse} = useGetGenresQuery('');
-    const genres = genresResponse?.rows;
+    const [triggerGetGenres, { data: genres }] = useLazyGetSeriesGenresQuery();
     const [showFilter, setShowFilter] = useState(false);
 
     const {data: moviesResponse, isLoading: loadingMovies} = useGetSeriesQuery(`${countValue},${offsetValue},${activeReleases.join(';')},${activeDurations.join(';')},${activeRatings.join(';')},${searchData},${idsGenres.join(';')},${activeSeries.join(';')},${activeSeasons.join(';')}`);
@@ -43,6 +42,10 @@ const Series: FC = () => {
     let durations: string[] = [];
     let series: string[] = [];
     let seasons: string[] = [];
+
+    useEffect(() => {
+        triggerGetGenres("");
+    }, [triggerGetGenres]);
 
     if(allowMovies) {
         allowMovies.map(movie => {
@@ -67,11 +70,11 @@ const Series: FC = () => {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        const releaseYears = formData.getAll('release[]');
-        const durations = formData.getAll('duration[]');
-        const ratings = formData.getAll('rating[]');
-        const seasons = formData.getAll('seasons[]');
-        const series = formData.getAll('series[]');
+        const releaseYears = formData.getAll('release[]') as string[];
+        const durations = formData.getAll('duration[]') as string[];
+        const ratings = formData.getAll('rating[]') as string[];
+        const seasons = formData.getAll('seasons[]') as string[];
+        const series = formData.getAll('series[]') as string[];
         
         setActiveReleases(releaseYears);
         setActiveDuration(durations);
