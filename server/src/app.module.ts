@@ -37,7 +37,7 @@ import { join } from 'path';
     autoLoadModels: true,
   }),
   ServeStaticModule.forRoot({
-    rootPath: join(__dirname, 'static'),
+    rootPath: join(__dirname, '..', '..', 'client', 'public', 'images'),
   }),
   GenresModule,
   AuthModule,

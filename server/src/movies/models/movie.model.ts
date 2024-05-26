@@ -1,4 +1,4 @@
-import { BelongsToMany, Column, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, Model, Table } from "sequelize-typescript";
 import { Genre } from "src/genres/models/genre.model";
 import { MoviesGenres } from "./movies-genres.model";
 import { Liked } from "src/liked/models/liked.model";
@@ -11,28 +11,28 @@ export class Movie extends Model {
     @Column({unique: true, primaryKey: true, autoIncrement: true})
     id: number;
 
-    @Column
+    @Column({ type: DataType.STRING})
     title: string;
 
-    @Column
+    @Column({ type: DataType.TEXT })
     description: string;
 
     @Column({ type: 'JSON' })
     images: string[];
 
-    @Column
+    @Column({ type: DataType.STRING})
     release: string;
 
-    @Column
+    @Column({ type: DataType.INTEGER})
     seasons: number;
 
-    @Column
+    @Column({ type: DataType.INTEGER})
     series: number;
 
-    @Column
+    @Column({ type: DataType.STRING})
     duration: string;
 
-    @Column
+    @Column({ type: DataType.STRING})
     rating: string;
 
     @BelongsToMany(() => Genre, () => MoviesGenres)

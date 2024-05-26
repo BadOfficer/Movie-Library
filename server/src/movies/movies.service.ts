@@ -259,14 +259,17 @@ export class MoviesService {
 
     async updateMovie(updateMovieDto: UpdateMovieDto, movieId: number): Promise<MovieIf> {
         const existMovie = await this.moviesRepository.findOne({ where: { id: movieId } });
-        const existMovieByTitle = await this.moviesRepository.findOne({ where: {title: updateMovieDto.title}})
 
         if (!existMovie) {
             throw new NotFoundException("This movie not found!");
         }
 
-        if(existMovieByTitle) {
-            throw new BadRequestException("This movie is exist!")
+        if(updateMovieDto.title !== existMovie.title) {
+            const existMovieByTitle = await this.moviesRepository.findOne({ where: {title: updateMovieDto.title}})
+
+            if(existMovieByTitle) {
+                throw new BadRequestException("This movie is exist!")
+            }
         }
 
         Object.assign(existMovie, updateMovieDto);
@@ -306,6 +309,11 @@ export class MoviesService {
                         [Op.iLike]: `%${query}%`
                     }
                 },
+                include: {
+                    model: Genre,
+                    through: { attributes: [] },
+                    attributes: ["title"]
+                },
                 limit: count,
                 offset: offset * count
             });
@@ -314,6 +322,11 @@ export class MoviesService {
         }
 
         return await this.moviesRepository.findAndCountAll({
+            include: {
+                model: Genre,
+                through: { attributes: [] },
+                attributes: ["title"]
+            },
             limit: count,
             offset: offset * count
         });

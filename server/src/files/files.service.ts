@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 
 @Injectable()
 export class FilesService {
-    private readonly staticFolderPath = path.resolve(__dirname, '..', 'static');
+    private readonly staticFolderPath = path.resolve(__dirname, '..', '..', '..', 'client', 'public', 'images');
 
     constructor() {
         this.ensureStaticFolderExists();
@@ -20,6 +20,7 @@ export class FilesService {
     }
 
     async createFiles(files: Express.Multer.File[]): Promise<string[]> {
+        
         try {
             await this.ensureStaticFolderExists(); // Ensure the static folder exists before saving files
 

@@ -1,29 +1,35 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 
 export class UpdateMovieDto {
+    @IsNotEmpty()
     @IsString()
     title?: string;
 
+    @IsNotEmpty()
     @IsString()
     description?: string;
 
-    images?: string[];
-
+    @IsNotEmpty()
     @IsString()
     release?: string;
 
-    @IsNumber()
-    seasons?: number;
+    @IsNotEmpty()
+    @IsString()
+    seasons?: string;
 
-    @IsNumber()
-    series?: number;
+    @IsNotEmpty()
+    @IsString()
+    series?: string;
 
+    @IsNotEmpty()
     @IsString()
     duration?: string;
 
+    @IsNotEmpty()
     @IsString()
     rating?: string;
 
+    @IsNotEmpty()
     @IsString()
     genres?: string;
 }
