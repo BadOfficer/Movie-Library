@@ -1,70 +1,133 @@
-import { FC } from "react";
+import { FC, useState } from "react";
+import TitledInput from "../inputs/TitledInput";
+import SolidButton from "../buttons/SolidButton";
+import BorderButton from "../buttons/BorderButton";
+import GenresSelect from "../parts/GenresSelect";
+import { useGetGenresQuery, useLazyGetGenresQuery } from "../../services/genres.service";
+import CustomFileInput from "../inputs/CustomFileInput";
+import { IMovieModal, IMovieUpdate } from "../../types/types";
+import { useCreateMovieMutation, useUpdateMovieMutation } from "../../services/movies.service";
+import Modal from "../parts/Modal";
+import useHandleResponse from "../../hooks/useHandleResponse";
 
 interface Props {
     type: 'post' | 'patch',
+    movie: IMovieModal;
+    setVisible: (state: boolean) => void;
+    handleSetEdit?: (state: boolean) => void;
 }
 
-const MovieModal: FC<Props> = ({ type }) => {
+const MovieModal: FC<Props> = ({ type, movie, setVisible, handleSetEdit }) => {
+    const [curMovie, setCurMovie] = useState(movie);
+    const { data: genresResponse } = useGetGenresQuery('');
+    const { handleResponse } = useHandleResponse();
 
-    const handleAdd = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const movie = Object.fromEntries(formData);
+    const [createMovie, {}] = useCreateMovieMutation();
+    const [updateMovie, {}] = useUpdateMovieMutation();
 
-        console.log(movie);
-        
+    const genres = genresResponse?.rows;
+
+    const handleChangeMovieData = (row: string, value: string) => {
+        setCurMovie(movie => ({...movie, [row]: value}))
     }
 
-    return <div className="fixed w-full h-full bottom-0 top-0 right-0 left-0 flex justify-center items-center bg-dark-gray/75 z-50">
-                <div className="bg-light-gray p-9 rounded-xl">
-                    <form className="flex flex-col gap-5" onSubmit={handleAdd} encType="multipart/form-data">
+    const [triggerGetGenres] = useLazyGetGenresQuery();
+
+    const handleAddMovie = async(event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        
+        const formData = new FormData(event.currentTarget);
+        const newFormData = new FormData();
+
+        newFormData.append('title', formData.get('title') as string);
+        newFormData.append('description', formData.get('description') as string);
+        newFormData.append('release', formData.get('release') as string);
+        newFormData.append('seasons', formData.get('seasons') as string);
+        newFormData.append('series', formData.get('series') as string);
+        newFormData.append('duration', formData.get('duration') as string);
+        newFormData.append('rating', formData.get('rating') as string);
+        newFormData.append('genres', formData.get('genres') as string);
+
+        const sliderImage = formData.get('sliderImage') as File;
+        const image = formData.get('image') as File;
+
+        newFormData.append('images', sliderImage);
+        newFormData.append('images', image);
+
+        const {data, error} = await createMovie(newFormData)
+        handleResponse(data, error, `${data?.title} has been added!`);
+
+        if(data) {
+            setVisible(false);
+            triggerGetGenres("");
+        }
+    }
+
+    const handleUpdateMovie = async(event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        
+        const formData = new FormData(event.currentTarget);
+        
+        const newMovieData: IMovieUpdate = {
+            id: Number(formData.get('id')),
+            title: formData.get('title') as string,
+            description: formData.get('description') as string,
+            release: formData.get('release') as string,
+            seasons: formData.get('seasons') as string,
+            series: formData.get('series') as string,
+            duration: formData.get('duration') as string,
+            rating: formData.get('rating') as string,
+            genres: formData.get('genres') as string,
+        }        
+
+        const {data, error} = await updateMovie(newMovieData);
+        handleResponse(data, error, `${data?.title} has been updated!`);
+        
+        if(handleSetEdit) {
+            handleSetEdit(false);
+        }
+        if(data) {
+            setVisible(false);
+            triggerGetGenres("");
+        }
+    }
+
+    const handleCancel = () => {
+        if(handleSetEdit) {
+            handleSetEdit(false);
+        }
+        setVisible(false)
+    }
+
+    return (
+        <Modal>
+            <>
+                {genres && (
+                    <form className="flex flex-col gap-5" onSubmit={type === "post" ? handleAddMovie : handleUpdateMovie}>
                         <h2 className="text-center text-xl uppercase font-semibold">{type === 'post' ? "Adding Movie" : "Updating Movie"}</h2>
-                        <label htmlFor="title" className="flex gap-2.5 items-center text-lg capitalize">
-                            <span className="flex-1">Movie title: </span>
-                            <input type="text" name="title" className="w-80 text-lg border-2 border-dark-yellow bg-transparent outline-0 focus:border-dark-yellow rounded-xl text-white"
-                                    placeholder="Movie title" />
-                            <input type="hidden" name="id"/>
-                        </label>
-                        <label htmlFor="description" className="flex gap-2.5 items-start text-lg capitalize">
-                            <span className="flex-1">Movie description: </span>
-                            <textarea name="description" className="w-80 text-lg border-2 border-dark-yellow bg-transparent outline-0 focus:border-dark-yellow rounded-xl text-white" 
-                                        placeholder="Movie description"/>
-                        </label>
-                        <label htmlFor="description" className="flex gap-2.5 items-start text-lg capitalize">
-                            <span>Movie release year: </span>
-                            <input type="text" name="release" className="w-80 text-lg border-2 border-dark-yellow bg-transparent outline-0 focus:border-dark-yellow rounded-xl text-white"
-                                    placeholder="Movie release year" />
-                        </label>
-                        <label htmlFor="description" className="flex gap-2.5 items-start text-lg capitalize">
-                            <span className="flex-1">Movie seasons: </span>
-                            <input type="text" name="seasons" className="w-80 text-lg border-2 border-dark-yellow bg-transparent outline-0 focus:border-dark-yellow rounded-xl text-white"
-                                    placeholder="Movie seasons" />
-                        </label>
-                        <label htmlFor="description" className="flex gap-2.5 items-start text-lg capitalize">
-                            <span className="flex-1">Movie series: </span>
-                            <input type="text" name="series" className="w-80 text-lg border-2 border-dark-yellow bg-transparent outline-0 focus:border-dark-yellow rounded-xl text-white"
-                                    placeholder="Movie series" />
-                        </label>
-                        <label htmlFor="description" className="flex gap-2.5 items-start text-lg capitalize">
-                            <span className="flex-1">Movie duration: </span>
-                            <input type="text" name="duration" className="w-80 text-lg border-2 border-dark-yellow bg-transparent outline-0 focus:border-dark-yellow rounded-xl text-white"
-                                    placeholder="Movie duration" />
-                        </label>
-                        <label htmlFor="description" className="flex gap-2.5 items-start text-lg capitalize">
-                            <span className="flex-1">Movie rating: </span>
-                            <input type="text" name="rating" className="w-80 text-lg border-2 border-dark-yellow bg-transparent outline-0 focus:border-dark-yellow rounded-xl text-white"
-                                    placeholder="Movie rating" />
-                        </label>
-                        <label htmlFor="description" className="flex gap-2.5 items-start text-lg capitalize">
-                            <span className="flex-1">Movie genres: </span>
-                            <input type="text" name="genres" className="w-80 text-lg border-2 border-dark-yellow bg-transparent outline-0 focus:border-dark-yellow rounded-xl text-white"
-                                    placeholder="Movie genres" />
-                        </label>
-                        <input type="file" multiple name="images[]"/>
-                        <button type="submit">Add</button>
+                        <TitledInput fieldLabel="Movie title:" name="title" handleChange={(e) => handleChangeMovieData("title", e.target.value)} type="text" placeholder="Movie title" value={curMovie.title} el="input" id={curMovie.id} required={true}/>
+                        <TitledInput fieldLabel="Movie descrition:" name="description" handleChange={(e) => handleChangeMovieData("description", e.target.value)} placeholder="Movie description" value={curMovie.description} el="textarea" required={true}/>
+                        <TitledInput fieldLabel="Movie release:" name="release" handleChange={(e) => handleChangeMovieData("release", e.target.value)} placeholder="Movie release date" value={curMovie.release} el="input" type="number" required={true}/>
+                        <TitledInput fieldLabel="Movie seasons:" name="seasons" handleChange={(e) => handleChangeMovieData("seasons", e.target.value)} placeholder="Movie seasons" value={curMovie.seasons} el="input" type="number" required={true}/>
+                        <TitledInput fieldLabel="Movie series:" name="series" handleChange={(e) => handleChangeMovieData("series", e.target.value)} placeholder="Movie series" value={curMovie.series} el="input" type="number" required={true}/>
+                        <TitledInput fieldLabel="Movie duration:" name="duration" handleChange={(e) => handleChangeMovieData("duration", e.target.value)} placeholder="Movie duration" value={curMovie.duration} el="input" type="number" required={true}/>
+                        <TitledInput fieldLabel="Movie rating:" name="rating" el="input" handleChange={(e) => handleChangeMovieData("rating", e.target.value)} placeholder="Movie rating" value={curMovie.rating} type="number" required={true}/>
+                        <GenresSelect selectTitle="Movie genres:" inputName="genres" genres={genres}/>
+                        {type === "post" && (
+                            <>
+                                <CustomFileInput inputName="sliderImage" title="Movie slider image" acceptedFileTypes={[".jpg"]}/>
+                                <CustomFileInput inputName="image" title="Movie main image" acceptedFileTypes={[".jpg"]}/>
+                            </>
+                        )}
+                        <div className="flex justify-center gap-2.5">
+                            <SolidButton type="submit">{type === 'post' ? "Add" : "Update"}</SolidButton>
+                            <BorderButton type="reset" handleClick={handleCancel}>Cancel</BorderButton>
+                        </div>
                     </form>
-                </div>
-            </div>
+                )}
+            </>
+        </Modal>
+    )
 }
 
 export default MovieModal;

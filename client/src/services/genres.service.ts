@@ -27,7 +27,7 @@ export const genresApi = createApi({
             }),
             providesTags: ['Genre']
         }),
-        createGenre: build.mutation<any, any>({
+        createGenre: build.mutation<IGenre, IGenreInput>({
             query: (genre: IGenre) => ({
                 url: '/genres/create',
                 method: 'POST',
@@ -53,4 +53,4 @@ export const genresApi = createApi({
     })
 })
 
-export const { useGetGenresQuery, useCreateGenreMutation, useUpdateGenreMutation, useDeleteGenreMutation } = genresApi;
+export const { useGetGenresQuery, useCreateGenreMutation, useUpdateGenreMutation, useDeleteGenreMutation, useLazyGetGenresQuery } = genresApi;

@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import SideBar from "../components/SideBar"
+import SideBar from "../components/parts/SideBar"
 import { HiMenuAlt3 } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
 

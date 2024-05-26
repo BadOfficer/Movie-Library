@@ -1,40 +1,29 @@
 import { FC, useState } from "react"
 import Header from "../components/parts/Header";
 import GenreModal from "../components/genres/GenreModal";
-import { IGenreInput } from "../types/types";
-import { useCreateGenreMutation, useDeleteGenreMutation, useGetGenresQuery, useUpdateGenreMutation } from "../services/genres.service";
+import { useGetGenresQuery } from "../services/genres.service";
 import Loader from "../components/parts/Loader";
-import { toast } from "react-toastify";
 import SolidButton from "../components/buttons/SolidButton";
 import IsEmpty from "../components/parts/IsEmpty";
 import PaginatedGenres from "../components/genres/PaginatedGenres";
 import Footer from "../components/parts/Footer";
+import useSearchPagination from "../hooks/useSearchPagination";
 
 const GenresManager: FC = () => { 
     const [showModal, setShowModal] = useState<boolean>(false); 
     const [isEdit, setIsEdit] = useState<boolean>(false);
 
     const [genreId, setGenreId] = useState<number>(0);
-
     const [curTitle, setCurTitle] = useState('');
     const [curDescription, setCurDescription] = useState('');
     
-    const [searchData, setSearchData] = useState('');
-    const [offset, setOffset] = useState(0);
+    const { searchData, offset, handleSearch, handleNewOffset } = useSearchPagination();
     const count = 18;
     
     const {isLoading, isError, data: genresResponse} = useGetGenresQuery(`${searchData},${count},${offset}`);
     const genres = genresResponse?.rows;
 
-    const [createGenre, {}] = useCreateGenreMutation();
-    const [updateGenre, {}] = useUpdateGenreMutation();
-    const [deleteGenre, {}] = useDeleteGenreMutation();
-
-    const handleSearch = (text: string) => {
-        setSearchData(text);
-    }
-
-    const handleClick = (id: number, title: string, description: string) => {
+    const handleUpdateGenre = (id: number, title: string, description: string) => {
         setShowModal(true)
         setGenreId(id)
         setCurTitle(title)
@@ -42,65 +31,9 @@ const GenresManager: FC = () => {
         setIsEdit(true)
     }
 
-    const handleCreate = async(genre: IGenreInput, e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        const {data, error} = await createGenre(genre)
-        if(data) {
-            toast.success(`${genre.title} has been added!`)
-        }
-        if(error) {
-            if ('data' in error) {
-                const errorData = error.data as { message: string[] | string };
-                
-                if (Array.isArray(errorData.message)) {
-                    errorData.message.forEach(msg => toast.error(msg));
-                } else {
-                    toast.error(errorData.message);
-                }
-            }
-        }
-        
-    }
-
-    const handleUpdate = async(genre: IGenreInput, e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        const {data, error} = await updateGenre(genre)
-        if(data) {
-            toast.success(`${genre.title} has been updated!`)
-        }
-        if(error) {
-            if ('data' in error) {
-                const errorData = error.data as { message: string[] | string };
-                
-                if (Array.isArray(errorData.message)) {
-                    errorData.message.forEach(msg => toast.error(msg));
-                } else {
-                    toast.error(errorData.message);
-                }
-            }
-        }
-    }
-
-    const handleDelete = async(genreId: number, e: any) => {
-        e.preventDefault();
-        const {error} = await deleteGenre(genreId)
-        if(error) {
-            if ('data' in error) {
-                const errorData = error.data as { message: string[] | string };
-                
-                if (Array.isArray(errorData.message)) {
-                    errorData.message.forEach(msg => toast.error(msg));
-                } else {
-                    toast.error(errorData.message);
-                }
-            }
-        }
-        toast.success("Genre has been deleted!")
-    }
-
     return <>
-        {showModal && <GenreModal setVisible={setShowModal} type="post" handleClick={handleCreate} setEditState={setIsEdit}/>}
-        {showModal && isEdit && <GenreModal setVisible={setShowModal} type="patch" id={genreId} curTitle={curTitle} curDescription={curDescription} handleClick={handleUpdate} setEditState={setIsEdit}/>}
+        {showModal && <GenreModal setVisible={setShowModal} type="post" setEditState={setIsEdit}/>}
+        {showModal && isEdit && <GenreModal setVisible={setShowModal} type="patch" id={genreId} curTitle={curTitle} curDescription={curDescription} setEditState={setIsEdit}/>}
         <div className="w-full flex flex-col flex-1">
             <Header currentPage="Genres" handleClick={handleSearch} showSearchBox={true}/>
             <div className="relatrive mt-12 flex-1 flex flex-col mx-2.5 lg:mx-2.5">
@@ -123,7 +56,7 @@ const GenresManager: FC = () => {
                         <IsEmpty text="It seems that no genre was found!" />
                     </div>
                 ) : (
-                    <PaginatedGenres genres={genres} handleClick={handleClick} handleDelete={handleDelete} countGenres={genresResponse?.count || 0} handleSetNewOffset={setOffset} itemsPerPage={count}/>
+                    <PaginatedGenres genres={genres} handleClick={handleUpdateGenre} countGenres={genresResponse?.count || 0} handleSetNewOffset={handleNewOffset} itemsPerPage={count}/>
                 )}
             </div>
             <Footer />

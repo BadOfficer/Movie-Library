@@ -8,13 +8,12 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 interface Props {
     genres: IGenre[] | undefined;
     handleClick: (id: number, title: string, description: string) => void;
-    handleDelete: (id: number, e: any) => void;
     handleSetNewOffset: (offsetValue: number) => void;
     countGenres: number;
     itemsPerPage: number
 }
 
-const PaginatedGenres: FC<Props> = ({genres, handleClick, handleDelete, handleSetNewOffset, countGenres, itemsPerPage}) => {
+const PaginatedGenres: FC<Props> = ({genres, handleClick, handleSetNewOffset, countGenres, itemsPerPage}) => {
 
     const pageCount = Math.ceil(countGenres / itemsPerPage);
    
@@ -29,7 +28,7 @@ const PaginatedGenres: FC<Props> = ({genres, handleClick, handleDelete, handleSe
                 <ul className="flex flex-wrap mt-9 gap-9 justify-center lg:justify-start">
                 {genres?.map((genre, index) => (
                     <li key={index} className="block">
-                        <Genre title={genre.title} amount={genre.movies.length} id={genre.id} handleClick={() => handleClick(genre.id, genre.title, genre.description)} handleDelete={handleDelete}/>
+                        <Genre title={genre.title} amount={genre.movies.length} id={genre.id} handleClick={() => handleClick(genre.id, genre.title, genre.description)} />
                     </li>
                 ))}
                 </ul>

@@ -53,13 +53,50 @@ export interface IMovie {
     id: number;
     title: string;
     description: string;
-    images: string[];
+    images: any;
     rating: string;
     release: string;
-    seasons: number;
-    series: number;
+    seasons: string;
+    series: string;
     duration: string;
-    genres: any[];
+    genres: any;
+}
+
+export interface IMovieModal {
+    id?: number | string;
+    title: string;
+    description: string;
+    images?: any;
+    rating: string;
+    release: string;
+    seasons: string;
+    series: string;
+    duration: string;
+    genres: string;
+}
+
+export interface IMovieUpdate {
+    id: number;
+    title: string;
+    description: string;
+    rating: string;
+    release: string;
+    seasons: string;
+    series: string;
+    duration: string;
+    genres: string;
+}
+
+export interface IMovieCreate {
+    title: string;
+    description: string;
+    rating: string;
+    release: string;
+    images: any;
+    seasons: string;
+    series: string;
+    duration: string;
+    genres: string;
 }
 
 export interface IMoviesResponse<T> {

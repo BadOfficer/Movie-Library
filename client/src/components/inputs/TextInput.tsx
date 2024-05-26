@@ -12,7 +12,7 @@ const TextInput: FC<TextInputProps> = ({ fieldName, value, onChange }) => {
     };
 
     return <div>
-        <input type="text" name="fieldName" className="text-main p-0 text-dark-gray px-2.5 py-2 w-80 lg:min-w-96 rounded-md" placeholder={fieldName} value={value} onChange={handleChange}/>
+        <input type="text" name="fieldName" className="text-main p-0 text-dark-gray px-2.5 py-2 w-80 lg:min-w-96 rounded-md" maxLength={255} placeholder={fieldName} value={value} onChange={handleChange}/>
     </div>
 }
 

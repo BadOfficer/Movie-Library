@@ -1,22 +1,22 @@
 import { FC, useEffect } from "react"
 import Line from "./Line";
 import { Link, useNavigate } from "react-router-dom";
-import Navigation from "./parts/Navigation";
-import { useAuth } from "../hooks/useAuth";
-import { useAppDispatch } from "../store/hooks";
-import NavButton from "./buttons/NavButton";
+import Navigation from "./Navigation";
+import { useAuth } from "../../hooks/useAuth";
+import { useAppDispatch } from "../../store/hooks";
+import NavButton from "../buttons/NavButton";
 import { BiHomeAlt2, BiSolidMoviePlay } from "react-icons/bi";
 import { FiServer } from "react-icons/fi";
 import { FaRegBookmark, FaRegHeart } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineDisplaySettings, MdVideoSettings } from "react-icons/md";
-import { useRole } from "../hooks/useRole";
-import { logout } from "../store/user/userSlice";
-import { removeTokenFromLocalStorage } from "../helpers/localstorage.helper";
+import { useRole } from "../../hooks/useRole";
+import { logout } from "../../store/user/userSlice";
+import { removeTokenFromLocalStorage } from "../../helpers/localstorage.helper";
 import { toast } from "react-toastify";
-import { useGetUserQuery } from "../services/user.service";
-import { useGetLikedQuery } from "../services/liked.service";
-import { useGetBookmarksQuery } from "../services/bookmarks.service";
+import { useGetUserQuery } from "../../services/user.service";
+import { useGetLikedQuery } from "../../services/liked.service";
+import { useGetBookmarksQuery } from "../../services/bookmarks.service";
 
 interface Props {
     handleActive: (state: boolean) => void;

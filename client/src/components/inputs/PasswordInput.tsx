@@ -21,7 +21,7 @@ const PasswordInput: FC<PasswordInputProps> = ({ value, onChange }) => {
     }
 
     return <div className="relative">
-                <input type={showPassword ? 'text' : 'password'} className="text-main p-0 text-dark-gray px-2.5 py-2 w-80 lg:min-w-96 rounded-md" placeholder="Password" value={value} onChange={handleChange}/>
+                <input type={showPassword ? 'text' : 'password'} maxLength={40} className="text-main p-0 text-dark-gray px-2.5 py-2 w-80 lg:min-w-96 rounded-md" placeholder="Password" value={value} onChange={handleChange}/>
                 <div className="absolute centeredY right-2.5 text-light-gray cursor-pointer">
                     {showPassword ? (
                         <span onClick={handleSetPassword}><FaRegEyeSlash size={20}/></span>

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { IMovie } from "../../types/types";
+import { IMovie, IMovieModal } from "../../types/types";
 import Movie from "./Movie";
 import ReactPaginate from "react-paginate";
 import ArrowButton from "../buttons/ArrowButton";
@@ -9,10 +9,12 @@ interface Props {
     itemsPerPage: number;
     movies: IMovie[];
     handleNewOffset: (offset: number) => void;
-    countMovies: number
+    countMovies: number;
+    isAdmin?: boolean;
+    handleSetCurMovie?: (movie: IMovieModal) => void;
 }
 
-const PaginatedMovies: FC<Props> = ({ itemsPerPage, movies, handleNewOffset, countMovies }) => {
+const PaginatedMovies: FC<Props> = ({ itemsPerPage, movies, handleNewOffset, countMovies, isAdmin = false, handleSetCurMovie }) => {
     const pageCount = Math.ceil(countMovies / itemsPerPage);
    
     const handlePageClick = (event: any) => {
@@ -25,7 +27,17 @@ const PaginatedMovies: FC<Props> = ({ itemsPerPage, movies, handleNewOffset, cou
         <ul className="flex flex-wrap gap-12 flex-1 justify-center lg:justify-start w-full">
             {movies?.map(movie => (
                 <li key={movie.id}>
-                    <Movie title={movie.title} image={`http://localhost:3000/${movie.images[1]}`} rating={movie.rating} year={movie.release} id={movie.id}/>
+                    <Movie passedMovie={movie} isAdmin={isAdmin} handleSetCurMovieData={() => handleSetCurMovie?.({
+                        id: movie.id,
+                        title: movie.title,
+                        description: movie.description,
+                        release: movie.release,
+                        seasons: movie.seasons,
+                        series: movie.series,
+                        duration: movie.duration,
+                        rating: movie.rating,
+                        genres: movie.genres
+                    })}/>
                 </li>
             ))}
         </ul>

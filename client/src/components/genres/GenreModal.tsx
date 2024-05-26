@@ -1,8 +1,10 @@
 import { FC, useState } from "react";
-import { IGenreInput } from "../../types/types";
 import TitledInput from "../inputs/TitledInput";
 import SolidButton from "../buttons/SolidButton";
 import BorderButton from "../buttons/BorderButton";
+import Modal from "../parts/Modal";
+import useHandleResponse from "../../hooks/useHandleResponse";
+import { useCreateGenreMutation, useUpdateGenreMutation } from "../../services/genres.service";
 
 interface Props {
     setVisible: (state: boolean) => void;
@@ -10,27 +12,34 @@ interface Props {
     id?: number;
     curTitle?: string
     curDescription?: string
-    handleClick?: (genre: IGenreInput, e: React.FormEvent<HTMLFormElement>) => void
     setEditState: (state: boolean) => void;
 }
 
-const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription, handleClick = () => {}, setEditState }) => {
+const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription, setEditState }) => {
     const [titleValue, setTitleValue] = useState<string>(curTitle || '');
     const [descriptionValue, setDescriptionValue] = useState<string>(curDescription || '');
 
-    const handleAdd = (event: React.FormEvent<HTMLFormElement>) => {
+    const { handleResponse } = useHandleResponse();
+
+    const [createGenre, {}] = useCreateGenreMutation();
+    const [updateGenre, {}] = useUpdateGenreMutation();
+
+    const handleAddGenre = async(event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const genre = {
            title: formData.get('title') as string,
            description: formData.get('description') as string 
         };
-        handleClick(genre, event);
-        handleReset()
-        setEditState(false);
+        const {data, error} = await createGenre(genre);
+        handleResponse(data, error, `${data?.title} has been added!`)
+
+        if(data) {
+            setVisible(false);
+        }
     }
 
-    const handleUpdate = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleUpdateGenre = async(event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const genre = {
@@ -38,35 +47,37 @@ const GenreModal: FC<Props> = ({ setVisible, type, id, curTitle, curDescription,
             title: formData.get('title') as string,
             description: formData.get('description') as string 
         }
-        handleClick(genre, event);
-        handleReset()
+        
+        const {data, error} = await updateGenre(genre);
+        handleResponse(data, error, `${data?.title} has been updated!`)
+
         setEditState(false);
+        if(data) {
+            setVisible(false);
+        }
     }
 
-    const handleReset = () => {
-        setTitleValue('');
-        setDescriptionValue('');
+    const handleCancel = () => {
         setVisible(false);
         setEditState(false);
     }
 
-    return <div className="fixed w-full h-full bottom-0 top-0 right-0 left-0 flex justify-center items-center bg-dark-gray/75 z-50">
-                <div className="bg-light-gray p-3 rounded-xl sm:p-9">
-                    <form className="flex flex-col gap-5" onSubmit={type === "post" ? handleAdd : handleUpdate}>
-                        <h2 className="text-center text-xl uppercase font-semibold">Adding Genre</h2>
-                        <TitledInput fieldLabel="Genre title:" name="title" handleChange={(e) => setTitleValue(e.target.value)} type="text" placeholder="Genre title" value={titleValue} 
-                                        id={id} el="input" />
-                                        
-                        <TitledInput fieldLabel="Genre description" el="textarea" name="description" handleChange={(e) => setDescriptionValue(e.target.value)} 
-                                        placeholder="Genre description" value={descriptionValue} />
-
-                        <div className="flex justify-center gap-2.5">
-                            <SolidButton type="submit">{type === 'post' ? "Add" : "Update"}</SolidButton>
-                            <BorderButton handleClick={handleReset} type="reset">Cancel</BorderButton>
-                        </div>
-                    </form>
+    return (
+        <Modal>
+            <form className="flex flex-col gap-5" onSubmit={type === "post" ? handleAddGenre : handleUpdateGenre}>
+                <h2 className="text-center text-xl uppercase font-semibold">{type === 'post' ? "Adding" : "Updating"} Genre</h2>
+                <TitledInput fieldLabel="Genre title:" name="title" handleChange={(e) => setTitleValue(e.target.value)} type="text" placeholder="Genre title" value={titleValue} 
+                                id={id} el="input" required={true}/>
+                                
+                <TitledInput fieldLabel="Genre description" el="textarea" name="description" handleChange={(e) => setDescriptionValue(e.target.value)} 
+                                placeholder="Genre description" value={descriptionValue} required={true} />
+                <div className="flex justify-center gap-2.5">
+                    <SolidButton type="submit">{type === 'post' ? "Add" : "Update"}</SolidButton>
+                    <BorderButton handleClick={handleCancel} type="reset">Cancel</BorderButton>
                 </div>
-            </div>
+            </form>
+        </Modal>
+    )
 }
 
 export default GenreModal;

@@ -73,17 +73,13 @@ const RecentlyMovies: FC<Props> = ({sectionTitle, loading, movies}) => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6 2xl:gap-12">
                         {currentMovies.map(film => (
                             <Movie
-                                id={film.id}
-                                image={`http://localhost:3000/${film.images[1]}`}
-                                rating={film.rating}
-                                title={film.title}
-                                year={film.release}
+                                passedMovie={film}
                                 key={film.id}
                             />
                         ))}
                     </div>
                     )}
-                     {movies.length === 0 && <p className="m-12">Movies not found!</p>}
+                    {movies && movies.length === 0 && <p className="m-12">Movies not found!</p>}
                 </div>
             </div>
 }
