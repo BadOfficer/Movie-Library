@@ -1,0 +1,38 @@
+ArrowButton - true;
+FilterSortButton - true;
+NavButton - false;
+
+<----Genres
+    Genre - true;
+    GenreModal - true;
+
+<----inputs
+    PasswordInput - true;
+    Search - true;
+    TextInput - true;
+
+<----movies
+    GenreFilterButton - true;
+    Movie - true;
+    MoviesModal - false;
+    MoviesNavigation - true;
+    PaginatedMovies - true;
+
+<----parts
+    CheckBox - true;
+    CountSelect - true;
+    FilterGroup - true;
+    Filters - true;
+    Footer - true;
+    Header - true;
+    IsEmpty - true;
+    Loader - true;
+    Navigation - true;
+    SectionTitle - true;
+
+<----settings
+    SettingsInput - true
+    SettingsPasswordInput - true;
+
+Line - true;
+SideBar - true;

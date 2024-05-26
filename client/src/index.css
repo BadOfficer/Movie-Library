@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    box-sizing: border-box;
+  }
+
+@layer components {
+    
+
+    .active {
+        position: relative;
+    }
+    .active::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 5px;
+        height: 100%;
+        background-color: #FAB23D;
+    }
+    .centered {
+        top:50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .centeredY {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .unfocused:focus{
+        outline: none !important;
+    }
+
+    .sidebar::-webkit-scrollbar {
+        display: none;
+      }
+      
+      /* Hide scrollbar for IE, Edge and Firefox */
+    .sidebar {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+        display: none;
+      }
+      
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: #383838;
+      }
+      
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: #FFC812;
+        border-radius: 10px;
+      }
+      
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #FAB23D;
+      }
+
+      @media (min-width: 1024px) {
+        ::-webkit-scrollbar {
+            display: block;
+        }
+      }
+}
