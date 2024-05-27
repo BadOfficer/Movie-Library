@@ -26,9 +26,8 @@ const SideBar: FC<Props> = ({ handleActive }) => {
     const isAuth = useAuth();
     const isAdmin = useRole();
     const {data: userData, refetch} = useGetUserQuery('', { skip: !isAuth });
-    const {data: likedMovies} = useGetLikedQuery('', { skip: !isAuth });
-    const {data: bookmarksMovies} = useGetBookmarksQuery('', { skip: !isAuth });
-
+    const {data: likedMovies, refetch: likedRefetch} = useGetLikedQuery('', { skip: !isAuth });
+    const {data: bookmarksMovies, refetch: bookmarksRefetch} = useGetBookmarksQuery('', { skip: !isAuth });
     
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -47,8 +46,10 @@ const SideBar: FC<Props> = ({ handleActive }) => {
     useEffect(() => {
         if (isAuth) {
             refetch();
+            likedRefetch();
+            bookmarksRefetch();
         }
-    }, [isAuth, refetch]);
+    }, [isAuth, refetch, likedRefetch, bookmarksRefetch]);
 
     return <div className="overflow-auto sidebar bg-light-gray h-screen z-30 flex gap-6 flex-col fixed min-w-[18rem] 2xl:min-w-[18rem] xl:gap-9 2xl:gap-12 w-full lg:w-auto">
                 {isAuth ? (

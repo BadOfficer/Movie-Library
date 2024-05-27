@@ -40,7 +40,19 @@ const MoviesManager: FC = () => {
 
 
     return <>
-        {showModal && <MovieModal type="post" setVisible={setShowModal} movie={curMovie}/>}
+        {showModal && <MovieModal type="post" setVisible={setShowModal} movie={
+            {
+                id: "",
+                title: "",
+                description: "",
+                release: "",
+                seasons: "",
+                series: "",
+                duration: "",
+                rating: "",
+                genres: ""
+            }
+        }/>}
         {showModal && isEdit && <MovieModal type="patch" setVisible={setShowModal} movie={curMovie} handleSetEdit={setIsEdit}/>}
         <div className="w-full flex flex-col flex-1">
         <Header currentPage="Movies" showSearchBox={true} handleClick={handleSearch}/>
