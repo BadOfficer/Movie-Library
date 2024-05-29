@@ -79,7 +79,7 @@ The project is divided into two main parts:
 
     ```bash
     cd frontend
-    npm start
+    npm run dev
     ```
 
 3. Access the application at `http://localhost:3000`.
