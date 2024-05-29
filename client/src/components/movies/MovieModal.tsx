@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import TitledInput from "../inputs/TitledInput";
 import SolidButton from "../buttons/SolidButton";
 import BorderButton from "../buttons/BorderButton";
@@ -19,19 +19,26 @@ interface Props {
 
 const MovieModal: FC<Props> = ({ type, movie, setVisible, handleSetEdit }) => {
     const [curMovie, setCurMovie] = useState(movie);
-    const { data: genresResponse } = useGetGenresQuery('');
+    const [triggerGetGenres] = useLazyGetGenresQuery();
+    const [countGenres, setCountGenres] = useState(18)
+    const { data: genresResponse } = useGetGenresQuery(`${""},${countGenres}`);
     const { handleResponse } = useHandleResponse();
-
+    
     const [createMovie, {}] = useCreateMovieMutation();
     const [updateMovie, {}] = useUpdateMovieMutation();
+
+    useEffect(() => {
+        if (genresResponse && genresResponse.count) {
+            setCountGenres(genresResponse.count);
+        }
+    }, [genresResponse]);
 
     const genres = genresResponse?.rows;
 
     const handleChangeMovieData = (row: string, value: string) => {
         setCurMovie(movie => ({...movie, [row]: value}))
     }
-
-    const [triggerGetGenres] = useLazyGetGenresQuery();
+    
 
     const handleAddMovie = async(event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -86,17 +93,15 @@ const MovieModal: FC<Props> = ({ type, movie, setVisible, handleSetEdit }) => {
         if(handleSetEdit) {
             handleSetEdit(false);
         }
-        if(data) {
-            setVisible(false);
-            triggerGetGenres("");
-        }
+        setVisible(false);
+        triggerGetGenres("");
     }
 
     const handleCancel = () => {
         if(handleSetEdit) {
             handleSetEdit(false);
         }
-        setVisible(false)
+        setVisible(false);
     }
 
     return (
@@ -112,11 +117,11 @@ const MovieModal: FC<Props> = ({ type, movie, setVisible, handleSetEdit }) => {
                         <TitledInput fieldLabel="Movie series:" name="series" handleChange={(e) => handleChangeMovieData("series", e.target.value)} placeholder="Movie series" value={curMovie.series} el="input" type="number" required={true}/>
                         <TitledInput fieldLabel="Movie duration:" name="duration" handleChange={(e) => handleChangeMovieData("duration", e.target.value)} placeholder="Movie duration" value={curMovie.duration} el="input" type="number" required={true}/>
                         <TitledInput fieldLabel="Movie rating:" name="rating" el="input" handleChange={(e) => handleChangeMovieData("rating", e.target.value)} placeholder="Movie rating" value={curMovie.rating} type="number" required={true}/>
-                        <GenresSelect selectTitle="Movie genres:" inputName="genres" genres={genres}/>
+                        <GenresSelect selectTitle="Movie genres:" inputName="genres" genres={genres} />
                         {type === "post" && (
                             <>
-                                <CustomFileInput inputName="sliderImage" title="Movie slider image" acceptedFileTypes={[".jpg"]}/>
-                                <CustomFileInput inputName="image" title="Movie main image" acceptedFileTypes={[".jpg"]}/>
+                                <CustomFileInput inputName="sliderImage" title="Movie slider image" acceptedFileTypes={[".jpg"]} />
+                                <CustomFileInput inputName="image" title="Movie main image" acceptedFileTypes={[".jpg"]} />
                             </>
                         )}
                         <div className="flex justify-center gap-2.5">

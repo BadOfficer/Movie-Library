@@ -16,8 +16,6 @@ interface Props {
 
 const PaginatedMovies: FC<Props> = ({ itemsPerPage, movies, handleNewOffset, countMovies, isAdmin = false, handleSetCurMovie }) => {
     const pageCount = Math.ceil(countMovies / itemsPerPage);
-
-    console.log(countMovies);
     
    
     const handlePageClick = (event: any) => {

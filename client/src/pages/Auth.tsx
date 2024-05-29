@@ -29,6 +29,7 @@ const Auth: FC = () => {
                 email: email,
                 password: password,
             })
+            
 
             if(data) {
                 toast.success("An account has been created");
@@ -36,11 +37,11 @@ const Auth: FC = () => {
             }
         } catch(err: any) {
             const errorData = err.response?.data.message;
-                
+            
             if (Array.isArray(errorData)) {
                 errorData.forEach((msg: string) => toast.error(msg));
             } else {
-                toast.error(errorData.message);
+                toast.error(errorData);
             }
         }
     }

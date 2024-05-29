@@ -8,12 +8,13 @@ import Footer from "../components/parts/Footer"
 
 const Liked: FC = () => {
     const [searchData, setSearchData] = useState('');
+    
     const {data: likedMovies, isLoading} = useGetLikedQuery(searchData);
     const liked = likedMovies?.movies; 
 
     const handleSearch = (text: string) => {
         setSearchData(text);
-    }
+    }   
     
     return <div className="min-h-screen flex flex-col w-full">
         <Header currentPage="liked" handleClick={handleSearch} showSearchBox={true}/>

@@ -27,6 +27,7 @@ const Series: FC = () => {
     const [activeRatings, setActiveRatings] = useState<string[]>([]);
     const [idsGenres, setIdsGenres] = useState<number[]>([]);
     const [searchData, setSearchData] = useState('');
+    const [paginationKey, setPaginationKey] = useState<number>(0);
 
     const [triggerGetGenres, { data: genres }] = useLazyGetSeriesGenresQuery();
     const [showFilter, setShowFilter] = useState(false);
@@ -82,6 +83,7 @@ const Series: FC = () => {
         setActiveSeasons(seasons);
         setActiveSeries(series);
         setOffsetValue(0);
+        setPaginationKey(prevKey => prevKey + 1); 
         setShowFilter(false);
     }
 
@@ -93,6 +95,7 @@ const Series: FC = () => {
     const handleSearch = (text: string) => {
         setOffsetValue(0);
         setSearchData(text);
+        setPaginationKey(prevKey => prevKey + 1); 
     }
 
     const handleShowFilters = () => {
@@ -108,6 +111,8 @@ const Series: FC = () => {
               return [...prevIds, id];
           }
         });
+        setOffsetValue(0);
+        setPaginationKey(prevKey => prevKey + 1); 
     }
 
     return <div className="flex flex-col min-h-screen w-full">
@@ -133,7 +138,7 @@ const Series: FC = () => {
                     </div>
                 )}
                 {movies && movies.length !== 0 && (
-                    <PaginatedMovies movies={movies} itemsPerPage={countValue} handleNewOffset={setOffsetValue} countMovies={moviesResponse.count}/>
+                    <PaginatedMovies movies={movies} itemsPerPage={countValue} handleNewOffset={setOffsetValue} countMovies={moviesResponse.count} key={paginationKey}/>
                 )}
             </div>
         </div>

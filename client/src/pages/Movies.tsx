@@ -25,6 +25,7 @@ const Movies: FC = () => {
     const [activeRatings, setActiveRatings] = useState<string[]>([]);
     const [idsGenres, setIdsGenres] = useState<number[]>([]);
     const [searchData, setSearchData] = useState('');
+    const [paginationKey, setPaginationKey] = useState<number>(0);
 
     const [triggerGetGenres, { data: genres }] = useLazyGetFilmsGenresQuery();
     const [showFilter, setShowFilter] = useState(false);
@@ -33,7 +34,6 @@ const Movies: FC = () => {
     const {data: allowMoviesResponse} = useGetAllowFilmsQuery('');
 
     const movies = moviesResponse?.rows;
-    console.log(moviesResponse);
     
     const allowMovies = allowMoviesResponse?.rows;
 
@@ -69,7 +69,8 @@ const Movies: FC = () => {
         setActiveReleases(releaseYears);
         setActiveDuration(durations);
         setActiveRatings(ratings);
-        setOffsetValue(0)
+        setOffsetValue(0);
+        setPaginationKey(prevKey => prevKey + 1); 
         setShowFilter(false);
     }
 
@@ -80,6 +81,7 @@ const Movies: FC = () => {
 
     const handleSearch = (text: string) => {
         setOffsetValue(0);
+        setPaginationKey(prevKey => prevKey + 1); 
         setSearchData(text);
     }
 
@@ -90,12 +92,14 @@ const Movies: FC = () => {
     const handleSetGenresIds = (id: number) => {
         setIdsGenres(prevIds => {
           if (prevIds.includes(id)) {
-              const newItems = prevIds.filter(item => item !== id)
+              const newItems = prevIds.filter(item => item !== id);
               return newItems;
           } else {
               return [...prevIds, id];
           }
         });
+        setPaginationKey(prevKey => prevKey + 1); 
+        setOffsetValue(0);
     }
     
     return <div className="flex flex-col min-h-screen w-full">
@@ -121,7 +125,7 @@ const Movies: FC = () => {
                     </div>
                 )}
                 {movies && movies.length !== 0 && (
-                    <PaginatedMovies movies={movies} itemsPerPage={countValue} handleNewOffset={setOffsetValue} countMovies={moviesResponse.count}/>
+                    <PaginatedMovies movies={movies} itemsPerPage={countValue} handleNewOffset={setOffsetValue} countMovies={moviesResponse.count} key={paginationKey}/>
                 )}
             </div>
         </div>

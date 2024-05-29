@@ -37,8 +37,8 @@ export class MoviesService {
         return existMovie;
     }
 
-    async getMovies(filterOptions: FilterOptions): Promise<{rows: MovieIf[], count: number}> {
-        const {genresIds, release, seasons, duration, rating, query, count, offset, series} = filterOptions;
+    async getMovies(filterOptions: FilterOptions): Promise<{ rows: MovieIf[], count: number }> {
+        const { genresIds, release, seasons, duration, rating, query, count, offset, series } = filterOptions;
     
         const whereClause: any = {
             [Op.and]: [
@@ -84,7 +84,7 @@ export class MoviesService {
         }
     
         const include: any[] = [];
-
+    
         if (genresIds) {
             const genreIdValues = genresIds.split(';').map(id => parseInt(id));
             include.push({
@@ -98,29 +98,32 @@ export class MoviesService {
         } else {
             include.push({ model: Genre });
         }
-
+    
         const moviesQuery = {
             where: whereClause,
             limit: count,
-            offset: offset * count
-        };
-
-        const totalCount = await this.moviesRepository.count({ where: whereClause });
-
-        const movies = await this.moviesRepository.findAll({
-            ...moviesQuery,
+            offset: offset * count,
             include: include
+        };
+    
+        const totalCount = await this.moviesRepository.count({
+            where: whereClause,
+            include: include,
+            distinct: true,
+            col: 'id'
         });
-
+    
+        const movies = await this.moviesRepository.findAll(moviesQuery);
+    
         return {
             rows: movies,
             count: totalCount
         };
-        
-    }    
+    }
+       
 
-    async getSeries(filterOptions: FilterOptions): Promise<{rows: MovieIf[], count: number}> {
-        const {genresIds, release, seasons, duration, rating, query, count, offset, series} = filterOptions
+    async getSeries(filterOptions: FilterOptions): Promise<{ rows: MovieIf[], count: number }> {
+        const { genresIds, release, seasons, duration, rating, query, count, offset, series } = filterOptions;
     
         const whereClause: any = {
             [Op.or]: [
@@ -166,7 +169,7 @@ export class MoviesService {
         }
     
         const include: any[] = [];
-
+    
         if (genresIds) {
             const genreIdValues = genresIds.split(';').map(id => parseInt(id));
             include.push({
@@ -180,25 +183,30 @@ export class MoviesService {
         } else {
             include.push({ model: Genre });
         }
-
+    
         const moviesQuery = {
             where: whereClause,
             limit: count,
-            offset: offset * count
-        };
-
-        const totalCount = await this.moviesRepository.count({ where: whereClause });
-
-        const movies = await this.moviesRepository.findAll({
-            ...moviesQuery,
+            offset: offset * count,
             include: include
+        };
+    
+        
+        const totalCount = await this.moviesRepository.count({
+            where: whereClause,
+            include: include,
+            distinct: true,
+            col: 'id'
         });
-
+    
+        const movies = await this.moviesRepository.findAll(moviesQuery);
+    
         return {
             rows: movies,
             count: totalCount
         };
     }
+    
 
     async getTopRatedMovies(limit: number = 5): Promise<Movie[]> {
         return this.moviesRepository.findAll({
@@ -247,6 +255,11 @@ export class MoviesService {
                 return +idGenre;
             }))
         ]);
+
+        if(images.length === 0) {
+            throw new BadRequestException(`images can't be empty!`);
+        }
+        
     
         const newMovie = new Movie({
             title: createMovieDto.title,
